@@ -1,0 +1,1375 @@
+%% VIKAASA The VIKAASA GUI.
+%   VIKAASA stands for VIability Kernel Approximation, Analysis and
+%   Simulation Application.
+%
+%   The VIKAASA graphical user interface (GUI) provides a front-end to the
+%   VIKAASA Toolbox for computation and analysis of viability kernels with
+%   two to four variables.
+%
+%   Running VIKAASA, by itself, opens the VIKAASA GUI, or raises the GUI window if
+%   VIKAASA is already open (only one instance of VIKAASA can be open at a
+%   time).
+%
+%   VIKAASA('filename.mat') loads the specified MAT file into VIKAASA.  The
+%   file should have been created with VIKAASA.  If no MAT file is
+%   specified, 'Projects/vikaasa_default.mat' will be loaded.
+%
+% See also: GUI, GUIDE, GUIDATA, GUIHANDLES, TOOLS/VK_COMPUTE,
+%   TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE,
+%   TOOLS/VK_VIABLE
+% 
+% Last Modified by GUIDE v2.5 10-Feb-2011 19:16:32
+function varargout = vikaasa(varargin)
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @vikaasa_OpeningFcn, ...
+                   'gui_OutputFcn',  @vikaasa_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+end
+
+%% GUI Opening Function -- executes when GUI is made visible
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% varargin   command line arguments to vikaasa (see VARARGIN)
+function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
+    % Choose default command line output for vikaasa
+    handles.output = hObject;
+    handles.interface = mfilename;
+    
+    % These are where the code components live.
+    handles.path = pwd;
+    cellfun(@(dir) addpath(fullfile(handles.path, dir)), ...
+        {'.', 'ControlAlgs', 'Gui', 'Tools', 'VControlAlgs'});
+
+    % If a file was passed in, load it.
+    if (nargin > 3)
+      filename = varargin{1};
+    else
+      filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');  
+    end
+    fprintf('Loading file: %s\n', filename);
+    handles = vk_4dgui_load_file(hObject, handles, filename);
+    
+    handles.version = '0.8';    
+    set(hObject, 'Name', ['VIKAASA ', handles.version]);
+      
+    % Update handles structure
+    guidata(hObject, handles);
+end
+
+%% GUI Output Function -- Returns data to the MATLAB Command Window.
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function varargout = vikaasa_OutputFcn(hObject, eventdata, handles)
+    % Get default command line output from handles structure
+    varargout{1} = handles.output;
+end
+
+%% Run Algorithm button pressed
+% hObject    handle to runalg_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function runalg_button_Callback(hObject, eventdata, handles)
+
+    %% Read settings from vk_state.
+    constraint_set = handles.vk_state.constraint_set;
+    controlmax = handles.vk_state.controlmax;
+    delta_fn = vk_4dgui_make_delta_fn(hObject, handles);
+    
+    
+    %% Create a waitbar, if required.
+    if (handles.vk_state.progressbar)
+        wb_message = 'Determining viability kernel ...';
+        wb = vk_4dgui_make_waitbar(wb_message);
+        computations = handles.vk_state.discretisation ...
+            ^ (length(handles.vk_state.constraint_set) / 2);    
+        options = vk_4dgui_make_options(hObject, handles, delta_fn, ...
+            wb, computations, wb_message);
+    else
+        options = vk_4dgui_make_options(hObject, handles, delta_fn);
+    end
+    
+    
+    %% Display debugging information
+    if (handles.vk_state.debug)
+        % Output the settings to the screen for debugging.
+        constraint_set
+        delta_fn
+        controlmax
+        options        
+    end
+
+    
+    % Get the current window name.
+    name = get(handles.figure1, 'Name');
+
+    % If the name already contains some "- MESSAGE", get rid of it.
+    pos = regexp(name, '\s-\s[A-Z\s]+$');
+    if (~isempty(pos))
+        name = name(1:pos(1)-1);
+    end
+    set(handles.figure1, 'Name', [name, ' - RUNNING ALGORITHM']);
+
+    % Run the computation.
+    c = fix(clock);
+    tic;    
+    fprintf('RUNNING ALGORITHM\n');
+    success = 0; error = 0;
+    try
+        V = vk_compute(constraint_set, delta_fn, controlmax, options);
+        
+        if (options.cancel_test_fn())            
+            message_title = 'Kernel Computation Cancelled';
+            message1 = 'Cancelled at ';
+            message2 = '';
+            fprintf('CANCELLED\n');
+        else            
+            message_title = 'Kernel Computation Completed';
+            message1 = 'Finished at ';
+            message2 = '';
+            fprintf('FINISHED\n');
+            success = 1;
+        end        
+    catch exception        
+        message_title = 'Kernel Computation Error';
+        message1 = 'Error at ';
+        message2 = ['Error message: ', exception.message];
+        
+        fprintf('ERROR: %s\n', exception.message);
+        error = 1;
+    end
+    
+    comp_time = toc;
+    
+    % Delete the progress bar, if there was one.
+    if (handles.vk_state.progressbar)
+        delete(wb);
+    end
+
+    % Save the results into our state structure if successful.
+    if (success)
+        handles.vk_state.V = V;
+        handles.vk_state.comp_time = comp_time;
+        handles.vk_state.comp_datetime = ...
+            sprintf('%i-%i-%i %i:%i:%i', c(1), c(2), c(3), c(4), c(5), c(6));
+
+        handles = vk_4dgui_update_results(hObject, handles);
+
+        % If autosave is on, then save the result now.        
+        if (handles.vk_state.autosave)
+            if (vk_4dgui_save(handles, handles.filename))
+                message2 = ['Auto-Saved to ', handles.filename];
+            else
+                message2 = ['Failed to auto-save to ', handles.filename];
+            end
+        else
+            message2 = '';
+        end
+
+        guidata(hObject, handles);
+    end
+    
+    % Remove 'RUNNING ALGORITHM' from the title.
+    set(handles.figure1, 'Name', name);
+  
+    % Display a message.
+    c2 = fix(clock);
+    msgbox([message1, ...
+        sprintf('%i-%i-%i %i:%i:%i', ...
+            c2(1), c2(2), c2(3), c2(4), c2(5), c2(6)), ...
+        '.  ', message2], ...
+        message_title, 'none', 'modal');
+    
+    % If we are debugging, rethrow the error
+    if (handles.vk_state.debug && error)
+        rethrow(exception);
+    end
+end
+
+%% Maximum Control Size
+% hObject    handle to controlmax (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controlmax_Callback(hObject, eventdata, handles)
+    handles.vk_state.controlmax = str2double(get(hObject, 'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to controlmax (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function controlmax_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+%% First slice variable
+% hObject    handle to slice1var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function slice1var_Callback(hObject, eventdata, handles)
+    handles.vk_state.slice1 = get(hObject,'Value');
+    set(handles.slice1val, 'String', ...
+        handles.vk_state.slice1plane(handles.vk_state.slice1));
+    guidata(hObject, handles);
+end 
+    
+% hObject    handle to slice1var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function slice1var_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% Second slice variable
+% hObject    handle to slice2var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function slice2var_Callback(hObject, eventdata, handles)
+    handles.vk_state.slice2 = get(hObject,'Value');
+    set(handles.slice2val, 'String', ...
+        handles.vk_state.slice2plane(handles.vk_state.slice2));
+    guidata(hObject, handles);
+end
+   
+% hObject    handle to slice2var (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function slice2var_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% First slice value
+% hObject    handle to slice1val (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function slice1val_Callback(hObject, eventdata, handles)
+    handles.vk_state.slice1plane(handles.vk_state.slice1) = ...
+        str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to slice1val (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function slice1val_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% Second slice value
+% hObject    handle to slice2val (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function slice2val_Callback(hObject, eventdata, handles)
+    handles.vk_state.slice2plane(handles.vk_state.slice2) = ...
+        str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to slice2val (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function slice2val_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% Plot button pressed -- display either a full kernel or a sliced kernel
+% hObject    handle to plot_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function plot_button_Callback(hObject, eventdata, handles)
+    V = handles.vk_state.V;
+    constraint_set = handles.vk_state.constraint_set;
+    labels = handles.vk_state.labels;
+    colour = handles.vk_state.plotcolour;
+    method = handles.vk_state.plottingmethod;
+    box = handles.vk_state.drawbox;
+    alpha_val = handles.vk_state.alpha;
+    
+    if (handles.vk_state.holdfig && isfield(handles, 'current_figure'))
+        h = handles.current_figure;
+    else
+        h = figure(...
+            'CloseRequestFcn', ...
+            @(h, event) eval('try vk_4dgui_figure_close(h, event), catch, delete(h), end'), ...
+            'WindowButtonMotionFcn', ...
+            @(h, event) eval('try vk_4dgui_figure_focus(h, event), catch, end'));
+    end
+    
+    if (handles.vk_state.numslices > 0)
+        slices = vk_4dgui_make_slices(hObject, handles);       
+        vk_make_figure_slice(V, slices, constraint_set, labels, colour, ...
+            method, box, alpha_val, h);        
+    else % Just plot the whole thing.
+        vk_make_figure(V, constraint_set, labels, colour, method, ...
+            box, alpha_val, h);
+    end
+    
+    handles.current_figure = h;
+    guidata(hObject, handles);
+end        
+
+
+%% State-space discretisation
+% hObject    handle to discretisation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function discretisation_Callback(hObject, eventdata, handles)
+    handles.vk_state.discretisation = str2double(get(hObject, 'String'));
+    guidata(hObject, handles);
+end
+   
+% hObject    handle to discretisation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function discretisation_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% File menu -- Load, Save, Save As ...
+% hObject    handle to file_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function file_menu_Callback(hObject, eventdata, handles)
+end
+
+% hObject    handle to load_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function load_menu_Callback(hObject, eventdata, handles)
+    [filename, pathname] = uigetfile( ...
+        {'*.mat', 'All MAT-Files (*.mat)'; ...
+            '*.*','All Files (*.*)'}, ...
+        'Select MAT file');
+    % If "Cancel" is selected then return
+    if isequal([filename,pathname],[0,0])
+        return
+    % Otherwise construct the fullfilename and Check and load the file.
+    else
+        File = fullfile(pathname,filename);        
+        vk_4dgui_load_file(hObject, handles, File);
+    end
+end
+    
+% hObject    handle to save_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function save_menu_Callback(hObject, eventdata, handles)
+    vk_4dgui_save(handles, handles.filename);
+end
+    
+% hObject    handle to saveas_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function saveas_menu_Callback(hObject, eventdata, handles)
+    % Allow the user to select the file name to save to
+    [filename, pathname] = uiputfile( ...
+        {'*.mat';'*.*'}, ...
+        'Save as');	
+    % If 'Cancel' was selected then return
+    if isequal([filename,pathname],[0,0])
+        return;
+    else
+        if (~strcmp(filename(end-3:end), '.mat'))
+            filename = [filename, '.mat'];
+        end
+        
+        % Construct the full path and save
+        File = fullfile(pathname,filename);        
+        success = vk_4dgui_save(handles, File);
+        
+        % If successful, allow the 'save' menu option to work.
+        if (success)            
+            set(handles.save_menu, 'Enable', 'on');
+            set(handles.filename_label, 'String', filename);
+            handles.filename = File;
+            guidata(hObject,handles);
+        end
+    end
+end
+
+% hObject    handle to new_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function new_menu_Callback(hObject, eventdata, handles)
+end
+
+% hObject    handle to new2d_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function new2d_menu_Callback(hObject, eventdata, handles)
+    vardata = { ...
+        'Variable 1', 'x', 0, 0, '0'; ...
+        'Variable 2', 'y', 0, 0, '0'};            
+
+    handles = vk_4dgui_update_from_vardata(vardata, hObject, handles);    
+    handles = vk_4dgui_set_state(handles.vk_state, hObject, handles);
+    guidata(hObject, handles);
+end
+
+% hObject    handle to new3d_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function new3d_menu_Callback(hObject, eventdata, handles)    
+    vardata = { ...
+        'Variable 1', 'x', 0, 0, '0'; ...
+        'Variable 2', 'y', 0, 0, '0'; ...
+        'Variable 3', 'z', 0, 0, '0'};
+
+    handles = vk_4dgui_update_from_vardata(vardata, hObject, handles);  
+    handles = vk_4dgui_set_state(handles.vk_state, hObject, handles);
+    guidata(hObject, handles);
+end
+
+% hObject    handle to new4d_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function new4d_menu_Callback(hObject, eventdata, handles)
+    vardata = { ...
+        'Variable 1', 'x', 0, 0, '0'; ...
+        'Variable 2', 'y', 0, 0, '0'; ...
+        'Variable 3', 'z', 0, 0, '0'; ...
+        'Variable 4', 'w', 0, 0, '0'};
+
+    handles = vk_4dgui_update_from_vardata(vardata, hObject, handles);
+    handles = vk_4dgui_set_state(handles.vk_state, hObject, handles);
+    guidata(hObject, handles);
+end
+    
+
+%% The 'Variables' table has been edited.
+% hObject    handle to vartable (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+function vartable_CellEditCallback(hObject, eventdata, handles)
+    vardata = get(hObject, 'Data');
+    handles = vk_4dgui_update_from_vardata(vardata, hObject, handles);
+    guidata(hObject, handles);
+end   
+
+
+%% The 'zero slices' radio button has been selected
+function sliceradio0_Callback(hObject, eventdata, handles)
+% hObject    handle to sliceradio0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    if (get(hObject,'Value') == 1)
+        % Uncheck other radios
+        set(handles.sliceradio1, 'Value', 0);
+        set(handles.sliceradio2, 'Value', 0);        
+        
+        % Grey out all slice options.
+        set(handles.slice1var, 'Enable', 'off');
+        set(handles.slice1val, 'Enable', 'off');
+        set(handles.slice2var, 'Enable', 'off');
+        set(handles.slice2val, 'Enable', 'off');
+        
+        % Set number of slices.
+        handles.vk_state.numslices = 0;
+        guidata(hObject, handles);
+    end
+end
+  
+
+%% The 'one slice' radio button has been selected.
+function sliceradio1_Callback(hObject, eventdata, handles)
+% hObject    handle to sliceradio1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    if (get(hObject,'Value') == 1)
+        set(handles.sliceradio0, 'Value', 0);
+        set(handles.sliceradio2, 'Value', 0);
+        
+        set(handles.slice1var, 'Enable', 'on');
+        set(handles.slice1val, 'Enable', 'on');
+        set(handles.slice2var, 'Enable', 'off');
+        set(handles.slice2val, 'Enable', 'off');
+        
+        handles.vk_state.numslices = 1;
+        guidata(hObject, handles);
+    end
+end
+
+
+%% The 'Two slices' radio button has been selected.
+function sliceradio2_Callback(hObject, eventdata, handles)
+% hObject    handle to sliceradio2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    if (get(hObject,'Value') == 1)
+        set(handles.sliceradio0, 'Value', 0);
+        set(handles.sliceradio1, 'Value', 0);
+        
+        set(handles.slice1var, 'Enable', 'on');
+        set(handles.slice1val, 'Enable', 'on');
+        set(handles.slice2var, 'Enable', 'on');
+        set(handles.slice2val, 'Enable', 'on');
+        
+        handles.vk_state.numslices = 2;
+        guidata(hObject, handles);
+    end
+end   
+
+%% The symbol used to represent the control (usually 'u')
+% hObject    handle to controlsymbol (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controlsymbol_Callback(hObject, eventdata, handles)
+    handles.vk_state.controlsymbol = get(hObject, 'String');
+    guidata(hObject, handles);
+end
+    
+% hObject    handle to controlsymbol (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function controlsymbol_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'draw box' check-box has been clicked
+% hObject    handle to drawbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function drawbox_Callback(hObject, eventdata, handles)
+
+    handles.vk_state.drawbox = get(hObject, 'Value');    
+    guidata(hObject, handles);
+end
+
+%% The 'control tolerance' option
+% hObject    handle to controltolerance (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controltolerance_Callback(hObject, eventdata, handles)
+    handles.vk_state.controltolerance = str2double(get(hObject, 'String')); 
+    guidata(hObject, handles);
+end
+
+% hObject    handle to controltolerance (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function controltolerance_CreateFcn(hObject, eventdata, handles)
+
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'custom constraint set function' option
+% hObject    handle to custom_exited_fn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function custom_constraint_set_fn_Callback(hObject, eventdata, handles)
+    disp('hi');
+    handles.vk_state.custom_constraint_set_fn = get(hObject,'String');
+    guidata(hObject, handles);
+end
+
+% hObject    handle to custom_exited_fn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function custom_constraint_set_fn_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+% hObject    handle to custom_exited_fn_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function custom_constraint_set_fn_checkbox_Callback(hObject, eventdata, handles)
+
+    handles.vk_state.use_custom_constraint_set_fn = get(hObject,'Value');       
+    handles = vk_4dgui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+
+%% The stopping tolerance
+% hObject    handle to stoppingtolerance (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function stoppingtolerance_Callback(hObject, eventdata, handles)
+    handles.vk_state.stoppingtolerance = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to stoppingtolerance (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function stoppingtolerance_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'time discretisation', now actually called 'step size'
+% hObject    handle to timediscretisation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function timediscretisation_Callback(hObject, eventdata, handles)
+    handles.vk_state.timediscretisation = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to timediscretisation (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function timediscretisation_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'hold on' checkbox.  Used to draw figures over other figures.
+% hObject    handle to holdfig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function holdfig_Callback(hObject, eventdata, handles)
+    handles.vk_state.holdfig = get(hObject, 'Value'); 
+    guidata(hObject, handles);
+end
+
+
+%% The 'plot colour' button.  A coloured button.
+% hObject    handle to plotcolour (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function plotcolour_Callback(hObject, eventdata, handles)
+    handles.vk_state.plotcolour = uisetcolor(handles.vk_state.plotcolour);
+    set(hObject, 'BackgroundColor', handles.vk_state.plotcolour);
+    guidata(hObject, handles);
+end
+
+
+%% The control algorithm to use for simulation.
+% This drop-down is populated from the ControlAlgs and VControlAlgs
+% folders.
+% hObject    handle to sim_controlalg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_controlalg_Callback(hObject, eventdata, handles)
+    contents = cellstr(get(hObject,'String'));
+    handles.vk_state.sim_controlalg = contents{get(hObject,'Value')};
+    guidata(hObject, handles);
+end
+
+% hObject    handle to sim_controlalg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function sim_controlalg_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'Go' button for simulations.
+% hObject    handle to sim_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_button_Callback(hObject, eventdata, handles)
+    
+    %% Read info from vk_state
+    start = handles.vk_state.sim_start;
+    time_horizon = handles.vk_state.sim_iterations;
+    controlalg = handles.vk_state.sim_controlalg;
+    
+    discretisation = handles.vk_state.discretisation;
+    constraint_set = handles.vk_state.constraint_set;
+    
+    delta_fn = vk_4dgui_make_delta_fn(hObject, handles);
+    controlmax = handles.vk_state.controlmax;
+    
+    V = handles.vk_state.V;
+    
+    
+    %% Calculate distances & get layer-count
+    % Used by VControlAlgs, and also for displaying information.
+    distances = zeros(1, length(constraint_set)/2);
+    for i = 1:length(constraint_set)/2
+        distances(i) = (constraint_set(2*i) - constraint_set(2*i - 1)) ...
+            / (discretisation-1);
+    end
+    layers = handles.vk_state.layers;
+     
+    
+    %% Construct vcontrol_fn, if necessary.
+    % If the chosen algorithm is a "VConstrolAlg", then it requires
+    % knowledge of the viability kernel.  We strap this information in
+    % here.
+    if (~isempty(find(cellfun(...
+            @(x) strcmp(controlalg, x), ...
+            handles.vcontrol_algs), 1)))
+        
+        vcontrol_fn = eval(['@', handles.vk_state.sim_controlalg]);        
+        info = struct( ...
+            'V', V, ...
+            'distances', distances, ...
+            'layers', layers ...
+        );
+        
+        control_fn = @(varargin) vcontrol_fn(varargin{:}, info);
+    else
+        control_fn = eval(['@', handles.vk_state.sim_controlalg]);
+    end
+    
+    
+    %% Construct progress bar, if necessary
+    if (handles.vk_state.progressbar)
+        wb_message = 'Running Simulation ...';
+        wb = vk_4dgui_make_waitbar(wb_message);        
+        options = vk_4dgui_make_options(hObject, handles, delta_fn, ...
+            wb, time_horizon, wb_message);
+    else
+        options = vk_4dgui_make_options(hObject, handles, delta_fn);
+    end
+    
+    
+    %% Print debugging information
+    if (handles.vk_state.debug)
+        % Output the settings to the screen for debugging.
+        constraint_set
+        delta_fn
+        controlmax
+        options        
+    end
+    
+    
+    %% Add 'RUNNING SIMULATION' to the titlebar
+    % Get the current window name.
+    name = get(handles.figure1, 'Name');
+
+    % If the name already contains some "- MESSAGE", get rid of it.
+    pos = regexp(name, '\s-\s[A-Z\s]+$');
+    if (~isempty(pos))
+        name = name(1:pos(1)-1);
+    end
+    set(handles.figure1, 'Name', [name, ' - RUNNING SIMULATION']);
+    
+    
+    %% Run the simulation
+    c = fix(clock);
+    tic;
+    fprintf('RUNNING SIMULATION\n');
+    success = 0; error = 0;
+    try
+        sim_state = vk_4dgui_make_simulation(start, time_horizon, ...
+            control_fn, V, distances, layers, constraint_set, delta_fn, ...
+            controlmax, options);    
+        if (options.cancel_test_fn())      
+            fprintf('CANCELLED\n');
+        else
+            fprintf('FINISHED\n');
+            success = 1;
+        end
+    catch exception
+        fprintf('ERROR: %s\n', exception.message);
+        error = 1;
+    end    
+    sim_state.comp_time = toc;
+    sim_state.comp_datetime = ...
+        sprintf('%i-%i-%i %i:%i:%i', c(1), c(2), c(3), c(4), c(5), c(6));
+    
+    
+    %% Delete any waitbars
+    if (handles.vk_state.progressbar)
+        delete(wb);
+    end
+    
+    
+    %% Remove 'RUNNING SIMULATION' from titlebar.
+    set(handles.figure1, 'Name', name);
+      
+    
+    %% If the simulation completed successfully, add it into the vk_state.
+    if (success)
+        handles.vk_state.sim_state = sim_state;
+        handles = vk_4dgui_update_sim_results(hObject, handles);
+        guidata(hObject, handles);
+    end
+    
+    
+    %% If debugging is turned on, rethrow any error.
+    if (handles.vk_state.debug && error)
+        rethrow(exception);
+    end
+end
+
+
+%% The 'time horizon' for the simulation (used to be called 'iterations')
+% hObject    handle to sim_iterations (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_iterations_Callback(hObject, eventdata, handles)
+    handles.vk_state.sim_iterations = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to sim_iterations (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function sim_iterations_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The number of forward-looking steps employed by optimizing algorithms.
+% hObject    handle to steps (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function steps_Callback(hObject, eventdata, handles)
+    handles.vk_state.steps = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to steps (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function steps_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'debug' checkbox has been clicked
+% hObject    handle to debug_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function debug_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.debug = get(hObject,'Value');
+    guidata(hObject, handles);
+end
+    
+
+%% The control algorithm used by the kernel determination routine
+% hObject    handle to controlalg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controlalg_Callback(hObject, eventdata, handles)
+    contents = cellstr(get(hObject,'String'));
+    handles.vk_state.controlalg = contents{get(hObject,'Value')};
+    guidata(hObject, handles);
+end
+    
+% hObject    handle to controlalg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function controlalg_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The plotting method drop-down
+% hObject    handle to plottingmethod (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function plottingmethod_Callback(hObject, eventdata, handles)
+    contents = cellstr(get(hObject,'String'));
+    handles.vk_state.plottingmethod = contents{get(hObject,'Value')};
+    guidata(hObject, handles);
+end
+    
+function plottingmethod_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to plottingmethod (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The simulation starting-point cell array
+% hObject    handle to sim_start (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+function sim_start_CellEditCallback(hObject, eventdata, handles)
+    handles.vk_state.sim_start = cell2mat(get(hObject, 'Data'));
+    guidata(hObject, handles);
+end
+
+
+%% The line colour for drawing simulation results
+% hObject    handle to sim_linecolour (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_linecolour_Callback(hObject, eventdata, handles)
+    handles.vk_state.sim_line_colour = ...
+        uisetcolor(handles.vk_state.sim_line_colour);
+    set(hObject, 'BackgroundColor', ...
+        handles.vk_state.sim_line_colour);
+    guidata(hObject, handles);
+end
+
+
+%% The line width for drawing simulaton trajectories
+% hObject    handle to sim_linewidth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_linewidth_Callback(hObject, eventdata, handles)
+    handles.vk_state.sim_line_width = str2double(get(hObject, 'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to sim_linewidth (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function sim_linewidth_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'time profiles' button' -- draw time profiles for the simulation.
+% hObject    handle to sim_timeprofiles_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
+    if (~isfield(handles.vk_state, 'sim_state'))
+        errordlg('Could not create simulation plot, because there is no data present.');
+        return;
+    end
+
+    sim_state = handles.vk_state.sim_state;
+    T = sim_state.T;
+    path = sim_state.path;
+    normpath = sim_state.normpath;
+    controlpath = sim_state.controlpath;
+    viablepath = sim_state.viablepath;
+    
+    labels = handles.vk_state.labels;
+    constraint_set = handles.vk_state.constraint_set;
+    controlmax = handles.vk_state.controlmax;
+    colour = handles.vk_state.sim_line_colour;
+    width = handles.vk_state.sim_line_width;
+    
+    % Make a figure, and add subplots to it.
+    figure;    
+    
+    rows = size(path, 1) + 2;
+    
+    for i = 1:size(path, 1)
+        subplot(rows, 1, i);
+        hold on;        
+        plot(T, constraint_set(2*i - 1) * ones(1, length(T)), ...
+            'Color', 'r', 'LineWidth', 1);
+        plot(T, constraint_set(2*i) * ones(1, length(T)), ...
+            'Color', 'r', 'LineWidth', 1);
+        plot(T, path(i, :), 'Color', colour, 'LineWidth', width);
+        title(labels(i, :));
+        axis([...
+            T(1), T(end), ...
+            min([path(i, :), constraint_set(2*i - 1)]), ...
+            max([path(i, :), constraint_set(2*i)])]);
+    end
+    
+    subplot(rows, 1, rows-1);
+    hold on;
+    plot(T, normpath, 'Color', colour, 'LineWidth', width);
+    plot(T, sim_state.options.small * ones(1, length(T)), ...
+        'Color', 'r', 'LineWidth', 1);
+    ind = find(viablepath(4, :));
+    plot(T(ind), normpath(ind), '.g'); 
+    title('Velocity');
+    axis tight;
+    
+    if (length(controlpath) == length(T))
+        subplot(rows, 1, rows);
+        plot(T, controlpath, 'Color', colour, 'LineWidth', width);
+        title('Control');
+        axis([T(1), T(end), -controlmax, controlmax]);
+    end
+end
+
+
+%% The 'show points' checkbox for drawing simulation trajectories.
+% hObject    handle to sim_showpoints_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_showpoints_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.sim_showpoints = get(hObject,'Value');
+    guidata(hObject, handles);
+end
+
+
+%% The 'add to current figure' button for drawing simulations
+% hObject    handle to sim_plot_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_plot_button_Callback(hObject, eventdata, handles)
+    if (~isfield(handles.vk_state, 'sim_state'))
+        errordlg('Could not create simulation plot, because there is no data present.');
+        return;
+    end
+    
+    if (~isfield(handles, 'current_figure'))
+        errordlg('Could not create simulation plot, because no figure exists.');
+        return;
+    end
+
+    h = handles.current_figure;
+    figure(h);
+
+    sim_state = handles.vk_state.sim_state;
+    [limits, slices] = vk_4dgui_figure_data_retrieve(h);
+    
+    T = sim_state.T;
+    path = sim_state.path;
+    if (~isempty(slices))
+        slices = sortrows(slices, -1);
+        for i = 1:size(slices, 1)
+            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];            
+        end
+    end        
+    
+    limits = vk_plot_path_limits(limits, path);
+    
+    viablepath = sim_state.viablepath;
+    showpoints = handles.vk_state.sim_showpoints;
+    
+    vk_plot_path(T, path, viablepath, showpoints, ...
+        handles.vk_state.sim_line_colour, handles.vk_state.sim_line_width);
+    
+    vk_4dgui_figure_data_insert(h, limits, slices);
+    axis(limits);
+end
+
+
+%% The 'interactive view' button for creating interactive simulations
+% hObject    handle to sim_gui_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_gui_button_Callback(hObject, eventdata, handles)
+    % Display settings.
+    display_opts = struct(...
+        'alpha', handles.vk_state.alpha, ...
+        'labels', handles.vk_state.labels, ...
+        'colour', handles.vk_state.plotcolour, ...
+        'line_colour', handles.vk_state.sim_line_colour, ...
+        'line_width', handles.vk_state.sim_line_width, ...
+        'method', handles.vk_state.plottingmethod, ...
+        'showpoints', handles.vk_state.sim_showpoints, ...
+        'slices', vk_4dgui_make_slices (hObject, handles) ...
+    );    
+
+    if (isfield(handles.vk_state, 'sim_state'))
+        vk_simgui(handles.vk_state.sim_state, display_opts);
+    else
+        errordlg('Could not create interactive simulation, because there is no data present.');
+    end
+end
+
+
+%% The simulation method -- either 'ode' or 'euler'
+% hObject    handle to sim_method (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_method_Callback(hObject, eventdata, handles)
+    contents = cellstr(get(hObject,'String'));
+    handles.vk_state.sim_method = contents{get(hObject,'Value')};
+    guidata(hObject, handles);
+end
+
+% hObject    handle to sim_method (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function sim_method_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+%% The 'layers' option for use with satisficing control algorithm
+% hObject    handle to layers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function layers_Callback(hObject, eventdata, handles)
+    handles.vk_state.layers = str2double(get(hObject,'String'));
+    guidata(hObject, handles);    
+end
+
+% hObject    handle to layers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function layers_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'alpha' option for plotting semi-transparent kernels.
+% hObject    handle to alpha (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function alpha_Callback(hObject, eventdata, handles)
+    handles.vk_state.alpha = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to alpha (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function alpha_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The 'plot alone' option for drawing simulation results.
+% hObject    handle to sim_plotalone_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_plotalone_button_Callback(hObject, eventdata, handles)
+    if (~isfield(handles.vk_state, 'sim_state'))
+        errordlg('Could not create simulation plot, because there is no data present.');
+        return;
+    end
+
+    h = figure;    
+    
+    title(['Simulation starting from ', ...
+        num2str(transpose(handles.vk_state.sim_state.path(:,1))), ...
+        ' for ', num2str(handles.vk_state.sim_state.T(end)), ...
+        ' time intervals']);
+
+    sim_state = handles.vk_state.sim_state;    
+    
+    T = sim_state.T;
+    path = sim_state.path;
+    
+    slices = vk_4dgui_make_slices (hObject, handles);
+    constraint_set = handles.vk_state.constraint_set;
+    labels = handles.vk_state.labels;
+    if (~isempty(slices))
+        slices = sortrows(slices, -1);
+        for i = 1:size(slices, 1)
+            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
+            constraint_set = [constraint_set(1:2*slices(i, 1)-2), ...
+                constraint_set(2*slices(i, 1)+1:end)];
+            labels = [labels(1:slices(i, 1)-1, :); ...
+                labels(slices(i, 1)+1:end, :)];
+        end
+    end        
+
+    if (handles.vk_state.drawbox)
+        limits = vk_plot_box(constraint_set);
+    else
+        limits = constraint_set;
+    end
+    limits = vk_plot_path_limits(limits, path);
+    
+    viablepath = sim_state.viablepath;
+    showpoints = handles.vk_state.sim_showpoints;
+    
+    vk_plot_path(T, path, viablepath, showpoints, ...
+        handles.vk_state.sim_line_colour, handles.vk_state.sim_line_width);
+    
+    vk_4dgui_figure_data_insert(h, limits, slices);
+    axis(limits);
+    grid on;
+        
+    xlabel(labels(1, :));
+    ylabel(labels(2, :));
+    if (length(limits) == 6)
+        zlabel(labels(3, :));
+        view(3);
+    end
+end
+
+
+%% The 'progress bar' checkbox -- for displaying a bar while computing
+% hObject    handle to progressbar_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function progressbar_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.progressbar = get(hObject,'Value');
+    guidata(hObject, handles);
+end
+
+
+%% The 'stop when steady' checkbox for simulations.
+% hObject    handle to sim_stopsteady_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function sim_stopsteady_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.sim_stopsteady = get(hObject,'Value');
+    guidata(hObject, handles);
+end
+
+
+%% The 'default control' -- for use with optimising control algorithms.
+% hObject    handle to controldefault_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controldefault_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.use_controldefault = get(hObject,'Value');
+    handles = vk_4dgui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% hObject    handle to controldefault (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function controldefault_Callback(hObject, eventdata, handles)
+    handles.vk_state.controldefault = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% hObject    handle to controldefault (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function controldefault_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The use of a custom cost function
+% For kernel determination and simulaton as well.
+%
+% hObject    handle to custom_cost_fn_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function custom_cost_fn_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.use_custom_cost_fn = get(hObject,'Value');
+    handles = vk_4dgui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% hObject    handle to custom_cost_fn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function custom_cost_fn_Callback(hObject, eventdata, handles)
+    handles.vk_state.custom_cost_fn = get(hObject,'String');
+    guidata(hObject, handles);
+end
+
+% hObject    handle to custom_cost_fn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+function custom_cost_fn_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+
+%% The autosave checkbox for saving kerels automatically on completion.
+% hObject    handle to autosave_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function autosave_checkbox_Callback(hObject, eventdata, handles)
+    handles.vk_state.autosave = get(hObject,'Value');
+    guidata(hObject, handles);
+end
+
+
+%% The tools menu -- various tools
+% hObject    handle to tools_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function tools_menu_Callback(hObject, eventdata, handles)
+end
+
+% hObject    handle to delete_waitbar_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function delete_waitbar_menu_Callback(hObject, eventdata, handles)
+    set(0,'ShowHiddenHandles','on');
+    delete(findobj('Tag', 'WaitBar'));    
+end
+
+% hObject    handle to close_windows_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function close_windows_menu_Callback(hObject, eventdata, handles)
+    set(0,'ShowHiddenHandles','on');
+    delete(get(0,'Children'));
+end
+
+%% The help menu
+% hObject    handle to help_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function help_menu_Callback(hObject, eventdata, handles)
+end
+
+% hObject    handle to vikaasa_manual_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function vikaasa_manual_menu_Callback(hObject, eventdata, handles)
+    open Docs/vikaasa_manual.pdf;
+end
+
+% hObject    handle to about_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+function about_menu_Callback(hObject, eventdata, handles)
+
+    %h = msgbox(['VIKAASA ', handles.version, ' [Copyright??]'], ...
+    %    'About VIKASSA', 'help', 'modal');
+    %uiwait(h);
+    
+    web Docs/html/about_vikaasa.html -helpbrowser;
+end

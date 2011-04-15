@@ -1,0 +1,8 @@
+function success = vk_4dgui_save(handles, filename)
+    try        
+        vk_state = handles.vk_state;
+        save(filename,'-struct','vk_state');
+    catch exception
+        errordlg('Could not save ', filename);
+    end
+end

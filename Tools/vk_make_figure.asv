@@ -1,0 +1,27 @@
+%% vk_make_figure - This function plots a viability kernel.
+%
+%  - V: the complete viability kernel.
+%  - handle: the handle to display the figure in.
+function vk_make_figure(V, constraint_set, labels, colour, method, box, handle)
+  
+  figure_name = 'Viability Kernel';
+  
+  figure(handle);
+  title(figure_name);
+  set(handle, 'Name', figure_name);
+  
+  if (size(V, 2) == 2)
+      vk_plot_area(V, constraint_set, labels, colour, method);
+  elseif (size(V, 2) == 3)
+      vk_plot_surface(V, constraint_set, labels, colour, method);
+      view(3);
+  end
+  
+  if (box)
+      limits = vk_plot_box(constraint_set);
+  else
+      limits = constraint_set;
+  end
+  
+  axis(limits
+end

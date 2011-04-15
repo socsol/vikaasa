@@ -1,0 +1,13 @@
+constraint_set = [0, 1, 0, 0.2];
+delta_fn = @test_delta;
+controlmax = 0.001;
+
+options = vk_options (constraint_set, delta_fn, controlmax);
+
+u1 = zeros(1, 100);
+u2 = zeros(1, 100);
+for i = linspace(0, 1, 100)
+    x = [i, 
+    u1(i) = ck_control_minsum(x, constraint_set, delta_fn, controlmax);
+    u2(i) = ck_control_minsum(x, constraint_set, delta_fn, controlmax);
+end

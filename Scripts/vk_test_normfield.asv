@@ -1,0 +1,10 @@
+function vk_test_controlfield(constraint_set, discretisation, controlalg)
+    h = figure;
+    
+    xax = linspace(constraint_set(1), constraint_set(2), discretisation);
+    yax = linspace(constraint_set(3), constraint_set(4), discretisation);
+    zax = linspace(constraint_set(5), constraint_set(6), discretisation);
+    
+    vol = meshgrid
+end
+

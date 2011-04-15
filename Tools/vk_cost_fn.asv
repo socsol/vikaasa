@@ -1,0 +1,8 @@
+function cost = vk_cost_fn(cost)
+%VK_COST_FN compose cost functions of x, dx and feed them into an inline
+%function.
+%   Detailed explanation goes here
+
+
+end
+

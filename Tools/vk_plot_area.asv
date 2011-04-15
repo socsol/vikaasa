@@ -1,0 +1,42 @@
+% vk_plot_area.m -- plots a 2D filled (yellow) area.
+%
+%
+function vk_plot_area(V, constraint_set, labels, colour)
+    xlabel(labels(1,:));
+    ylabel(labels(2,:));
+    axis(constraint_set);
+    grid;
+
+    hold on;
+    if (isempty(V))
+      return;
+    end
+
+    %try  
+        %H = convhull(V(:,1), V(:,2));
+        %plot(V(H,1), V(H,2));
+        %fill(V(H,1), V(H,2), colour);
+        
+        xax = sort(unique(V(:,1)));
+        yax = sort(unique(V(:,2)));
+        volume = zeros(length(yax), length(xax), 2);
+        
+        Vsorted = sortrows(V);
+        Vidx = 1;
+        for x = 1:length(xax)
+            for y = 1:length(yax)
+                if (all(Vsorted(Vidx, :) == [xax(x),yax(y)]))
+                    volume(length(yax) - y + 1, x, 1) = 1;
+                    volume(length(yax) - y + 1, x, 2) = 2;
+                    Vidx = Vidx + 1;
+                end
+            end
+        end
+        volume
+        
+        patch(isosurface(xax, yax, [0,1], volume, 1));
+        alpha(0.8);
+    %catch
+    %    warning('Couldn''t do a isosurface around points, so reverting to a scatterplot');
+    %    scatter(V(:,1), V(:,2));
+    %end
