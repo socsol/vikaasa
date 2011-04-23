@@ -1,5 +1,0 @@
-function wb = make_waitbar(handles, message)
-    wb = waitbar(0, message, 'Name', message, ...
-        'CreateCancelBtn', 'setappdata(gcbf, ''cancelling'', 1)');
-    setappdata(wb, 'cancelling', 0);
-end

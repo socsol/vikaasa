@@ -12,8 +12,14 @@ function vk_make_figure_slice(V, slices, constraint_set, labels, ...
     % Construct the figure name
     figure_name = 'Slice through ';
     for i = 1:size(slices, 1)
-        figure_name = [figure_name, ...
-            deblank(labels(slices(i, 1),:)), '=', num2str(slices(i, 2))];
+        if (isnan(slices(i,2)))
+            figure_name = [figure_name, ...
+                deblank(labels(slices(i, 1),:)), '=all'];
+        else
+            figure_name = [figure_name, ...
+                deblank(labels(slices(i, 1),:)), '=', num2str(slices(i, 2))];
+        end
+        
         if (i < size(slices, 1))
             figure_name = [figure_name, ', '];
         end

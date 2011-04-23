@@ -4,20 +4,23 @@
 %
 %   Create an options structure that contains all of the default
 %   settings:
-%   OPTIONS = VK_OPTIONS(K, delta_fn, controlmax)
+%   OPTIONS = VK_OPTIONS(K, f, c)
 %
 %   Create an options structure, overriding the settings for the
 %   configuration variables, 'name1' and 'name2':
-%   OPTIONS = VK_OPTIONS(K, delta_fn, controlmax, ...
+%   OPTIONS = VK_OPTIONS(K, f, c, ...
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
 %   Update an existing options structure, changing one or more variables:
-%   OPTIONS = VK_OPTIONS(K, delta_fn, controlmax, OPTIONS,
+%   OPTIONS = VK_OPTIONS(K, f, c, OPTIONS,
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
 %   Available options (default values in brackets):
+%
+%       - bound_fn (vk_bound): The function to use for bounding when
+%         the 'controlbounded' option is set to '1'.  See below.
 %
 %       - cancel_test (0): Whether to test to see if the user has
 %         interrupted computation. (e.g., by pressing 'Cancel' in the
@@ -39,13 +42,20 @@
 %         option {'UniformOutput', 0}.  For instance:
 %         cell_fn = @(varargin) cellfun(varargin, 'UniformOutput', 0);
 %
-%       - controlsymbol ('u'): A string representing the symbol used to
-%         denote the control in the differential equations.
+%       - controlbounded (0): When set to 1, VIKAASA will attempt to
+%         prevent the system from crashing by limiting the control choice
+%         when close to the boundary.  See the manual for more details.
 %
 %       - controldefault (0): The default control (should be a number in
-%         [-controlmax, controlmax]) -- used in some control algorithms
+%         [-c, c]) -- used in some control algorithms
 %         when  'use_controldefault' is enabled (See CONTROLALGS/COSTMIN
 %         for an example.)
+%
+%       - controlenforce (0): When set to 1, VIKAASA will check to ensure
+%         that the control choice is within [-c, c].
+%
+%       - controlsymbol ('u'): A string representing the symbol used to
+%         denote the control in the differential equations.
 %
 %       - controltolerance (1e-3): Used by optimising control algorithms to
 %         decide when enough samples of the cost-function have been made.
@@ -77,6 +87,9 @@
 %         tested for viability.  Lower discretisation is faster, but less
 %         useful.
 %
+%       - enforce_fn (vk_enforce): The function to use when controlenforce
+%         is set to 1.  See above.
+%
 %       - maxloops (46000): Maximum number of loops performed by
 %         TOOLS/VK_VIABLE before it gives up on a point.  This option is
 %         present to prevent infinite loops.
@@ -87,7 +100,7 @@
 %         option.)  The default is to use FMINBND which uses a golden ratio
 %         search.  This minimisation algorithm is therefore only suitable
 %         for cost functions that have a single global minimum in the range
-%         [-controlmax, controlmax].  By default this function is sensitive
+%         [-c, c].  By default this function is sensitive
 %         to the 'controltolerance' option. i.e.,
 %         min_fn = @(f, min, max) fminbnd(f, min, max, ...
 %             struct('TolX', options.controltolerance));
@@ -96,7 +109,7 @@
 %         function that does a linear search instead.  See
 %         TOOLS/VK_FMINBND. 
 %
-%       - next_fn (@(x,u) x + h*delta_fn(x,u)): This function is used by
+%       - next_fn (@(x,u) x + h*f(x,u)): This function is used by
 %         VK_VIABLE and VK_SIMULATE_EULER to work out the next point to
 %         consider.  By default a 1st-order Euler approximation is used.
 %
@@ -120,6 +133,10 @@
 %         function used by 'ode_solver' (see above), without altering that
 %         function's use of 'MaxStep', etc.  Unless you are doing something
 %         fancy, this is probably what you want to use.
+%
+%       - parallel_processors (2): Used in conjunction with use_parallel,
+%         this option specifies how many processors (or MATLAB workers to
+%         create.
 %
 %       - progress_fn (@(x) 1): A function that gets called periodically by
 %         TOOLS/VK_COMPUTE and TOOLS/VK_SIMULATE_* when 'report_progress'
@@ -166,6 +183,12 @@
 %       - use_custom_constraint_set_fn (0): See the
 %         'custom_constraint_set_fn' option for more information on this.
 %
+%       - use_parallel (0):  If set to 1, VIKAASA will try to use a
+%         parallel cellfun (either PARCELLFUN or VK_CELLFUN_PARFOR) so as
+%         to compute viability kernels in parallel.  In MATLAB you need to
+%         have the Parallel Computing Toolbox for this to work.  In GNU
+%         Octave PARCELLFUN is available from OctaveForge.
+%
 %       - viable_fn (TOOLS/VK_VIABLE): This is the function used by
 %         TOOLS/VK_COMPUTE to determine whether a point is viable or not.
 %         The default is to use TOOLS/VK_VIABLE; however, this could
@@ -180,8 +203,7 @@
 %   FMINBND, FZERO, NORM, ODE45, TOOLS/VK_COMPUTE, TOOLS/VK_CORNERSOLN,
 %   TOOLS/VK_EXITED, TOOLS/VK_FMINBND, TOOLS/VK_SIMULATE_EULER,
 %   TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE 
-function options = vk_options(K, delta_fn, controlmax, ...
-    varargin)
+function options = vk_options(K, f, c, varargin)
 
     % If exactly four arguments are passed in, then the fourth argument
     % should be a structure.  We return this structure immediately.  This
@@ -202,21 +224,25 @@ function options = vk_options(K, delta_fn, controlmax, ...
         % Where options are not specified, use the default values.
         defaults = struct(...
                 'cancel_test', 0, ...
-                'controlsymbol', 'u', ...                        
+                'controlsymbol', 'u', ...
+                'controlbounded', 0, ...
                 'controldefault', 0, ...
+                'controlenforce', 0, ...
                 'controltolerance', 1e-3, ...
                 'debug', false, ...
                 'discretisation', 10, ...
                 'maxloops', 46000, ...
                 'numvars', length(K)/2, ...
                 'ode_solver_name', 'ode45', ...
+                'parallel_processors', 2, ...
                 'report_progress', 0, ...
                 'steps', 1, ...
                 'stepsize', 1, ...
                 'sim_stopsteady', 0, ...
                 'small', 1e-3, ...
                 'use_controldefault', 0, ...
-                'use_custom_constraint_set_fn', 0 ...
+                'use_custom_constraint_set_fn', 0, ...
+                'use_parallel', 0 ...
             );
         
         % The options array is constructed from inputs.
@@ -225,9 +251,9 @@ function options = vk_options(K, delta_fn, controlmax, ...
     
     default_fields = fieldnames(defaults);
     for i = 1:size(default_fields, 1)
-        f = default_fields{i};
-        if (~isfield(options, f))
-            options.(f) = defaults.(f);
+        df = default_fields{i};
+        if (~isfield(options, df))
+            options.(df) = defaults.(df);
         end
     end
     
@@ -279,23 +305,47 @@ function options = vk_options(K, delta_fn, controlmax, ...
     end
     
     % This is the control algorithm to use.  This algorithm should accept
-    % arguments: (x, K, delta_fn, controlmax, varargin), and return a
+    % arguments: (x, K, f, c, varargin), and return a
     % control, u.
     if (~isfield(options, 'control_fn'))
-        options.control_fn = @(x, K, delta_fn, controlmax, varargin) 0;
-    end    
+        options.control_fn = @(x, K, f, c, varargin) 0;
+    end   
+    
+    % The function used to make sure that the control choice is within
+    % [-c,c].
+    if (~isfield(options, 'enforce_fn'))
+        options.enforce_fn = @vk_enforce;
+    end
 
     % The cell function is used by vk_compute.  It needs to take a variable
     % number of cell array inputs.
     if (~isfield(options, 'cell_fn'))
-        % If parcellfun is available, use it.
-        %if (exist('parcellfun', 'file') == 2)
-        %    options.cell_fn = @(varargin) ...
-        %        parcellfun(2, varargin{:}, 'UniformOutput', false);
-        %else
+        
+        % If we are computing the kernel in parallel, try to find a
+        % function.
+        if (options.use_parallel)            
+            % If parcellfun is available, use it.
+            if (exist('parcellfun', 'file') == 2)
+                options.cell_fn = @(varargin) ...
+                    parcellfun(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            elseif (exist('parfor', 'builtin') == 5)                
+                options.cell_fn = @(varargin) ...                        
+                    vk_cellfun_parfor(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            else
+                warning('Parallel selected, but no parallel capabilities could be detected.');
+            end
+        end
+           
+        % Either parallel is not specified, or parallel functionality not
+        % available.
+        if (~isfield(options, 'cell_fn'))
             options.cell_fn = @(varargin) ...
                 cellfun(varargin{:}, 'UniformOutput', false);
-        %end
+        end
     end
     
     % The viable_fn is the algorithm that we use to determine a point's
@@ -326,7 +376,7 @@ function options = vk_options(K, delta_fn, controlmax, ...
     % A function to progress to the next step.
     if (~isfield(options, 'next_fn'))
         h = options.stepsize;
-        options.next_fn = @(x,u) x + h*delta_fn(x, u);
+        options.next_fn = @(x,u) x + h*f(x, u);
     end
     
     % ODE solver function.  By default we use ode45 or lsode, with the step

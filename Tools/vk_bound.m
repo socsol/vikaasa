@@ -16,7 +16,7 @@
 %   the number of variables that crash.
 %
 %   Simple usage:
-%   u = VK_BOUND(x, u, K, delta_fn, controlmax)
+%   u = VK_BOUND(x, u, K, f, c)
 %
 %   See TOOLS/VK_COMPUTE for information on the the input parameters.
 %
@@ -25,8 +25,8 @@
 %   salvagable, the new u will differ from the original one.
 %
 %   Getting more informaton:
-%   [u, crashed] = VK_BOUND(x, u, K, delta_fn, controlmax)
-%   [u, crashed, exited_on] = VK_BOUND(x, u, K, delta_fn, controlmax)
+%   [u, crashed] = VK_BOUND(x, u, K, f, c)
+%   [u, crashed, exited_on] = VK_BOUND(x, u, K, f, c)
 %
 %   - 'crashed' is a boolean value that indicates whether a crash occurred
 %     despite any efforts to avoid one.
@@ -36,7 +36,7 @@
 %     on this.
 %
 %   Specifying options:
-%   [...] = VK_BOUND(x, u, K, delta_fn, controlmax, OPTIONS)
+%   [...] = VK_BOUND(x, u, K, f, c, OPTIONS)
 %
 %   Here OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or
 %   otherwise a list of ('name', value) pairs.
@@ -46,40 +46,39 @@
 %   it simply checks for constraint set violations.
 %
 % See also: TOOLS, TOOLS/VK_EXITED, TOOLS/VK_OPTIONS, TOOLS/VK_VIABLE
-function [u, crashed, exited_on] = vk_bound(x, u, K, delta_fn, ...
-    controlmax, varargin)
+function [u, crashed, exited_on] = vk_bound(x, u, K, f, c, varargin)
 
     %% Create options structure
-    options = vk_options(K, delta_fn, controlmax, varargin{:});
+    options = vk_options(K, f, c, varargin{:});
     
 
     %% Options that we care about       
     use_controldefault = options.use_controldefault;
-    controldefault = options.controldefault;    
-    next_fn = options.next_fn;
+    controldefault = options.controldefault;
+    controlbounded = options.controlbounded;
+    next_fn = options.next_fn;    
     
-     % We update these as we go.
-    allowed_min = -controlmax;
-    allowed_max = controlmax; 
+    % We update these as we go.    
+    allowed_min = -c;
+    allowed_max = c; 
     
         
-    %% Firstly, check to see if the point has exited on zero steps.
-    exited_on = vk_exited(x, K, delta_fn, controlmax, options);
-    crashed = ~isempty(exited_on);    
-    
-    if (crashed)
+    %% If we are not interested in bounding, then return for zero steps
+    if (~controlbounded)
+        exited_on = vk_exited(x, K, f, c, options);
+        crashed = ~isempty(exited_on);               
         return;
     end
     
     
     %% Next, check to see if the point has exited on one step.         
-    exited_on = vk_exited(next_fn(x, u), K, delta_fn, controlmax, options);
+    exited_on = vk_exited(next_fn(x, u), K, f, c, options);
     crashed = ~isempty(exited_on);
     if (crashed)
         fn = @(x, u) next_fn(x, u);
         [u, crashed, exited_on, allowed_min, allowed_max] = ...
             vk_newcontrol(x, u, crashed, exited_on, allowed_min, ...
-            allowed_max, fn, K, delta_fn, controlmax, options);
+            allowed_max, fn, K, f, c, options);
         
         %% If we have still crashed, then give up.
         if (crashed)
@@ -96,13 +95,13 @@ function [u, crashed, exited_on] = vk_bound(x, u, K, delta_fn, ...
 
     %% Next check to see if we exit on two steps.
     exited_on = vk_exited(next_fn(next_fn(x, u), controldefault), K, ...
-        delta_fn, controlmax, options);
+        f, c, options);
     crashed = ~isempty(exited_on);
     if (crashed)
         fn = @(x, u) next_fn(next_fn(x, u), controldefault);
         [u, crashed, exited_on] = vk_newcontrol(x, u, crashed, ...
-            exited_on, allowed_min, allowed_max, fn, K, delta_fn, ...
-            controlmax, options);      
+            exited_on, allowed_min, allowed_max, fn, K, f, ...
+            c, options);
     end
 end
 
@@ -117,7 +116,7 @@ end
 %% Helper function to try to determine new control
 function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     vk_newcontrol(x, u, crashed, exited_on, allowed_min, allowed_max, ...
-    next_fn, K, delta_fn, controlmax, options)
+    next_fn, K, f, c, options)
 
     zero_fn = options.zero_fn;
 
@@ -132,22 +131,22 @@ function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     %% Consider the each crashed element.
     for i = 1:length(exited_on)       
         % A negative value means the lower bound.
-        upper = sign(exited_on(1)) == 1;
-        dim = abs(exited_on(1));
+        upper = sign(exited_on(i)) == 1;
+        dim = abs(exited_on(i));
 
         % Create a function to make equal to zero using the
         % vk_distance_fn helper.
         if (upper)
-            need_equal = K(dim*2);                
+            need_equal = K(dim*2) - options.controltolerance;
         else
-            need_equal = K(dim*2 - 1);
+            need_equal = K(dim*2 - 1) + options.controltolerance;
         end
         f = @(u) vk_distance_fn(@(u) next_fn(x, u), u, need_equal, dim);
 
         % We need the signs of the upper and lower values to be
-        % different; otherwise, we shouldn't use fzero.
+        % different; otherwise, we shouldn't use fzero.        
         if (sign(f(allowed_min)) ~= sign(f(allowed_max)))
-            new_u = zero_fn(f, [allowed_min, allowed_max]);            
+            new_u = zero_fn(f, [allowed_min, allowed_max]);    
         else
             continue; % Try the next dimension.
         end
@@ -172,7 +171,7 @@ function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     %% If anything new was computed, recalculate.        
     if (new_u ~= u)
         u = new_u;
-        exited_on = vk_exited(next_fn(x, u), K, delta_fn, controlmax, ...
+        exited_on = vk_exited(next_fn(x, u), K, f, c, ...
             options);
         crashed = ~isempty(exited_on);
     end

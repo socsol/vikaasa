@@ -6,7 +6,7 @@
 %   Standard usage:
 %   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_EULER(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
-%       K,  delta_fn, controlmax)
+%       K,  f, c)
 %
 %   Return arguments are:
 %   - 'T': Row-vector of time values, starting with zero.
@@ -54,15 +54,15 @@
 %
 %   - 'K': A constraint set.  See TOOLS/VK_COMPUTE for the format of this.
 %
-%   - 'delta_fn': A set of difference equations. See TOOLS/VK_COMPUTE for
+%   - 'f': A set of difference equations. See TOOLS/VK_COMPUTE for
 %     the format of this.
 %
-%   - 'controlmax': The absolute maximum size of the control.
+%   - 'c': The absolute maximum size of the control.
 %
 %   Usage with additional options:
 %   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_EULER(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
-%       K,  delta_fn, controlmax, OPTIONS)
+%       K,  f, c, OPTIONS)
 %
 %   OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or otherwise
 %   a set of (name, 'value') pairs.
@@ -75,14 +75,13 @@
 %   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_ODE
 function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
     x, time_horizon, control_fn, V, distances, layers, ...
-    K,  delta_fn, controlmax, varargin)
+    K,  f, c, varargin)
 
     %% Create options structure
-    options = vk_options(K, delta_fn, controlmax, varargin{:});
+    options = vk_options(K, f, c, varargin{:});
     
     
-    %% Options that we care about
-    bound_fn = options.bound_fn;
+    %% Options that we care about   
     next_fn = options.next_fn;
     cancel_test = options.cancel_test;
     cancel_test_fn = options.cancel_test_fn;
@@ -93,9 +92,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
     
     
     %% Create the bounded control function
-    fn = @(x) bound_fn(x, ...
-        control_fn(x, K, delta_fn, controlmax, options), ...
-        K, delta_fn, controlmax, options);    
+    fn = vk_make_control_fn(control_fn, K, f, c, options);
     
     
     %% Set up information variables
@@ -132,11 +129,11 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
         %% Record viability, etc. at this point
         [viablepath(1, i), viablepath(2, i)] = vk_inkernel(x, V, ...
             distances, layers);
-        viablepath(3, i) = ~isempty(vk_exited(x, K, delta_fn, controlmax, options));
+        viablepath(3, i) = ~isempty(vk_exited(x, K, f, c, options));
         
         
         %% Record velocity and steadyness
-        norm_val = norm_fn(delta_fn(x, u));
+        norm_val = norm_fn(f(x, u));
         steady = norm_val <= options.small;
         viablepath(4, i) = steady;
         normpath(i) = norm_val;

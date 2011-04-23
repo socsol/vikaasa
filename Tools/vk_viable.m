@@ -7,19 +7,19 @@
 %   viable or non-viable.
 %
 %   Standard usage:
-%   isviable = VK_VIABLE(x, K, delta_fn, controlmax);
+%   isviable = VK_VIABLE(x, K, f, c);
 %
 %   With an OPTIONS structure created by TOOLS/VK_OPTIONS:
-%   isviable = VK_VIABLE(x, K, delta_fn, controlmax, OPTIONS);
+%   isviable = VK_VIABLE(x, K, f, c, OPTIONS);
 %
 %   Returning additional information:
-%   [isviable, paths] = VK_VIABLE(x, K, delta_fn, controlmax, OPTIONS);
+%   [isviable, paths] = VK_VIABLE(x, K, f, c, OPTIONS);
 %
 % See also: CONTROLALGS, TOOLS, TOOLS/VK_COMPUTE, TOOLS/VK_OPTIONS
-function varargout = vk_viable(x, K, delta_fn, controlmax, varargin)
+function varargout = vk_viable(x, K, f, c, varargin)
 
     %% Construct options
-    options = vk_options(K, delta_fn, controlmax, varargin{:});
+    options = vk_options(K, f, c, varargin{:});
 
     
     %% Options of interest
@@ -37,9 +37,7 @@ function varargout = vk_viable(x, K, delta_fn, controlmax, varargin)
     % This control function will be bounded by the bound_fn, so that it
     % does not unnecessarily choose any control that causes an immediate
     % crash.  The bound_fn also returns non-viability of the point.
-    control_fn = @(x) options.bound_fn(x, ...
-        options.control_fn(x, K, delta_fn, controlmax, options), ...
-        K, delta_fn, controlmax, options);
+    control_fn = vk_make_control_fn(options.control_fn, K, f, c, options);
    
     
     %% Can additionall return the path taken in determining viability
@@ -61,7 +59,7 @@ function varargout = vk_viable(x, K, delta_fn, controlmax, varargin)
     % If we do, and the point turns out to be non-viable, we set maxloops
     % to 0 to skip the main loop.
     if (options.use_custom_constraint_set_fn)
-        exited_on = vk_exited(x, K, delta_fn, controlmax, options);
+        exited_on = vk_exited(x, K, f, c, options);
         if (~isempty(exited_on))            
             viable = false;
             maxloops = 0;
@@ -98,7 +96,7 @@ function varargout = vk_viable(x, K, delta_fn, controlmax, varargin)
             fprintf('Maxloops exceeded\n');
             viable = false;
             break;
-        elseif (norm_fn(delta_fn(x, u)) <= small)
+        elseif (norm_fn(f(x, u)) <= small)
             viable = true;
             break;
         end
