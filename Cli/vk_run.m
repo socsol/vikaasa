@@ -33,47 +33,40 @@ function varargout = vk_run(varargin)
     end
 
     if (ischar(varargin{1}))
-        vk_state = load(varargin{1});
+        project = vk_load_project(varargin{1});
     else
-        vk_state = varargin{1};
+        project = varargin{1};
     end
 
-    %% Read settings from vk_state.
-    constraint_set = vk_state.constraint_set;
-    controlmax = vk_state.controlmax;
-    delta_fn = vk_4dgui_make_delta_fn(0, struct('vk_state', vk_state));
+    %% Read settings from project.
+    K = project.K;
+    c = project.c;
+    f = vk_make_diff_fn(project);
     
     %% Create options.
-    options = vk_4dgui_make_options(0, struct('vk_state', vk_state), delta_fn);
-    computations = vk_state.discretisation ...
-        ^ (length(vk_state.constraint_set) / 2);
-    options = vk_options(constraint_set, delta_fn, controlmax, options, ...
+    options = vk_make_options(project, f);
+    computations = project.discretisation ...
+        ^ (length(project.K) / 2);
+    options = vk_options(K, f, c, options, ...
         'report_progress', 1, ...
         'progress_fn', @(x) fprintf('%6.2f%% done\r', (x/computations)*100));
 
-    %% Use parcellfun if available.
-    if (exist('parcellfun'))
-        cell_fn = @(varargin) parcellfun(2, varargin{:}, 'UniformOutput', false);
-        options = vk_options(constraint_set, delta_fn, controlmax, options, ...
-            'cell_fn', cell_fn);
-    end
-
     %% Display debugging information
-    if (vk_state.debug)
+    if (project.debug)
         % Output the settings to the screen for debugging.
-        constraint_set
-        delta_fn
-        controlmax
+        K
+        f
+        c
         options        
     end
 
     % Run the computation.
-    c = fix(clock);
+    cl = fix(clock);
     tic;    
     fprintf('RUNNING ALGORITHM\n');
     success = 0; err = 0;
-    try
-        V = vk_compute(constraint_set, delta_fn, controlmax, options);
+    %try
+        V = vk_compute(K, f, c, options);
         
         if (options.cancel_test_fn())            
             fprintf('CANCELLED\n');
@@ -81,38 +74,39 @@ function varargout = vk_run(varargin)
             fprintf('FINISHED\n');
             success = 1;
         end        
-    catch
-        exception = lasterror();
-        fprintf('ERROR: %s\n', exception.message);
-        err = 1;
-    end
+    %catch
+    %    exception = lasterror();
+    %    error(exception);
+    %    fprintf('ERROR: %s\n', exception.message);
+    %    err = 1;
+    %end
     
     comp_time = toc;
     
     % Save the results into our state structure if successful.
     if (success)
-        vk_state.V = V;
-        vk_state.comp_time = comp_time;
-        vk_state.comp_datetime = ...
-            sprintf('%i-%i-%i %i:%i:%i', c(1), c(2), c(3), c(4), c(5), c(6));
+        project.V = V;
+        project.comp_time = comp_time;
+        project.comp_datetime = ...
+            sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
 
         if (nargin > 1)
             % If a separate file was specified, save to that.
-            save(varargin{2}, '-struct', 'vk_state');
+            save(varargin{2}, '-struct', 'project');
         elseif (nargout == 0 && isschar(varargin{1}))
             % Otherwise, if no other option was given, save back to the
             % original file. 
-            save(varargin{1}, '-struct', 'vk_state');
+            save(varargin{1}, '-struct', 'project');
         end
 
         % If a return is expected, give back the structure.
         if (nargout > 0)
-            varargout{1} = vk_state;
+            varargout{1} = project;
         end
     end
    
     % If we are debugging, rethrow the error
-    if (vk_state.debug && err)
+    if (project.debug && err)
         rethrow(exception);
     end
 end

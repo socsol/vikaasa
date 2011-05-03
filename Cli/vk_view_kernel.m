@@ -16,28 +16,26 @@
 % See also: VIKAASA, SCRIPTS, TOOLS
 function vk_view_kernel(input)
     if (ischar(input))
-      vk_state = load(input);
+      project = vk_load_project(input);
     else
-      vk_state = input;
+      project = input;
     end
     
-    V = vk_state.V;
-    constraint_set = vk_state.constraint_set;
-    labels = vk_state.labels;
-    colour = vk_state.plotcolour;
-    method = vk_state.plottingmethod;
-    box = vk_state.drawbox;
-    alpha_val = vk_state.alpha;
+    V = project.V;
+    K = project.K;
+    labels = project.labels;
+    colour = project.plotcolour;
+    method = project.plottingmethod;
+    box = project.drawbox;
+    alpha_val = project.alpha;
 
     h = figure;
 
-    if (vk_state.numslices > 0)
-        slices = vk_4dgui_make_slices(0, struct('vk_state', vk_state));
-
-        vk_make_figure_slice(V, slices, constraint_set, labels, colour, ...
+    if (size(project.slices,1) > 0)
+        vk_make_figure_slice(V, project.slices, K, labels, colour, ...
             method, box, alpha_val, h);
     else
-        vk_make_figure(V, constraint_set, labels, colour, method, ...
+        vk_make_figure(V, K, labels, colour, method, ...
             box, alpha_val, h);
     end
 end

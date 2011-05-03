@@ -67,6 +67,11 @@ function project = vk_load_project(File)
         %% Repair any problems with the file.
         project = vk_project_sanitise(project);
     else
-        errordlg(['Could not find file: ', File]);
+        if (exist('errordlg'))
+          errordlg(['Could not find file: ', File]);
+        else
+          error(['Could not find file: ', File]);
+        end
+
     end
 end

@@ -64,7 +64,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_load_project(hObject, handles, filename);
     
-    handles.version = '0.9';    
+    handles.version = '0.9.1';    
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
       
@@ -1295,7 +1295,7 @@ function addvar_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     data = get(handles.vartable, 'Data');
-    data = [data; {'New Variable', 'new', 0, 1, 0}];
+    data = [data; {'New Variable', 'new', 0, 1, '0'}];
     set(handles.vartable, 'Data', data);
     handles.project.vardata = data;
     handles = vk_gui_update_inputs(hObject, handles);
