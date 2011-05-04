@@ -29,7 +29,7 @@ end
 function SV = vk_slice_helper(V, slice_axis, plane, distance)
   if (isnan(plane))
       % If NaN, then we don't need to bother filtering.
-      NV = V;     
+      NV = V;
   else
       % Pre-initialise NV for speed.
       NV = zeros(size(V));
@@ -38,7 +38,7 @@ function SV = vk_slice_helper(V, slice_axis, plane, distance)
       % Iterate through all the rows of V.  Copy any that have an axis-th
       % value that is leq than distance-away from plane into NV.
       for row = 1:size(V,1)
-        if (abs(V(row, slice_axis) - plane) <= distance)
+        if (abs(V(row, slice_axis) - plane) < distance)
           counter = counter + 1;
           NV(counter, :) = V(row, :);
         end
@@ -53,4 +53,4 @@ function SV = vk_slice_helper(V, slice_axis, plane, distance)
   SV = [NV(:,1:slice_axis-1), NV(:,slice_axis+1:end)];
 end
 
-  
+

@@ -14,9 +14,10 @@ function slices = vk_make_slices(data, K, discretisation)
             slices = [slices; i, NaN, NaN];
         elseif (data{i,2})
             % If the second element is checked, then that dimension is
-            % sliced at a particular value.                        
+            % sliced at a particular value. 
+            % The third element is the 'distance', which tells the slicer how far to either side of the slice value 
             slices = [slices; i, data{i, 3}, ...
-                (K(i*2) - K(i*2 - 1)) / (discretisation + 1)];
+                (K(i*2) - K(i*2 - 1)) / (2*(discretisation - 1))];
         end
     end
 end

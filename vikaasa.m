@@ -18,7 +18,7 @@
 %   TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE,
 %   TOOLS/VK_VIABLE
 % 
-% Last Modified by GUIDE v2.5 21-Apr-2011 16:39:32
+% Last Modified by GUIDE v2.5 04-May-2011 11:51:16
 function varargout = vikaasa(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,7 +64,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_load_project(hObject, handles, filename);
     
-    handles.version = '0.9.1';    
+    handles.version = '0.9.2';    
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
       
@@ -99,13 +99,16 @@ function runalg_button_Callback(hObject, eventdata, handles)
    
     
     %% Create a waitbar, if required.
-    if (project.progressbar)
+    if (project.progressbar && ~project.use_parallel)
         wb_message = 'Determining viability kernel ...';
         wb = vk_gui_make_waitbar(wb_message);
         computations = project.discretisation ...
             ^ (length(project.K) / 2);    
         options = vk_make_options(project, f, wb, computations, wb_message);
     else
+        if (project.use_parallel)
+            warning('Waitbar cannot be displayed when computing in parallel.');
+        end
         options = vk_make_options(project, f);
     end
     
@@ -587,7 +590,8 @@ function sim_button_Callback(hObject, eventdata, handles)
             'layers', layers ...
         );
         
-        control_fn = @(varargin) vcontrol_fn(varargin{:}, info);
+        control_fn = @(x, K, f, c, varargin) ...
+          vcontrol_fn(info, x, K, f, c, varargin{:});
     else
         control_fn = eval(['@', handles.project.sim_controlalg]);
     end
@@ -877,7 +881,7 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
     if (length(controlpath) == length(T))
         subplot(rows, 1, rows);
         plot(T, controlpath, 'Color', colour, 'LineWidth', width);
-        title('Control');
+        title('control');
         axis([T(1), T(end), -c, c]);
     end
 
@@ -1378,4 +1382,28 @@ function parfor_processors_CreateFcn(hObject, eventdata, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
+end
+
+
+% --- Executes on button press in deletesim_button.
+function deletesim_button_Callback(hObject, eventdata, handles)
+% hObject    handle to deletesim_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+  b = questdlg('Are you sure you want to delete the simulation results?', ...
+    'Confirm');
+
+  if (b == 'Yes')
+    handles.project = vk_delete_sim_results(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+  end
+end
+
+% --- Executes on button press in deleteresults_button.
+function deleteresults_button_Callback(hObject, eventdata, handles)
+% hObject    handle to deleteresults_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 end

@@ -173,7 +173,7 @@ function stop_button_Callback(hObject, eventdata, handles)
 function handles = vk_simgui_drawstep(i, hObject, handles, handle, varargin)
     
     V = handles.sim_state.V;
-    constraint_set = handles.sim_state.constraint_set;    
+    K = handles.sim_state.K;    
     labels = handles.display_opts.labels;
     colour = handles.display_opts.colour;
     alpha_val = handles.display_opts.alpha;
@@ -191,15 +191,17 @@ function handles = vk_simgui_drawstep(i, hObject, handles, handle, varargin)
     slices = handles.display_opts.slices;
     if (~isempty(slices))
         for j = 1:size(slices, 1)
-            slices(j, 2) = path(slices(j, 1), i);
+            if (~isnan(slices(j,2)))
+                slices(j, 2) = path(slices(j, 1), i);
+            end
         end
 
         V = vk_slice(V, slices);        
     end      
         
-    if (length(constraint_set) / 2 - size(slices, 1) == 2)
+    if (length(K) / 2 - size(slices, 1) == 2)
         vk_plot_area(V, colour, method, alpha_val);
-    elseif (length(constraint_set) / 2 - size(slices, 1) == 3)
+    elseif (length(K) / 2 - size(slices, 1) == 3)
         vk_plot_surface(V, colour, method, alpha_val);
         camlight;
         lighting gouraud;
@@ -223,8 +225,8 @@ function handles = vk_simgui_drawstep(i, hObject, handles, handle, varargin)
                 path(1:slice_axis - 1, :);
                 path((slice_axis + 1):end, :)];
                         
-            constraint_set = horzcat(constraint_set(1:2*slice_axis-2), ...
-                constraint_set(2*slice_axis+1:size(constraint_set,2)));
+            K = horzcat(K(1:2*slice_axis-2), ...
+                K(2*slice_axis+1:size(K,2)));
         end
     end
 
@@ -232,7 +234,7 @@ function handles = vk_simgui_drawstep(i, hObject, handles, handle, varargin)
     vk_plot_path(T, path(:, 1:i), viablepath(:, 1:i), showpoints, ...
         line_colour, line_width);
             
-    limits = vk_plot_box(constraint_set);
+    limits = vk_plot_box(K);
     limits = vk_plot_path_limits(limits, path);    
 
     axis(limits);    
@@ -354,20 +356,20 @@ function handles = vk_simgui_setup(hObject, handles)
     path = handles.sim_state.path;
             
     slices = handles.display_opts.slices;
-    constraint_set = handles.sim_state.constraint_set;
+    K = handles.sim_state.K;
     labels = handles.display_opts.labels;
     if (~isempty(slices))
         slices = sortrows(slices, -1);
         for i = 1:size(slices, 1)
             path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-            constraint_set = [constraint_set(1:2*slices(i, 1)-2), ...
-                constraint_set(2*slices(i, 1)+1:end)];
+            K = [K(1:2*slices(i, 1)-2), ...
+                K(2*slices(i, 1)+1:end)];
             labels = [labels(1:slices(i, 1)-1, :); ...
                 labels(slices(i, 1)+1:end, :)];
         end
     end    
     
-    limits = vk_plot_box(constraint_set);
+    limits = vk_plot_box(K);
     limits = vk_plot_path_limits(limits, path);
     axis(limits);      
     grid on;
@@ -375,7 +377,7 @@ function handles = vk_simgui_setup(hObject, handles)
     xlabel(labels(1, :));
     ylabel(labels(2, :));
     
-    if (length(constraint_set) == 6)
+    if (length(K) == 6)
         zlabel(labels(3, :));
         view(3);
     end

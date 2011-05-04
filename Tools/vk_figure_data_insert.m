@@ -14,5 +14,8 @@ function vk_figure_data_insert(h, limits, slices)
         end
     end
     
-    set(h, 'UserData', cell2mat(data));
+    set(h, 'UserData', cell2mat(...
+      horzcat(...
+        [data(1,1), data(1,2), data(1,3)], ...
+        [data(2,1), data(2,2), data(2,3)])));
 end

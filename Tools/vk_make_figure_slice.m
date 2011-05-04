@@ -1,4 +1,4 @@
-function vk_make_figure_slice(V, slices, constraint_set, labels, ...
+function vk_make_figure_slice(V, slices, K, labels, ...
     colour, method, box, alpha_val, handle)
 % vk_make_figure_slice - This function slices a viability kernel any number
 % of times, and then plots the result.
@@ -30,15 +30,16 @@ function vk_make_figure_slice(V, slices, constraint_set, labels, ...
     
 
     % Sort by dimension from largest to smallest.
-    slices = sortrows(slices, -1);
+    if (size(slices, 1) > 1)
+        slices = sortrows(slices, -1);
+    end
 
     % Remove the info about the axis that has been sliced.
     for i = 1:size(slices, 1);
         slice_axis = slices(i, 1);
         labels = vertcat(labels(1:slice_axis-1,:), ...
             labels(slice_axis+1:size(labels, 1),:));
-        constraint_set = horzcat(constraint_set(1:2*slice_axis-2), ...
-            constraint_set(2*slice_axis+1:size(constraint_set,2)));
+        K = [K(1:2*slice_axis-2), K(2*slice_axis+1:end)];
     end
 
     xlabel(labels(1,:));
@@ -49,14 +50,12 @@ function vk_make_figure_slice(V, slices, constraint_set, labels, ...
         vk_plot_surface(SV, colour, method, alpha_val);
         zlabel(labels(3,:));
         view(3);
-        camlight;
-        lighting gouraud;
     end
 
     if (box)
-        limits = vk_plot_box(constraint_set);
+        limits = vk_plot_box(K);
     else
-        limits = constraint_set;
+        limits = K;
     end
     
     vk_figure_data_insert(handle, limits, slices);
