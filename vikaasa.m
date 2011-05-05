@@ -17,7 +17,7 @@
 % See also: GUI, GUIDE, GUIDATA, GUIHANDLES, TOOLS/VK_COMPUTE,
 %   TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE,
 %   TOOLS/VK_VIABLE
-% 
+%
 % Last Modified by GUIDE v2.5 04-May-2011 11:51:16
 function varargout = vikaasa(varargin)
 % Begin initialization code - DO NOT EDIT
@@ -49,7 +49,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     % Choose default command line output for vikaasa
     handles.output = hObject;
     handles.interface = mfilename;
-    
+
     % These are where the code components live.
     handles.path = pwd;
     cellfun(@(dir) addpath(fullfile(handles.path, dir)), ...
@@ -59,15 +59,15 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     if (nargin > 3)
       filename = varargin{1};
     else
-      filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');  
+      filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     end
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_load_project(hObject, handles, filename);
-    
-    handles.version = '0.9.2';    
+
+    handles.version = '0.9.3';
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
-      
+
     % Update handles structure
     guidata(hObject, handles);
 end
@@ -91,19 +91,19 @@ function runalg_button_Callback(hObject, eventdata, handles)
     %% Get the project.
     project = handles.project;
 
-    
+
     %% Read settings from project.
     K = project.K;
     c = project.c;
     f = vk_make_diff_fn(project);
-   
-    
+
+
     %% Create a waitbar, if required.
     if (project.progressbar && ~project.use_parallel)
         wb_message = 'Determining viability kernel ...';
         wb = vk_gui_make_waitbar(wb_message);
         computations = project.discretisation ...
-            ^ (length(project.K) / 2);    
+            ^ (length(project.K) / 2);
         options = vk_make_options(project, f, wb, computations, wb_message);
     else
         if (project.use_parallel)
@@ -111,18 +111,18 @@ function runalg_button_Callback(hObject, eventdata, handles)
         end
         options = vk_make_options(project, f);
     end
-    
-    
+
+
     %% Display debugging information
     if (handles.project.debug)
         % Output the settings to the screen for debugging.
         K
         f
         c
-        options        
+        options
     end
 
-    
+
     % Get the current window name.
     name = get(handles.figure1, 'Name');
 
@@ -135,35 +135,35 @@ function runalg_button_Callback(hObject, eventdata, handles)
 
     % Run the computation.
     cl = fix(clock);
-    tic;    
+    tic;
     fprintf('RUNNING ALGORITHM\n');
     success = 0; error = 0;
     try
         V = vk_compute(K, f, c, options);
-        
-        if (options.cancel_test_fn())            
+
+        if (options.cancel_test_fn())
             message_title = 'Kernel Computation Cancelled';
             message1 = 'Cancelled at ';
             message2 = '';
             fprintf('CANCELLED\n');
-        else            
+        else
             message_title = 'Kernel Computation Completed';
             message1 = 'Finished at ';
             message2 = '';
             fprintf('FINISHED\n');
             success = 1;
-        end        
-    catch exception        
+        end
+    catch exception
         message_title = 'Kernel Computation Error';
         message1 = 'Error at ';
         message2 = ['Error message: ', exception.message];
-        
+
         fprintf('ERROR: %s\n', exception.message);
         error = 1;
     end
-    
+
     comp_time = toc;
-    
+
     % Delete the progress bar, if there was one.
     if (handles.project.progressbar)
         delete(wb);
@@ -174,9 +174,9 @@ function runalg_button_Callback(hObject, eventdata, handles)
         handles.project.V = V;
         handles.project.comp_time = comp_time;
         handles.project.comp_datetime = ...
-            sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));              
+            sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
 
-        % If autosave is on, then save the result now.        
+        % If autosave is on, then save the result now.
         if (handles.project.autosave)
             filename = fullfile(handles.path, 'Projects', 'autosave.mat');
             if (vk_save_project(project, filename))
@@ -187,14 +187,14 @@ function runalg_button_Callback(hObject, eventdata, handles)
         else
             message2 = '';
         end
-        
+
         guidata(hObject, handles);
         set(handles.resultstable, 'Data', vk_kernel_results(handles.project));
     end
-    
+
     % Remove 'RUNNING ALGORITHM' from the title.
     set(handles.figure1, 'Name', name);
-  
+
     % Display a message.
     c2 = fix(clock);
     msgbox([message1, ...
@@ -202,7 +202,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
             c2(1), c2(2), c2(3), c2(4), c2(5), c2(6)), ...
         '.  ', message2], ...
         message_title, 'none', 'modal');
-    
+
     % If we are debugging, rethrow the error
     if (handles.project.debug && error)
         rethrow(exception);
@@ -240,29 +240,29 @@ function plot_button_Callback(hObject, eventdata, handles)
     method = handles.project.plottingmethod;
     box = handles.project.drawbox;
     alpha_val = handles.project.alpha;
-    
+
     if (handles.project.holdfig && isfield(handles, 'current_figure'))
         h = handles.current_figure;
     else
         h = figure(...
-            'CloseRequestFcn', ...            
+            'CloseRequestFcn', ...
             @(h, event) eval('try vk_gui_figure_close(h, event), catch, delete(h), end'), ...
-            'WindowButtonMotionFcn', ...            
+            'WindowButtonMotionFcn', ...
             @(h, event) eval('try vk_gui_figure_focus(h, event), catch, end'));
     end
-    
+
     if (size(handles.project.slices, 1) > 0)
         slices = handles.project.slices;
         vk_make_figure_slice(V, slices, K, labels, colour, ...
-            method, box, alpha_val, h);       
+            method, box, alpha_val, h);
     else % Just plot the whole thing.
         vk_make_figure(V, K, labels, colour, method, ...
             box, alpha_val, h);
     end
-    
+
     handles.current_figure = h;
     guidata(hObject, handles);
-end        
+end
 
 
 %% State-space discretisation
@@ -273,7 +273,7 @@ function discretisation_Callback(hObject, eventdata, handles)
     handles.project.discretisation = str2double(get(hObject, 'String'));
     guidata(hObject, handles);
 end
-   
+
 % hObject    handle to discretisation (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -304,19 +304,19 @@ function load_menu_Callback(hObject, eventdata, handles)
         return
     % Otherwise construct the fullfilename and Check and load the file.
     else
-        File = fullfile(pathname,filename);        
-        handles = vk_gui_load_project(hObject, handles, File);       
+        File = fullfile(pathname,filename);
+        handles = vk_gui_load_project(hObject, handles, File);
         guidata(hObject, handles);
     end
 end
-    
+
 % hObject    handle to save_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function save_menu_Callback(hObject, eventdata, handles)
     vk_save_project(handles.project, handles.filename);
 end
-    
+
 % hObject    handle to saveas_menu (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -332,13 +332,13 @@ function saveas_menu_Callback(hObject, eventdata, handles)
         if (~strcmp(filename(end-3:end), '.mat'))
             filename = [filename, '.mat'];
         end
-        
+
         % Construct the full path and save
-        File = fullfile(pathname,filename);        
+        File = fullfile(pathname,filename);
         success = vk_save_project(handles.project, File);
-        
+
         % If successful, allow the 'save' menu option to work.
-        if (success)            
+        if (success)
             set(handles.save_menu, 'Enable', 'on');
             set(handles.filename_label, 'String', filename);
             handles.filename = File;
@@ -353,14 +353,14 @@ end
 function new_menu_Callback(hObject, eventdata, handles)
     vardata = { ...
         'Variable 1', 'x', 0, 0, '0'; ...
-        'Variable 2', 'y', 0, 0, '0'};            
+        'Variable 2', 'y', 0, 0, '0'};
 
     cellarray = vk_project_from_vardata(vardata);
     handles.project = vk_project_sanitise(struct(cellarray{:}));
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end
-    
+
 
 %% The 'Variables' table has been edited.
 % hObject    handle to vartable (see GCBO)
@@ -375,16 +375,16 @@ function vartable_CellEditCallback(hObject, eventdata, handles)
     vardata = get(hObject, 'Data');
     ret = vk_project_from_vardata(vardata);
     changes = struct(ret{:});
-                
+
     handles.project.vardata = vardata;
     handles.project.labels = changes.labels;
     handles.project.symbols = changes.symbols;
     handles.project.K = changes.K;
     handles.project.diff_eqns = changes.diff_eqns;
-    
+
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
-end   
+end
 
 
 %% The symbol used to represent the control (usually 'u')
@@ -395,7 +395,7 @@ function controlsymbol_Callback(hObject, eventdata, handles)
     handles.project.controlsymbol = get(hObject, 'String');
     guidata(hObject, handles);
 end
-    
+
 % hObject    handle to controlsymbol (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -412,7 +412,7 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function drawbox_Callback(hObject, eventdata, handles)
 
-    handles.project.drawbox = get(hObject, 'Value');    
+    handles.project.drawbox = get(hObject, 'Value');
     guidata(hObject, handles);
 end
 
@@ -421,7 +421,7 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function controltolerance_Callback(hObject, eventdata, handles)
-    handles.project.controltolerance = str2double(get(hObject, 'String')); 
+    handles.project.controltolerance = str2double(get(hObject, 'String'));
     guidata(hObject, handles);
 end
 
@@ -460,7 +460,7 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function custom_constraint_set_fn_checkbox_Callback(hObject, eventdata, handles)
 
-    handles.project.use_custom_constraint_set_fn = get(hObject,'Value');       
+    handles.project.use_custom_constraint_set_fn = get(hObject,'Value');
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end
@@ -509,7 +509,7 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function holdfig_Callback(hObject, eventdata, handles)
-    handles.project.holdfig = get(hObject, 'Value'); 
+    handles.project.holdfig = get(hObject, 'Value');
     guidata(hObject, handles);
 end
 
@@ -552,72 +552,23 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function sim_button_Callback(hObject, eventdata, handles)
-    
-    %% Read info from project
-    start = handles.project.sim_start;
-    time_horizon = handles.project.sim_iterations;
-    controlalg = handles.project.sim_controlalg;
-    
-    discretisation = handles.project.discretisation;
-    K = handles.project.K;    
-    f = vk_make_diff_fn(handles.project);
-    c = handles.project.c;    
-    V = handles.project.V;
-    
-    
-    %% Calculate distances & get layer-count
-    % Used by VControlAlgs, and also for displaying information.
-    distances = zeros(1, length(K)/2);
-    for i = 1:length(K)/2
-        distances(i) = (K(2*i) - K(2*i - 1)) ...
-            / (discretisation-1);
-    end
-    layers = handles.project.layers;
-     
-    
-    %% Construct vcontrol_fn, if necessary.
-    % If the chosen algorithm is a "VConstrolAlg", then it requires
-    % knowledge of the viability kernel.  We strap this information in
-    % here.
-    if (~isempty(find(cellfun(...
-            @(x) strcmp(controlalg, x), ...
-            handles.vcontrol_algs), 1)))
-        
-        vcontrol_fn = eval(['@', handles.project.sim_controlalg]);        
-        info = struct( ...
-            'V', V, ...
-            'distances', distances, ...
-            'layers', layers ...
-        );
-        
-        control_fn = @(x, K, f, c, varargin) ...
-          vcontrol_fn(info, x, K, f, c, varargin{:});
-    else
-        control_fn = eval(['@', handles.project.sim_controlalg]);
-    end
-    
-    
-    %% Construct progress bar, if necessary
+
+    %% Get project file
+    project = handles.project;
+
+    %% Construct the differential function
+    f = vk_make_diff_fn(project);
+
+    %% Construct options, containing progress bar if necessary.
     if (handles.project.progressbar)
         wb_message = 'Running Simulation ...';
-        wb = vk_gui_make_waitbar(wb_message);        
-        options = vk_make_options(handles.project, f, wb, time_horizon, ...
+        wb = vk_gui_make_waitbar(wb_message);
+        options = vk_make_options(handles.project, f, wb, project.sim_iterations, ...
             wb_message);
     else
         options = vk_make_options(handles.project, f);
     end
-    
-    
-    %% Print debugging information
-    if (handles.project.debug)
-        % Output the settings to the screen for debugging.
-        K
-        f
-        c
-        options        
-    end
-    
-    
+
     %% Add 'RUNNING SIMULATION' to the titlebar
     % Get the current window name.
     name = get(handles.figure1, 'Name');
@@ -628,52 +579,27 @@ function sim_button_Callback(hObject, eventdata, handles)
         name = name(1:pos(1)-1);
     end
     set(handles.figure1, 'Name', [name, ' - RUNNING SIMULATION']);
-    
-    
-    %% Run the simulation
-    cl = fix(clock);
-    tic;
-    fprintf('RUNNING SIMULATION\n');
-    success = 0; error = 0;
-    try
-        sim_state = vk_make_simulation(start, time_horizon, control_fn, ...
-            V, distances, layers, K, f, c, options);    
-        if (options.cancel_test_fn())      
-            fprintf('CANCELLED\n');
-        else
-            fprintf('FINISHED\n');
-            success = 1;
-        end
-    catch exception
-        fprintf('ERROR: %s\n', exception.message);
-        error = 1;
-    end    
-    sim_state.comp_time = toc;
-    sim_state.comp_datetime = ...
-        sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
-    
-    
+
+    sim_state = vk_make_simulation(project, options);
+
     %% Delete any waitbars
     if (handles.project.progressbar)
         delete(wb);
     end
-    
-    
+
     %% Remove 'RUNNING SIMULATION' from titlebar.
     set(handles.figure1, 'Name', name);
-      
-    
+
     %% If the simulation completed successfully, add it into the project.
-    if (success)
-        handles.project.sim_state = sim_state;        
+    if (sim_state.success)
+        handles.project.sim_state = sim_state;
+        handles = vk_gui_update_inputs(hObject, handles);
         guidata(hObject, handles);
-        set(handles.sim_resultstable, 'Data', vk_sim_results(handles.project));
     end
-    
-    
+
     %% If debugging is turned on, rethrow any error.
-    if (handles.project.debug && error)
-        rethrow(exception);
+    if (handles.project.debug && isstruct(sim_state.error))
+        rethrow(sim_state.error);
     end
 end
 
@@ -686,6 +612,7 @@ function sim_iterations_Callback(hObject, eventdata, handles)
     handles.project.sim_iterations = str2double(get(hObject,'String'));
     guidata(hObject, handles);
 end
+
 
 % hObject    handle to sim_iterations (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -724,7 +651,7 @@ function debug_checkbox_Callback(hObject, eventdata, handles)
     handles.project.debug = get(hObject,'Value');
     guidata(hObject, handles);
 end
-    
+
 
 %% The control algorithm used by the kernel determination routine
 % hObject    handle to controlalg (see GCBO)
@@ -735,7 +662,7 @@ function controlalg_Callback(hObject, eventdata, handles)
     handles.project.controlalg = contents{get(hObject,'Value')};
     guidata(hObject, handles);
 end
-    
+
 % hObject    handle to controlalg (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
@@ -755,7 +682,7 @@ function plottingmethod_Callback(hObject, eventdata, handles)
     handles.project.plottingmethod = contents{get(hObject,'Value')};
     guidata(hObject, handles);
 end
-    
+
 function plottingmethod_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to plottingmethod (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -829,32 +756,32 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
     normpath = sim_state.normpath;
     controlpath = sim_state.controlpath;
     viablepath = sim_state.viablepath;
-    
+
     labels = handles.project.labels;
     K = handles.project.K;
     c = handles.project.c;
     colour = handles.project.sim_line_colour;
     width = handles.project.sim_line_width;
-    
+
     % Make a figure (or use an existing one)
     if (handles.project.holdfig && isfield(handles, 'current_timeprofile'))
-        h = handles.current_timeprofile;        
+        h = handles.current_timeprofile;
     else
         h = figure(...
-            'CloseRequestFcn', ...            
+            'CloseRequestFcn', ...
             @(h, event) eval('try vk_gui_figure_close(h, event, ''tp''), catch, delete(h), end'), ...
-            'WindowButtonMotionFcn', ...            
+            'WindowButtonMotionFcn', ...
             @(h, event) eval('try vk_gui_figure_focus(h, event, ''tp''), catch, end'), ...
             'Name', 'Time Profiles' ...
-            );        
+            );
     end
     figure(h);
-    
+
     rows = size(path, 1) + 2;
-    
+
     for i = 1:size(path, 1)
         subplot(rows, 1, i);
-        hold on;        
+        hold on;
         plot(T, K(2*i - 1) * ones(1, length(T)), ...
             'Color', 'r', 'LineWidth', 1);
         plot(T, K(2*i) * ones(1, length(T)), ...
@@ -867,22 +794,27 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
 %             min([path(i, :), K(2*i - 1)]), ...
 %             max([path(i, :), K(2*i)])]);
     end
-    
+
     subplot(rows, 1, rows-1);
     hold on;
     plot(T, normpath, 'Color', colour, 'LineWidth', width);
     plot(T, sim_state.small * ones(1, length(T)), ...
         'Color', 'r', 'LineWidth', 1);
     ind = find(viablepath(4, :));
-    plot(T(ind), normpath(ind), '.g'); 
-    title('Velocity');
+    plot(T(ind), normpath(ind), '.g');
+    title('velocity');
     axis tight;
-    
+
     if (length(controlpath) == length(T))
         subplot(rows, 1, rows);
+        hold on;
+        plot(T, c * ones(1, length(T)), ...
+            'Color', 'r', 'LineWidth', 1);
+        plot(T, -c * ones(1, length(T)), ...
+            'Color', 'r', 'LineWidth', 1);
         plot(T, controlpath, 'Color', colour, 'LineWidth', width);
         title('control');
-        axis([T(1), T(end), -c, c]);
+        axis tight;
     end
 
     handles.current_timeprofile = h;
@@ -909,7 +841,7 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
         errordlg('Could not create simulation plot, because there is no data present.');
         return;
     end
-    
+
     if (~isfield(handles, 'current_figure'))
         errordlg('Could not create simulation plot, because no figure exists.');
         return;
@@ -920,24 +852,24 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
 
     sim_state = handles.project.sim_state;
     [limits, slices] = vk_figure_data_retrieve(h);
-    
+
     T = sim_state.T;
     path = sim_state.path;
     if (~isempty(slices))
         slices = sortrows(slices, -1);
         for i = 1:size(slices, 1)
-            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];            
+            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
         end
-    end        
-    
+    end
+
     limits = vk_plot_path_limits(limits, path);
-    
+
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
-    
+
     vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
-    
+
     vk_figure_data_insert(h, limits, slices);
     axis(limits);
 end
@@ -959,7 +891,7 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
         'showpoints', handles.project.sim_showpoints, ...
         'slices', handles.project.slices, ...
         'parent', handles.figure1 ...
-    );    
+    );
 
     if (isfield(handles.project, 'sim_state'))
         vk_simgui(handles.project.sim_state, display_opts);
@@ -994,7 +926,7 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function layers_Callback(hObject, eventdata, handles)
     handles.project.layers = str2double(get(hObject,'String'));
-    guidata(hObject, handles);    
+    guidata(hObject, handles);
 end
 
 % hObject    handle to layers (see GCBO)
@@ -1036,18 +968,18 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
         return;
     end
 
-    h = figure;    
-    
+    h = figure;
+
     title(['Simulation starting from ', ...
         num2str(transpose(handles.project.sim_state.path(:,1))), ...
         ' for ', num2str(handles.project.sim_state.T(end)), ...
         ' time intervals']);
 
-    sim_state = handles.project.sim_state;    
-    
+    sim_state = handles.project.sim_state;
+
     T = sim_state.T;
     path = sim_state.path;
-    
+
     slices = handles.project.slices;
     K = handles.project.K;
     labels = handles.project.labels;
@@ -1060,7 +992,7 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
             labels = [labels(1:slices(i, 1)-1, :); ...
                 labels(slices(i, 1)+1:end, :)];
         end
-    end        
+    end
 
     if (handles.project.drawbox)
         limits = vk_plot_box(K);
@@ -1068,17 +1000,17 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
         limits = K;
     end
     limits = vk_plot_path_limits(limits, path);
-    
+
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
-    
+
     vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
-    
+
     vk_figure_data_insert(h, limits, slices);
     axis(limits);
     grid on;
-        
+
     xlabel(labels(1, :));
     ylabel(labels(2, :));
     if (length(limits) == 6)
@@ -1188,7 +1120,7 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function delete_waitbar_menu_Callback(hObject, eventdata, handles)
     set(0,'ShowHiddenHandles','on');
-    delete(findobj('Tag', 'WaitBar'));    
+    delete(findobj('Tag', 'WaitBar'));
 end
 
 % hObject    handle to close_windows_menu (see GCBO)
@@ -1221,7 +1153,7 @@ function about_menu_Callback(hObject, eventdata, handles)
     %h = msgbox(['VIKAASA ', handles.version, ' [Copyright??]'], ...
     %    'About VIKASSA', 'help', 'modal');
     %uiwait(h);
-    
+
     open Docs/html/about_vikaasa.html;
 end
 
@@ -1251,12 +1183,12 @@ function sim_view_coords_button_Callback(hObject, eventdata, handles)
     simulation = [simulation; ...
         cellstr(handles.project.labels), num2cell(handles.project.sim_state.path);
         cellstr('Velocity'), num2cell(handles.project.sim_state.normpath)];
-        
-    if (size(handles.project.sim_state.controlpath, 2) == size(simulation, 2) - 1)        
+
+    if (size(handles.project.sim_state.controlpath, 2) == size(simulation, 2) - 1)
         simulation = [simulation; ...
             cellstr('Control'), num2cell(handles.project.sim_state.controlpath)];
     end
-    
+
     assignin('base', 'simulation', simulation);
     openvar simulation;
 end
@@ -1331,7 +1263,7 @@ function slices_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
-    data = get(hObject, 'Data');   
+    data = get(hObject, 'Data');
     indices = eventdata.Indices;
 
     % Check for 'all' columns that got ticked.
@@ -1342,12 +1274,11 @@ function slices_CellEditCallback(hObject, eventdata, handles)
             data{indices(i, 1), 1} = false;
         end
     end
-    
+
     set(hObject, 'Data', data);
-    
+
     handles.project.slices = vk_make_slices( ...
         data, handles.project.K, handles.project.discretisation);
-    handles.project.slices
     guidata(hObject, handles);
 end
 

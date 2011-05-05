@@ -18,10 +18,9 @@ function options = vk_make_options(project, f, varargin)
     c = project.c;
     symbols  = project.symbols;
 
-    project.custom_constraint_set_fn
     if (project.use_custom_constraint_set_fn)
         fnparams = mat2cell(symbols, ...
-            ones(1,size(symbols,1)),size(symbols,2))
+            ones(1,size(symbols,1)),size(symbols,2));
         constraint_set_fn = inline(...
             project.custom_constraint_set_fn, ...
             fnparams{:});
@@ -31,13 +30,13 @@ function options = vk_make_options(project, f, varargin)
     else
         custom_constraint_set_opts = {};
     end
-        
-    if (project.use_custom_cost_fn)        
+
+    if (project.use_custom_cost_fn)
         fnparams1 = mat2cell(symbols, ...
             ones(1,size(symbols,1)),size(symbols,2));
         fnparams2 = cellfun(@(x) [deblank(x), 'dot'], fnparams1, ...
             'UniformOutput', 0);
-        
+
         cost_fn = inline(project.custom_cost_fn, ...
             fnparams1{:}, fnparams2{:});
         cost_fn2 = @(x,xdot) vk_cost_fn(cost_fn, x, xdot);
@@ -45,15 +44,15 @@ function options = vk_make_options(project, f, varargin)
     else
         cost_fn_opts = {};
     end
-    
-    if (nargin > 3)        
-        wb = varargin{1};        
+
+    if (nargin > 3)
+        wb = varargin{1};
         computations = varargin{2};
         message = varargin{3};
         start_time = tic;
         progress_fn = @(x) waitbar(x/computations, ...
                 wb, [message, ' (', ...
-                timeformat((computations-x)*toc(start_time)/x), ...
+                vk_timeformat((computations-x)*toc(start_time)/x), ...
                 ' remaining)']);
         cancel_test_fn = @() getappdata(wb, 'cancelling') > 0;
         wb_opts = {...
@@ -64,7 +63,7 @@ function options = vk_make_options(project, f, varargin)
     else
         wb_opts = {};
     end
-       
+
     % sim_fn is determined by whether the drop-down is set to 'ode' or
     % 'euler'.
     if (strcmp(project.sim_method, 'euler'))
@@ -72,13 +71,13 @@ function options = vk_make_options(project, f, varargin)
     else
         sim_fn = @vk_simulate_ode;
     end
-    
+
     % 'small' must be constructed by creating a vector of size 'stopping
     % tolerance' in every direction.
     small = norm(project.stoppingtolerance*ones(numvars,1));
 
-    % This "options" structure sets additional properties.    
-    options = vk_options(K, f, c, ...            
+    % This "options" structure sets additional properties.
+    options = vk_options(K, f, c, ...
             'debug', project.debug, ...
             'steps', project.steps, ...
             'control_fn', eval(['@', project.controlalg]), ...
@@ -97,27 +96,4 @@ function options = vk_make_options(project, f, varargin)
             'use_parallel', project.use_parallel, ...
             custom_constraint_set_opts{:}, wb_opts{:}, cost_fn_opts{:} ...
         );
-end
-
-%% Helper function that formatting seconds into something human readable.
-function formatted = timeformat(seconds)
-
-    if (seconds > 22896000)
-        formatted = 'unknown time';
-        return;
-    elseif (seconds > 86400)
-        denom = 86400;
-        desc = ' days';        
-    elseif (seconds > 3600)
-        denom = 3600;        
-        desc = ' hours';
-    elseif (seconds > 60)
-        denom = 60;
-        desc = ' minutes';
-    else
-        denom = 1;
-        desc = ' seconds';
-    end
-    
-    formatted = sprintf('%.1f %s', seconds/denom, desc);
 end

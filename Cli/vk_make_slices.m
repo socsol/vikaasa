@@ -3,6 +3,8 @@
 function slices = vk_make_slices(data, K, discretisation)      
     
     slices = [];
+
+    distances = vk_make_distances(K, discretisation);
     
     %% Loop through rows of data
     % There will be one row in data for each variable.
@@ -16,8 +18,7 @@ function slices = vk_make_slices(data, K, discretisation)
             % If the second element is checked, then that dimension is
             % sliced at a particular value. 
             % The third element is the 'distance', which tells the slicer how far to either side of the slice value 
-            slices = [slices; i, data{i, 3}, ...
-                (K(i*2) - K(i*2 - 1)) / (2*(discretisation - 1))];
+            slices = [slices; i, data{i, 3}, distances(i)];
         end
     end
 end

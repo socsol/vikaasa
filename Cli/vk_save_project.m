@@ -7,7 +7,7 @@ function success = vk_save_project(project, filename)
         success = 1;
     catch
         exception = lasterror();
-        errordlg(['Could not save ', filename, ': ', exception.message]);
+        vk_error(['Could not save ', filename, ': ', exception.message]);
         success = 0;
     end
 end

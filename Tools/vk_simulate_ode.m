@@ -59,33 +59,27 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
     %% Create options structure
     options = vk_options(K, f, c, varargin{:});
     
-    
     %% Options we care about here
     ode_solver = options.ode_solver;
     norm_fn = options.norm_fn;
     small = options.small;
     
-        
     %% Create the function for use with the ODE solver.
-    fn = vk_make_control_fn(control_fn, K, f, c, options);
-    odefun = @(t, x0) f(x0, fn(x0));            
-            
+    control_fn = vk_make_control_fn(control_fn, K, f, c, options);
+    odefun = @(t, x0) vk_simulate_ode_helper(f, control_fn, x0(1:end-1,1));
     
     %% Run the ODE solver.
-    [T, Y] = ode_solver(odefun, [0, time_horizon], start);
-    path = transpose(Y);
-    
-    
-    %% We don't bother to record the control path.
-    % To do so would require re-evaluating all of the control choices
-    % again.
-    controlpath = 0; 
-    
+    [T, Y] = ode_solver(odefun, [0, time_horizon], [start;0]);
+
+    % The final column of Y gives the cumulative control choices.  To decode
+    % this then, we need to subract the differences. 
+    path = transpose(Y(:, 1:end-1));
     
     %% Construct information arrays from results.
     % Work out the size of the movements from the differences, relative to
     % the time differences.
     normpath = zeros(1, length(T));
+    controlpath = zeros(1, length(T));
     Y1 = Y(1:end-1, :);
     Y2 = Y(2:end, :);
     Ydiff = Y2 - Y1;
@@ -93,12 +87,19 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
     T1 = T(1:end-1);
     T2 = T(2:end);
     Tdiff = T2 - T1;
+
+    pathdiff = transpose(Ydiff(:, 1:end-1));
+    controldiff = transpose(Ydiff(:, end));
     
     for i = 1:length(T)-1       
-        normpath(i) = norm_fn(Ydiff(i, :) / Tdiff(i));
+        normpath(i) = norm_fn(pathdiff(:, i) / Tdiff(i));
+        controlpath(i) = controldiff(i) / Tdiff(i);
     end
+
     % We need to redo the last one.
-    normpath(end) = norm_fn(odefun(T(end), path(:, end)));
+    final_diff = odefun(T(end), transpose(Y(end, :)));
+    normpath(end) = norm_fn(final_diff(1:end-1));
+    controlpath(end) = final_diff(end);
     
     viablepath = zeros(4, length(T));    
     for i = 1:length(T)
@@ -111,4 +112,10 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
     
     % T should be returned as a row vector.
     T = transpose(T);
+end
+
+%% A function that returns the state space, augmented by the control choice.
+function ret = vk_simulate_ode_helper(f, control_fn, x)
+    u = control_fn(x);
+    ret = [f(x, u); u];
 end

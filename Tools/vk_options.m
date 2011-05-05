@@ -107,7 +107,7 @@
 %
 %         Also, note that VIKAASA comes with an alternative minimisation
 %         function that does a linear search instead.  See
-%         TOOLS/VK_FMINBND. 
+%         TOOLS/VK_FMINBND.
 %
 %       - next_fn (@(x,u) x + h*f(x,u)): This function is used by
 %         VK_VIABLE and VK_SIMULATE_EULER to work out the next point to
@@ -202,7 +202,7 @@
 % See also: VIKAASA, CELLFUN, CONTROLALGS/COSTMIN, CONTROLALGS/COSTSUMMIN,
 %   FMINBND, FZERO, NORM, ODE45, TOOLS/VK_COMPUTE, TOOLS/VK_CORNERSOLN,
 %   TOOLS/VK_EXITED, TOOLS/VK_FMINBND, TOOLS/VK_SIMULATE_EULER,
-%   TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE 
+%   TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE
 function options = vk_options(K, f, c, varargin)
 
     % If exactly four arguments are passed in, then the fourth argument
@@ -212,15 +212,15 @@ function options = vk_options(K, f, c, varargin)
     if(nargin == 4 && isstruct(varargin{1}))
         options = varargin{1};
         return;
-    end        
-    
+    end
+
     % If there are an even number of variables, and the first optional
     % argument is a structure, then we are in the process of updating
     % options.
     if (mod(nargin,2) == 0 && isstruct(varargin{1}))
         defaults = varargin{1};
         options = struct(varargin{2:end});
-    else    
+    else
         % Where options are not specified, use the default values.
         defaults = struct(...
                 'cancel_test', 0, ...
@@ -244,11 +244,11 @@ function options = vk_options(K, f, c, varargin)
                 'use_custom_constraint_set_fn', 0, ...
                 'use_parallel', 0 ...
             );
-        
+
         % The options array is constructed from inputs.
         options = struct(varargin{:});
     end
-    
+
     default_fields = fieldnames(defaults);
     for i = 1:size(default_fields, 1)
         df = default_fields{i};
@@ -256,10 +256,10 @@ function options = vk_options(K, f, c, varargin)
             options.(df) = defaults.(df);
         end
     end
-    
+
     % The functions are then specified (if not given as input), based on
     % these values:
-    
+
     % The norm function is used to measure the size of movements.  The
     % default is to use a norm where each axis is weighted relative to
     % the size of the constraint set.
@@ -267,14 +267,14 @@ function options = vk_options(K, f, c, varargin)
         %options.norm_fn = @(x) vk_wnorm(x, K);
         options.norm_fn = @norm;
     end
-    
+
     % The cost function needs to be able to take a column vector and return
     % a number.  This function is then minimised to obtain the optimal
     % trajectory.
     if (~isfield(options, 'cost_fn'))
         options.cost_fn = @(x,dx) norm(dx);
-    end        
-        
+    end
+
     % The min function needs to provide constrained minimisation.  The
     % first argument is a function to minimise; the second and third
     % arguments give the minimum and maximum values allowed as inputs to
@@ -285,16 +285,16 @@ function options = vk_options(K, f, c, varargin)
     if (~isfield(options, 'min_fn'))
         %options.min_fn = @(f, minimum, maximum) ...
         %    vk_fminbnd(f, minimum, maximum, controltolerance);
-    
+
         options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
     end
-    
+
     % The zero function is probably just a wrapper around fzero, but with
     % tolerance explicitly specified.
     if (~isfield(options, 'zero_fn'))
         options.zero_fn = @(f, limits) fzero(f, limits, min_fn_opts);
     end
-    
+
     % The bound function takes a control and tests to see if it is
     % trivially violating any constraint.  If it is, then the control is
     % adjusted appropriately.  This function also works out (in doing so)
@@ -303,14 +303,14 @@ function options = vk_options(K, f, c, varargin)
     if (~isfield(options, 'bound_fn'))
         options.bound_fn = @vk_bound;
     end
-    
+
     % This is the control algorithm to use.  This algorithm should accept
     % arguments: (x, K, f, c, varargin), and return a
     % control, u.
     if (~isfield(options, 'control_fn'))
         options.control_fn = @(x, K, f, c, varargin) 0;
-    end   
-    
+    end
+
     % The function used to make sure that the control choice is within
     % [-c,c].
     if (~isfield(options, 'enforce_fn'))
@@ -320,18 +320,18 @@ function options = vk_options(K, f, c, varargin)
     % The cell function is used by vk_compute.  It needs to take a variable
     % number of cell array inputs.
     if (~isfield(options, 'cell_fn'))
-        
+
         % If we are computing the kernel in parallel, try to find a
         % function.
-        if (options.use_parallel)            
+        if (options.use_parallel)
             % If parcellfun is available, use it.
             if (exist('parcellfun', 'file') == 2)
                 options.cell_fn = @(varargin) ...
                     parcellfun(...
                         options.parallel_processors, ...
                         varargin{:}, 'UniformOutput', false);
-            elseif (exist('parfor', 'builtin') == 5)                
-                options.cell_fn = @(varargin) ...                        
+            elseif (exist('parfor', 'builtin') == 5)
+                options.cell_fn = @(varargin) ...
                     vk_cellfun_parfor(...
                         options.parallel_processors, ...
                         varargin{:}, 'UniformOutput', false);
@@ -339,7 +339,7 @@ function options = vk_options(K, f, c, varargin)
                 warning('Parallel selected, but no parallel capabilities could be detected.');
             end
         end
-           
+
         % Either parallel is not specified, or parallel functionality not
         % available.
         if (~isfield(options, 'cell_fn'))
@@ -347,44 +347,44 @@ function options = vk_options(K, f, c, varargin)
                 cellfun(varargin{:}, 'UniformOutput', false);
         end
     end
-    
+
     % The viable_fn is the algorithm that we use to determine a point's
     % viability.
     if (~isfield(options, 'viable_fn'))
-        options.viable_fn = @vk_viable;        
+        options.viable_fn = @vk_viable;
         %options.viable_fn = @vk_viable_redo4d28aug;
     end
-    
+
     % The custom constraint set function.  Called by VK_EXITED if
     % 'use_custom_constraint_set_fn' is 1.
     if (~isfield(options, 'custom_constraint_set_fn'))
-        options.custom_constraint_set_fn = @(x) 1;                
+        options.custom_constraint_set_fn = @(x) 1;
     end
-    
+
     % A function to call that will tell the process in question whether to
     % cancel or not.  Default is never to cancel.
     if (~isfield(options, 'cancel_test_fn'))
         options.cancel_test_fn = @() 0;
     end
-    
+
     % A function to call every step to report progress.  Default is a
     % dummy function.  Won't be used unless 'report_progress' (above) is 1.
     if (~isfield(options, 'progress_fn'))
         options.progress_fn = @(x) 1;
     end
-    
+
     % A function to progress to the next step.
     if (~isfield(options, 'next_fn'))
         h = options.stepsize;
         options.next_fn = @(x,u) x + h*f(x, u);
     end
-    
+
     % ODE solver function.  By default we use ode45 or lsode, with the step
     % size set accordingly.
     if (~isfield(options, 'ode_solver'))
         if (exist('odeset'))
             ode_opts = odeset('MaxStep', options.stepsize);
-            
+
             % If we are being interactive, then we pass in the outputfcn
             % argument too.
             if (options.report_progress ...
@@ -396,7 +396,7 @@ function options = vk_options(K, f, c, varargin)
                     options.cancel_test_fn, ...
                     options.sim_stopsteady, options.norm_fn, options.small));
             end
-            
+
             options.ode_solver = eval(['@(varargin) ', ...
                 options.ode_solver_name, '(varargin{:}, ode_opts)']);
         elseif (exist('lsode'))
@@ -406,7 +406,7 @@ function options = vk_options(K, f, c, varargin)
             options.ode_solver = @(varargin) error('Could not find an ODE solver');
         end
     end
-    
+
     if (~isfield(options, 'sim_fn'))
         options.sim_fn = @vk_simulate_ode;
     end

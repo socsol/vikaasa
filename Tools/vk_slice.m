@@ -36,9 +36,9 @@ function SV = vk_slice_helper(V, slice_axis, plane, distance)
       counter = 0;
 
       % Iterate through all the rows of V.  Copy any that have an axis-th
-      % value that is leq than distance-away from plane into NV.
+      % value that is leq than 1/2*distance-away from plane into NV.
       for row = 1:size(V,1)
-        if (abs(V(row, slice_axis) - plane) < distance)
+        if (abs(V(row, slice_axis) - plane) < distance/2)
           counter = counter + 1;
           NV(counter, :) = V(row, :);
         end
