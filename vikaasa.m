@@ -64,7 +64,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_load_project(hObject, handles, filename);
 
-    handles.version = '0.9.3';
+    handles.version = '0.9.4';
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
 
@@ -165,7 +165,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
     comp_time = toc;
 
     % Delete the progress bar, if there was one.
-    if (handles.project.progressbar)
+    if (project.progressbar && ~project.use_parallel)
         delete(wb);
     end
 
