@@ -1,4 +1,4 @@
-%% VK_BOUND Bound a control choice to prevent the system from crashing, where possible
+%% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible
 %   This function takes a state-space point and a control choice, and
 %   checks to see if that control choice will cause the system to exit the
 %   constraint set in zero, one or two steps.
@@ -12,41 +12,41 @@
 %   checked if the 'use_controldefault' is specified.  In this case, the
 %   uncontrolled system will crash in the next step.
 %
-%   If VK_BOUND is not able to prevent a crash, it will attempt to minimise
-%   the number of variables that crash.
+%   If VK_CONTROL_BOUND is not able to prevent a crash, it will attempt to
+%   minimise the number of variables that crash.
 %
 %   Simple usage:
-%   u = VK_BOUND(x, u, K, f, c)
+%   u = VK_CONTROL_BOUND(x, u, K, f, c)
 %
-%   See TOOLS/VK_COMPUTE for information on the the input parameters.
+%   See KERNEL/VK_KERNEL_COMPUTE for information on the the input parameters.
 %
 %   The return value will be the bounded version of the u specified in the
 %   input list.  Where potential violations were detected that were
 %   salvagable, the new u will differ from the original one.
 %
 %   Getting more informaton:
-%   [u, crashed] = VK_BOUND(x, u, K, f, c)
-%   [u, crashed, exited_on] = VK_BOUND(x, u, K, f, c)
+%   [u, crashed] = VK_CONTROL_BOUND(x, u, K, f, c)
+%   [u, crashed, exited_on] = VK_CONTROL_BOUND(x, u, K, f, c)
 %
 %   - 'crashed' is a boolean value that indicates whether a crash occurred
 %     despite any efforts to avoid one.
 %
 %   - 'exited_on' is a row-vector of integers indicating the dimensions
-%     that the system crashed on.  See TOOLS/VK_EXITED for more information
-%     on this.
+%     that the system crashed on.  See VIABLE/VK_VIABLE_EXITED for more
+%     information on this.
 %
 %   Specifying options:
-%   [...] = VK_BOUND(x, u, K, f, c, OPTIONS)
+%   [...] = VK_CONTROL_BOUND(x, u, K, f, c, OPTIONS)
 %
-%   Here OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or
+%   Here OPTIONS is either a structure created by VK_OPTIONS, or
 %   otherwise a list of ('name', value) pairs.
 %
 %   Note that when the 'use_custom_constraint_set' option is specified
-%   VK_BOUND will not be able to improve the control choice.  In this case,
-%   it simply checks for constraint set violations.
+%   VK_CONTROL_BOUND will not be able to improve the control choice.  In this
+%   case, it simply checks for constraint set violations.
 %
-% See also: TOOLS, TOOLS/VK_EXITED, TOOLS/VK_OPTIONS, TOOLS/VK_VIABLE
-function [u, crashed, exited_on] = vk_bound(x, u, K, f, c, varargin)
+% See also: CONTROL, VK_CONTROL_ENFORCE, VIABLE/VK_VIABLE_EXITED, OPTIONS/VK_OPTIONS, VIABLE/VK_VIABLE
+function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
     %% Create options structure
     options = vk_options(K, f, c, varargin{:});

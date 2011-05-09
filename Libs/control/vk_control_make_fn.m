@@ -1,10 +1,13 @@
-%% VK_EVAL_CONTROL_FN Returns a handle to a control function from a given string
-%   Control functions can two signatures.  Either they take 
-function control_fn = vk_eval_control_fn(fn_name, varargin)
+%% VK_CONTROL_MAKE_FN Returns a handle to a control function from a given string
+%   Control functions can have one of two signatures.  Either they take info
+%   first (those control algorithms in the 'VControlAlgs' folder), or they
+%   don't.   This function works out which is the case, and adds info (which
+%   needs to be specified as a second argument) if necessary.
+function control_fn = vk_control_make_fn(fn_name, varargin)
     % Test for the existence of the function.  If it does not exist, attempt
     % to display an error.
     if (~exist(fn_name, 'file'))
-        vk_error(['The function "', fn_name, '" does not exist.  You will need to specify another control algorithm.']);
+        vk_error(['The function "', fn_name, '" cannot be found.  You will need to specify another control algorithm.']);
     end
 
     %% Determine the type of the control algorithm
