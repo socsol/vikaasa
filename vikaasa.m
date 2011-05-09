@@ -50,10 +50,18 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
     handles.interface = mfilename;
 
-    % These are where the code components live.
+    % Add these paths
     handles.path = pwd;
     cellfun(@(dir) addpath(fullfile(handles.path, dir)), ...
-        {'.', 'Cli', 'ControlAlgs', 'Gui', 'Tools', 'VControlAlgs'});
+        {'.', 'Libs', 'ControlAlgs', 'VControlAlgs'});
+
+    % Additionally, add all of the sub-folders inside of 'Libs':
+    libsfolders = dir(fullfile(handles.path, 'Libs'));
+    for i = 1:length(libsfolders)
+        if (libsfolders(i).isdir && ~strcmp(libsfolders(i).name(1),'.'))
+            addpath(fullfile(handles.path, 'Libs', libsfolders(i).name));
+        end
+    end
 
     % If a file was passed in, load it.
     if (nargin > 3)
@@ -351,12 +359,16 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function new_menu_Callback(hObject, eventdata, handles)
-    vardata = { ...
-        'Variable 1', 'x', 0, 0, '0'; ...
-        'Variable 2', 'y', 0, 0, '0'};
+    % Create the new project and save it in the GUI state.
+    handles.project = vk_new_project( ...
+        'numvars', 2, ...
+        'labels', char('Variable 1', 'Variable 2'), ...
+        'symbols', char('x', 'y'), ...
+        'K', [0, 0, 0, 0], ...
+        'discretisation', [11; 11] ...
+    );
 
-    cellarray = vk_project_from_vardata(vardata);
-    handles.project = vk_project_sanitise(struct(cellarray{:}));
+    % Update the GUI to display the new project.
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end
