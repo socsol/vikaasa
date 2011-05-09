@@ -1,13 +1,21 @@
-function vk_make_figure_slice(V, slices, K, labels, ...
-    colour, method, box, alpha_val, handle)
-% vk_make_figure_slice - This function slices a viability kernel any number
-% of times, and then plots the result.
+% VK_FIGURE_MAKE_SLICE Slices a viability kernel and then plots the result.
 %
-%  - V: the complete viability kernel
-%  - slices: a 2 x n matrix of [axis, point] pairs.
-%  - handle: the handle to display the figure in.
+%   VK_FIGURE_MAKE_SLICE(V, slices, K, labels, colour, method, box, alpha_val, handle)
+%
+%  - V: The complete viability kernel
+%  - slices: A nx3 matrix of [axis, point,distance] triples (see VK_KERNEL_SLICE).
+%  - K: The constraint set
+%  - labels: Labels to display on the axes.
+%  - colour: The colour to draw the kernel.
+%  - method: Which method to use in drawing the kernel.
+%  - box: Whether or not to draw a box around the kernel.
+%  - alpha_val: The transparency to give the kernel (certain drawing methods only)
+%  - handle: The handle to display the figure in.
+%
+function vk_figure_make_slice(V, slices, K, labels, ...
+    colour, method, box, alpha_val, handle)
 
-    SV = vk_slice(V, slices);
+    SV = vk_kernel_slice(V, slices);
 
     % Construct the figure name
     figure_name = 'Slice through ';
@@ -45,15 +53,15 @@ function vk_make_figure_slice(V, slices, K, labels, ...
     xlabel(labels(1,:));
     ylabel(labels(2,:));
     if (size(SV, 2) == 2)
-        vk_plot_area(SV, colour, method, alpha_val);
+        vk_figure_plot_area(SV, colour, method, alpha_val);
     else
-        vk_plot_surface(SV, colour, method, alpha_val);
+        vk_figure_plot_surface(SV, colour, method, alpha_val);
         zlabel(labels(3,:));
         view(3);
     end
 
     if (box)
-        limits = vk_plot_box(K);
+        limits = vk_figure_plot_box(K);
     else
         limits = K;
     end

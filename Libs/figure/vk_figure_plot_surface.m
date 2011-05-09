@@ -1,7 +1,8 @@
-% vk_plot_surface.m
+%% VK_FIGURE_PLOT_SURFACE Draw a 3D kernel
+%   Draws a 3D representation of a viability kernel.
 %
-% draws a 3D patch of the surface area of the viability kernel.
-function vk_plot_surface(V, colour, method, alpha_val)
+% See also: VK_FIGURE_MAKE, VK_FIGURE_MAKE_SLICE, VK_FIGURE_PLOT_AREA
+function vk_figure_plot_surface(V, colour, method, alpha_val)
 
     if (isempty(V))
         return;
@@ -110,7 +111,3 @@ function vk_plot_surface(V, colour, method, alpha_val)
         rethrow(exception);
     end
 end
-
-
-
-
