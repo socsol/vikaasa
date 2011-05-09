@@ -1,7 +1,7 @@
-%% VK_SLICE Slice a viability kernel according to a slices array
+%% VK_KERNEL_SLICE Slice a viability kernel according to a slices array
 %   Slices a viability kernel through any number of axes.
 %
-%   SV = VK_SLICE(V, slices)
+%   SV = VK_KERNEL_SLICE(V, slices)
 %
 %  - V: the viability kernel
 %  - slices: n x 3 array of [dimension, point, distance]
@@ -9,7 +9,7 @@
 %    * point: the position to do the slice at. NaN means all points
 %    * distance (> 0): the "width of the blade" -- i.e., the space to
 %      either side of the point that will be considered within the range.
-function SV = vk_slice(V, slices)
+function SV = vk_kernel_slice(V, slices)
 
     % Order slices from largest to smallest dimension.  There is a bug in
     % Octave which causes this to break if there is only one slice.
@@ -20,13 +20,13 @@ function SV = vk_slice(V, slices)
     % Call the helper function for each slice.
     SV = V;
     for i = 1:size(slices, 1)
-        SV = vk_slice_helper(SV, slices(i,1), slices(i,2), slices(i, 3));
+        SV = vk_kernel_slice_helper(SV, slices(i,1), slices(i,2), slices(i, 3));
     end
 end
 
 % This function simply slices through the viability kernel in a single
 % axis.
-function SV = vk_slice_helper(V, slice_axis, plane, distance)
+function SV = vk_kernel_slice_helper(V, slice_axis, plane, distance)
   if (isnan(plane))
       % If NaN, then we don't need to bother filtering.
       NV = V;

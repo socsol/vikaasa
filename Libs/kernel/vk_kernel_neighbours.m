@@ -1,16 +1,16 @@
-%% VK_NEIGHBOURS Find a point's neighbours in a viability kernel.
+%% VK_KERNEL_NEIGHBOURS Find a point's neighbours in a viability kernel.
 %   This function goes through the kernel V, looking for all points that
 %   are leq than layers*distances(dim) away, and greater than
 %   (layers-1)*distances(dim) away, along each axis.
 %
 %   Standard usage:
-%   neighbour_elts = VK_NEIGHBOURS(x, V, distances, layers)
+%   neighbour_elts = VK_KERNEL_NEIGHBOURS(x, V, distances, layers)
 %
 %   - 'x' is a column-vector, representing a point in the state space (see
-%     TOOLS/VK_VIABLE for more information).
+%     VIABLE/VK_VIABLE for more information).
 %
-%   - 'V' is a viability kernel.  See TOOLS/VK_COMPUTE for the format of
-%     this.
+%   - 'V' is a viability kernel.  See KERNEL/VK_KERNEL_COMPUTE for the format
+%     of this.
 %
 %   - 'distances' is a row-vector.  Each element gives the distance between
 %     points in V in that dimension.  For some kernel discretisation, d,
@@ -26,10 +26,8 @@
 %     whether they are on the edge of the kernel or not take action
 %     'sooner' (something akin to being more risk-averse).
 %
-% See also: TOOLS, TOOLS/VK_COMPUTE, TOOLS/VK_VIABLE, VCONTROLALGS
-function neighbour_elts = vk_neighbours(x, V, distances, layers)
-
-
+% See also: KERNEL/VK_KERNEL_COMPUTE, VIABLE/VK_VIABLE, VCONTROLALGS
+function neighbour_elts = vk_kernel_neighbours(x, V, distances, layers)
     neighbour_elts = zeros(size(V));
     cnt = 0;
     for i = 1:size(V, 1)

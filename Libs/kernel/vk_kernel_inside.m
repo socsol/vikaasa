@@ -1,4 +1,4 @@
-%% VK_INKERNEL Test to see whether the given point is inside the kernel
+%% VK_KERNEL_INSIDE Test to see whether the given point is inside the kernel
 %   This function determines whether the point x lies inside of V or not.
 %
 %   A point x is considered to be inside (for some distances and layers) if
@@ -10,10 +10,10 @@
 %   it is considered an 'edge' point instead.
 %
 %   Standard usage:
-%   [inside, edge] = VK_INKERNEL(x, V, distances, layers)
+%   [inside, edge] = VK_KERNEL_INSIDE(x, V, distances, layers)
 %
 %   - 'x' is a column-vector, representing a point in the state space (see
-%     TOOLS/VK_VIABLE for more information).
+%     VIABLE/VK_VIABLE for more information).
 %
 %   - 'V' is a viability kernel.  See TOOLS/VK_COMPUTE for the format of
 %     this.
@@ -28,18 +28,18 @@
 %   - 'layers' is an integer > 0.  See TOOLS/VK_NEIGHBOURS for information
 %     on how this is used.
 %
-% See also: TOOLS, TOOLS/VK_COMPUTE, TOOLS/VK_NEIGHBOURS, TOOLS/VK_VIABLE,
+% See also: VIABLE/VK_VIABLE_COMPUTE, VK_KERNEL_NEIGHBOURS, VIABLE/VK_VIABLE,
 %   VCONTROLALGS
-function [inside, edge] = vk_inkernel(x, V, distances, layers)           
+function [inside, edge] = vk_kernel_inside(x, V, distances, layers)
 % Whether the point x is within the (assumed convex) viability kernel V.
 
     % Finds the point's neighbours.
-    neighbour_elts = vk_neighbours(x, V, distances, layers);
+    neighbour_elts = vk_kernel_neighbours(x, V, distances, layers);
     
     % Using these neighbours, we see if we can draw a box around the
     %  points.
-    inside = vk_inkernel_rec(x, neighbour_elts, 1, 'leq') ...
-        && vk_inkernel_rec(x, neighbour_elts, 1, 'geq');
+    inside = vk_kernel_inside_rec(x, neighbour_elts, 1, 'leq') ...
+        && vk_kernel_inside_rec(x, neighbour_elts, 1, 'geq');
         
     % If we are not inside, but there are still neighbours, then we are on
     % the edge.
@@ -47,13 +47,13 @@ function [inside, edge] = vk_inkernel(x, V, distances, layers)
 end
 
 
-%% Recursive helper function for VK_INKERNEL
+%% Recursive helper function for VK_KERNEL_INSIDE
 %   Look for elements that are either above or below the point x in the
 %   given dimension.  Having found such points, we recurse to the next
 %   dimension, and look for points in those dimensions that are both above
 %   and below.  The function will return true if there are still points
 %   left.
-function inside = vk_inkernel_rec(x, N, dim, op)
+function inside = vk_kernel_inside_rec(x, N, dim, op)
     N1 = zeros(size(N));
     cnt = 0;
     for i = 1:size(N, 1)
@@ -73,8 +73,8 @@ function inside = vk_inkernel_rec(x, N, dim, op)
     
     % More dimensions, so do the same in those.
     if (~isempty(N1) && dim < size(N, 2))
-        l_inside = vk_inkernel_rec(x, N1, dim+1, 'leq');
-        u_inside = vk_inkernel_rec(x, N1, dim+1, 'geq');
+        l_inside = vk_kernel_inside_rec(x, N1, dim+1, 'leq');
+        u_inside = vk_kernle_inside_rec(x, N1, dim+1, 'geq');
         
         inside = l_inside && u_inside;
     else

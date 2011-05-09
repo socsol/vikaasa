@@ -1,10 +1,10 @@
-%% VK_MAKE_SLICES Construct a slice array from a cell array
-%   
-function slices = vk_make_slices(data, K, discretisation)      
+%% VK_KERNEL_MAKE_SLICES Construct a slice array from a cell array
+%   The cell array conforms to the format displayed by the VIKAASA gui.
+function slices = vk_kernel_make_slices(data, K, discretisation)      
     
     slices = [];
 
-    distances = vk_make_distances(K, discretisation);
+    distances = vk_kernel_distances(K, discretisation);
     
     %% Loop through rows of data
     % There will be one row in data for each variable.

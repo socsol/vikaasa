@@ -1,39 +1,39 @@
-%% VK_RUN Run a kernel calculation from a file or structure.
+%% VK_KERNEL_RUN Run a kernel calculation from a file or structure.
 %   This function takes as input either a filename containing a project, or a
 %   structure representing a project, and runs the viability kernel calculation
 %   contained within.  Then, it either returns the result, or saves it into a
 %   file.
 %
-%   VK_RUN(FILENAME)  Runs the project contained in FILENAME, and when complete
-%   saves the result back into that file.
+%   VK_KERNEL_RUN(FILENAME)  Runs the project contained in FILENAME, and when
+%   complete saves the result back into that file.
 %
-%   VK_RUN(FILE1, FILE2) Runs the project contained in FILE1, and when complete,
-%   saves the result into FILE2.
+%   VK_KERNEL_RUN(FILE1, FILE2) Runs the project contained in FILE1, and when
+%   complete, saves the result into FILE2.
 %
-%   PROJ2 = VK_RUN(PROJ1) Runs the project represented by PROJ1 and returns a
-%   new structure.
+%   PROJ2 = VK_KERNEL_RUN(PROJ1) Runs the project represented by PROJ1 and
+%   returns a new structure.
 %
 % Examples
 %   % Load a file into a structure
-%   proj = load('Projects/vikaasa_default.mat');
+%   proj = vk_project_load('Projects/vikaasa_default.mat');
 %   % Change some settings.
 %   proj.controlalg = 'CostMin';
 %   proj.steps = 2;
 %   proj.use_controldefault = 1;
 %   proj.controldefault = 0;
 %   % Re-run the kernel.
-%   proj = vk_run(proj);
+%   proj = vk_kernel_run(proj);
 %   % Save the result.
-%   save('Projects/newproject.mat', '-struct', 'proj');
+%   vk_project_save(project, 'Projects/newproject.mat');
 %
-% See also: VIKAASA, TOOLS, SCRIPTS, VK_VIEW_KERNEL
-function varargout = vk_run(varargin)
+% See also: VIKAASA_CLI, KERNEL, PROJECT, VK_KERNEL_COMPUTE
+function varargout = vk_kernel_run(varargin)
     if (nargin == 0)
         error('You must specify at least one input.');
     end
 
     if (ischar(varargin{1}))
-        project = vk_load_project(varargin{1});
+        project = vk_project_load(varargin{1});
     else
         project = varargin{1};
     end
@@ -41,12 +41,11 @@ function varargout = vk_run(varargin)
     %% Read settings from project.
     K = project.K;
     c = project.c;
-    f = vk_make_diff_fn(project);
+    f = vk_diff_make_fn(project);
     
     %% Create options.
-    options = vk_make_options(project, f);
-    computations = project.discretisation ...
-        ^ (length(project.K) / 2);
+    options = vk_options_make(project, f);
+    computations = prod(project.discretisation);
     options = vk_options(K, f, c, options, ...
         'report_progress', 1, ...
         'progress_fn', @(x) fprintf('%6.2f%% done\r', (x/computations)*100));
@@ -66,7 +65,7 @@ function varargout = vk_run(varargin)
     fprintf('RUNNING ALGORITHM\n');
     success = 0; err = 0;
     %try
-        V = vk_compute(K, f, c, options);
+        V = vk_kernel_compute(K, f, c, options);
         
         if (options.cancel_test_fn())            
             fprintf('CANCELLED\n');
