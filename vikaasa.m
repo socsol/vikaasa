@@ -72,7 +72,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_project_load(hObject, handles, filename);
 
-    handles.version = '0.9.4';
+    handles.version = '0.10.0';
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
 
