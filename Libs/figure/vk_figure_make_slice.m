@@ -22,10 +22,10 @@ function vk_figure_make_slice(V, slices, K, labels, ...
     for i = 1:size(slices, 1)
         if (isnan(slices(i,2)))
             figure_name = [figure_name, ...
-                deblank(labels(slices(i, 1),:)), '=all'];
+                labels{slices(i, 1)}, '=all'];
         else
             figure_name = [figure_name, ...
-                deblank(labels(slices(i, 1),:)), '=', num2str(slices(i, 2))];
+                labels{slices(i, 1)}, '=', num2str(slices(i, 2))];
         end
         
         if (i < size(slices, 1))
@@ -45,18 +45,19 @@ function vk_figure_make_slice(V, slices, K, labels, ...
     % Remove the info about the axis that has been sliced.
     for i = 1:size(slices, 1);
         slice_axis = slices(i, 1);
-        labels = vertcat(labels(1:slice_axis-1,:), ...
-            labels(slice_axis+1:size(labels, 1),:));
+        labels = [...
+            labels(1:slice_axis-1);
+            labels(slice_axis+1:end)];
         K = [K(1:2*slice_axis-2), K(2*slice_axis+1:end)];
     end
 
-    xlabel(labels(1,:));
-    ylabel(labels(2,:));
+    xlabel(labels{1});
+    ylabel(labels{2});
     if (size(SV, 2) == 2)
         vk_figure_plot_area(SV, colour, method, alpha_val);
     else
         vk_figure_plot_surface(SV, colour, method, alpha_val);
-        zlabel(labels(3,:));
+        zlabel(labels{3});
         view(3);
     end
 

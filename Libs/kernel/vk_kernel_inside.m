@@ -74,7 +74,7 @@ function inside = vk_kernel_inside_rec(x, N, dim, op)
     % More dimensions, so do the same in those.
     if (~isempty(N1) && dim < size(N, 2))
         l_inside = vk_kernel_inside_rec(x, N1, dim+1, 'leq');
-        u_inside = vk_kernle_inside_rec(x, N1, dim+1, 'geq');
+        u_inside = vk_kernel_inside_rec(x, N1, dim+1, 'geq');
         
         inside = l_inside && u_inside;
     else

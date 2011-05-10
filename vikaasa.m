@@ -18,7 +18,7 @@
 %   TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE,
 %   TOOLS/VK_VIABLE
 %
-% Last Modified by GUIDE v2.5 04-May-2011 11:51:16
+% Last Modified by GUIDE v2.5 10-May-2011 17:47:49
 function varargout = vikaasa(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -103,21 +103,20 @@ function runalg_button_Callback(hObject, eventdata, handles)
     %% Read settings from project.
     K = project.K;
     c = project.c;
-    f = vk_make_diff_fn(project);
+    f = vk_diff_make_fn(project);
 
 
     %% Create a waitbar, if required.
     if (project.progressbar && ~project.use_parallel)
         wb_message = 'Determining viability kernel ...';
         wb = vk_gui_make_waitbar(wb_message);
-        computations = project.discretisation ...
-            ^ (length(project.K) / 2);
-        options = vk_make_options(project, f, wb, computations, wb_message);
+        computations = prod(project.discretisation);
+        options = vk_options_make(project, f, wb, computations, wb_message);
     else
         if (project.use_parallel)
             warning('Waitbar cannot be displayed when computing in parallel.');
         end
-        options = vk_make_options(project, f);
+        options = vk_options_make(project, f);
     end
 
 
@@ -147,7 +146,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
     fprintf('RUNNING ALGORITHM\n');
     success = 0; error = 0;
     try
-        V = vk_compute(K, f, c, options);
+        V = vk_kernel_compute(K, f, c, options);
 
         if (options.cancel_test_fn())
             message_title = 'Kernel Computation Cancelled';
@@ -187,7 +186,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
         % If autosave is on, then save the result now.
         if (handles.project.autosave)
             filename = fullfile(handles.path, 'Projects', 'autosave.mat');
-            if (vk_save_project(project, filename))
+            if (vk_project_save(project, filename))
                 message2 = ['Auto-Saved to ', filename];
             else
                 message2 = ['Failed to auto-save to ', filename];
@@ -261,10 +260,10 @@ function plot_button_Callback(hObject, eventdata, handles)
 
     if (size(handles.project.slices, 1) > 0)
         slices = handles.project.slices;
-        vk_make_figure_slice(V, slices, K, labels, colour, ...
+        vk_figure_make_slice(V, slices, K, labels, colour, ...
             method, box, alpha_val, h);
     else % Just plot the whole thing.
-        vk_make_figure(V, K, labels, colour, method, ...
+        vk_figure_make(V, K, labels, colour, method, ...
             box, alpha_val, h);
     end
 
@@ -332,7 +331,7 @@ function saveas_menu_Callback(hObject, eventdata, handles)
     % Allow the user to select the file name to save to
     [filename, pathname] = uiputfile( ...
         {'*.mat';'*.*'}, ...
-        'Save as');	
+        'Save as');
     % If 'Cancel' was selected then return
     if isequal([filename,pathname],[0,0])
         return;
@@ -377,16 +376,16 @@ end
 %% The 'Variables' table has been edited.
 % hObject    handle to vartable (see GCBO)
 % eventdata  structure with the following fields (see UITABLE)
-%	Indices: row and column indices of the cell(s) edited
-%	PreviousData: previous data for the cell(s) edited
-%	EditData: string(s) entered by the user
-%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
-%	Error: error string when failed to convert EditData to appropriate value for Data
+%    Indices: row and column indices of the cell(s) edited
+%    PreviousData: previous data for the cell(s) edited
+%    EditData: string(s) entered by the user
+%    NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%    Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 function vartable_CellEditCallback(hObject, eventdata, handles)
     vardata = get(hObject, 'Data');
     ret = vk_project_parse_vardata(vardata);
-    changes = struct(ret{:})
+    changes = struct(ret{:});
 
     handles.project.labels = changes.labels;
     handles.project.symbols = changes.symbols;
@@ -569,16 +568,16 @@ function sim_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     %% Construct the differential function
-    f = vk_make_diff_fn(project);
+    f = vk_diff_make_fn(project);
 
     %% Construct options, containing progress bar if necessary.
     if (handles.project.progressbar)
         wb_message = 'Running Simulation ...';
         wb = vk_gui_make_waitbar(wb_message);
-        options = vk_make_options(handles.project, f, wb, project.sim_iterations, ...
+        options = vk_options_make(handles.project, f, wb, project.sim_iterations, ...
             wb_message);
     else
-        options = vk_make_options(handles.project, f);
+        options = vk_options_make(handles.project, f);
     end
 
     %% Add 'RUNNING SIMULATION' to the titlebar
@@ -592,7 +591,7 @@ function sim_button_Callback(hObject, eventdata, handles)
     end
     set(handles.figure1, 'Name', [name, ' - RUNNING SIMULATION']);
 
-    sim_state = vk_make_simulation(project, options);
+    sim_state = vk_sim_make(project, options);
 
     %% Delete any waitbars
     if (handles.project.progressbar)
@@ -708,11 +707,11 @@ end
 %% The simulation starting-point cell array
 % hObject    handle to sim_start (see GCBO)
 % eventdata  structure with the following fields (see UITABLE)
-%	Indices: row and column indices of the cell(s) edited
-%	PreviousData: previous data for the cell(s) edited
-%	EditData: string(s) entered by the user
-%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
-%	Error: error string when failed to convert EditData to appropriate value for Data
+%    Indices: row and column indices of the cell(s) edited
+%    PreviousData: previous data for the cell(s) edited
+%    EditData: string(s) entered by the user
+%    NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%    Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 function sim_start_CellEditCallback(hObject, eventdata, handles)
     handles.project.sim_start = cell2mat(get(hObject, 'Data'));
@@ -874,12 +873,12 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
         end
     end
 
-    limits = vk_plot_path_limits(limits, path);
+    limits = vk_figure_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_plot_path(T, path, viablepath, showpoints, ...
+    vk_figure_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
@@ -895,7 +894,7 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
     % Display settings.
     display_opts = struct(...
         'alpha', handles.project.alpha, ...
-        'labels', handles.project.labels, ...
+        'labels', {handles.project.labels}, ...
         'colour', handles.project.plotcolour, ...
         'line_colour', handles.project.sim_line_colour, ...
         'line_width', handles.project.sim_line_width, ...
@@ -906,7 +905,7 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
     );
 
     if (isfield(handles.project, 'sim_state'))
-        vk_simgui(handles.project.sim_state, display_opts);
+        vk_gui_simgui(handles.project.sim_state, display_opts);
     else
         errordlg('Could not create interactive simulation, because there is no data present.');
     end
@@ -1001,22 +1000,22 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
             path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
             K = [K(1:2*slices(i, 1)-2), ...
                 K(2*slices(i, 1)+1:end)];
-            labels = [labels(1:slices(i, 1)-1, :); ...
-                labels(slices(i, 1)+1:end, :)];
+            labels = [labels(1:slices(i, 1)-1); ...
+                labels(slices(i, 1)+1:end)];
         end
     end
 
     if (handles.project.drawbox)
-        limits = vk_plot_box(K);
+        limits = vk_figure_plot_box(K);
     else
         limits = K;
     end
-    limits = vk_plot_path_limits(limits, path);
+    limits = vk_figure_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_plot_path(T, path, viablepath, showpoints, ...
+    vk_figure_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
@@ -1206,13 +1205,13 @@ function sim_view_coords_button_Callback(hObject, eventdata, handles)
 end
 
 
-% --- Executes on button press in sim_use_nearest.
-function sim_use_nearest_Callback(hObject, eventdata, handles)
-% hObject    handle to sim_use_nearest (see GCBO)
+% --- Executes on button press in sim_use_nearest_checkbox.
+function sim_use_nearest_checkbox_Callback(hObject, eventdata, handles)
+% hObject    handle to sim_use_nearest_checkbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-	handles.project.sim_use_nearest = get(hObject,'Value');
+    handles.project.sim_use_nearest = get(hObject,'Value');
     guidata(hObject, handles);
 end
 
@@ -1223,7 +1222,7 @@ function controlmax_enforce_checkbox_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-	handles.project.controlenforce = get(hObject,'Value');
+    handles.project.controlenforce = get(hObject,'Value');
     guidata(hObject, handles);
 end
 
@@ -1232,7 +1231,7 @@ function control_bounded_checkbox_Callback(hObject, eventdata, handles)
 % hObject    handle to control_bounded_checkbox (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-	handles.project.controlbounded = get(hObject,'Value');
+    handles.project.controlbounded = get(hObject,'Value');
     guidata(hObject, handles);
 end
 
@@ -1268,11 +1267,11 @@ end
 function slices_CellEditCallback(hObject, eventdata, handles)
 % hObject    handle to slices (see GCBO)
 % eventdata  structure with the following fields (see UITABLE)
-%	Indices: row and column indices of the cell(s) edited
-%	PreviousData: previous data for the cell(s) edited
-%	EditData: string(s) entered by the user
-%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
-%	Error: error string when failed to convert EditData to appropriate value for Data
+%    Indices: row and column indices of the cell(s) edited
+%    PreviousData: previous data for the cell(s) edited
+%    EditData: string(s) entered by the user
+%    NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%    Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
     data = get(hObject, 'Data');
@@ -1289,7 +1288,7 @@ function slices_CellEditCallback(hObject, eventdata, handles)
 
     set(hObject, 'Data', data);
 
-    handles.project.slices = vk_make_slices( ...
+    handles.project.slices = vk_kernel_make_slices( ...
         data, handles.project.K, handles.project.discretisation);
     guidata(hObject, handles);
 end
@@ -1338,7 +1337,7 @@ function deletesim_button_Callback(hObject, eventdata, handles)
     'Confirm');
 
   if (b == 'Yes')
-    handles.project = vk_delete_sim_results(handles.project);
+    handles.project = vk_sim_delete_results(handles.project);
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
   end

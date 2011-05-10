@@ -20,7 +20,8 @@ function vk_figure_plot_surface(V, colour, method, alpha_val)
 
             % Attempt to add lighting effects too.
             try
-                camlight;
+                camlight left;
+                camlight right;
                 lighting gouraud;
 
                 %   p = trisurf(T, V(:,1), V(:,2), V(:,3));

@@ -32,13 +32,10 @@ function options = vk_options_make(project, f, varargin)
     end
 
     if (project.use_custom_cost_fn)
-        fnparams1 = mat2cell(symbols, ...
-            ones(1,size(symbols,1)),size(symbols,2));
-        fnparams2 = cellfun(@(x) [deblank(x), 'dot'], fnparams1, ...
-            'UniformOutput', 0);
+        dotsymbols = cellfun(@(x) [x, 'dot'], symbols, 'UniformOutput', 0);
 
         cost_fn = inline(project.custom_cost_fn, ...
-            fnparams1{:}, fnparams2{:});
+            symbols{:}, dotsymbols{:});
         cost_fn2 = @(x,xdot) vk_control_cost_fn(cost_fn, x, xdot);
         cost_fn_opts = {'cost_fn', cost_fn2};
     else

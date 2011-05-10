@@ -19,18 +19,14 @@ function vk_figure_make(V, K, labels, colour, method, box, ...
   title(figure_name);
   set(handle, 'Name', figure_name);  
   
-  xlabel(labels(1, :));
-  ylabel(labels(2, :));
+  xlabel(labels{1});
+  ylabel(labels{2});
   if (size(V, 2) == 2)
       vk_figure_plot_area(V, colour, method, alpha_val);      
   elseif (size(V, 2) == 3)
-      zlabel(labels(3, :));
+      zlabel(labels{3});
       vk_figure_plot_surface(V, colour, method, alpha_val);
       view(3);
-      if (exist('camlight') && exist('lighting'))
-          camlight;
-          lighting gouraud;
-      end
   end
   
   if (box)

@@ -35,7 +35,7 @@
 function sim_state = vk_sim_make(project, varargin)
 
     %% Extract settings from project.
-    start = project.sim_start;
+    start = vk_sim_start(project);
     time_horizon = project.sim_iterations;
     V = project.V;
     distances = vk_kernel_distances(project.K, project.discretisation);

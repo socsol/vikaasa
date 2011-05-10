@@ -65,14 +65,14 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
         
     %% If we are not interested in bounding, then return for zero steps
     if (~controlbounded)
-        exited_on = vk_exited(x, K, f, c, options);
+        exited_on = vk_viable_exited(x, K, f, c, options);
         crashed = ~isempty(exited_on);               
         return;
     end
     
     
     %% Next, check to see if the point has exited on one step.         
-    exited_on = vk_exited(next_fn(x, u), K, f, c, options);
+    exited_on = vk_viable_exited(next_fn(x, u), K, f, c, options);
     crashed = ~isempty(exited_on);
     if (crashed)
         fn = @(x, u) next_fn(x, u);
@@ -94,7 +94,7 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
     
 
     %% Next check to see if we exit on two steps.
-    exited_on = vk_exited(next_fn(next_fn(x, u), controldefault), K, ...
+    exited_on = vk_viable_exited(next_fn(next_fn(x, u), controldefault), K, ...
         f, c, options);
     crashed = ~isempty(exited_on);
     if (crashed)
@@ -171,7 +171,7 @@ function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     %% If anything new was computed, recalculate.        
     if (new_u ~= u)
         u = new_u;
-        exited_on = vk_exited(next_fn(x, u), K, f, c, ...
+        exited_on = vk_viable_exited(next_fn(x, u), K, f, c, ...
             options);
         crashed = ~isempty(exited_on);
     end

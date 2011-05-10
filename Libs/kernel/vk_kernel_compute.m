@@ -22,21 +22,21 @@
 %   option (see TOOLS/VK_OPTIONS).
 %
 %   Standard way of calling:
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, c)
+%   V = VK_KERNEL_COMPUTE(K, f, c)
 %
 %       - K is the constraint set, a row vector twice as long as the number
 %         of variables,
 %
 %   Passing in an options structure, constructed by VK_OPTIONS:
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, c, OPTIONS)
+%   V = VK_KERNEL_COMPUTE(K, f, c, OPTIONS)
 %
 %   Using the default options, except for some specified here:
-%   V = vk_compute(K, diff_fn, c, ...
+%   V = vk_compute(K, f, c, ...
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
 %   Using an options structure, and modifying some parameters:
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, c, OPTIONS, ...
+%   V = VK_KERNEL_COMPUTE(K, f, c, OPTIONS, ...
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
@@ -44,23 +44,23 @@
 %   % Compute a simple viability kernel
 %   K = [0, 1, 0, 1]    % Two dimensions, each with the same upper and
 %                       % lower bounds.
-%   diff_fn = @(x, u) [1/2*x(1) + x(2)*u; u];
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, 0.001);
+%   f = @(x, u) [1/2*x(1) + x(2)*u; u];
+%   V = VK_KERNEL_COMPUTE(K, f, 0.001);
 %
 %   % Compute the same kernel with a higher discretisation
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, 0.001, 'discretisation', [50, 50]);
+%   V = VK_KERNEL_COMPUTE(K, f, 0.001, 'discretisation', [50, 50]);
 %
 %   % Compute the same kernel again, but this time using PARCELLFUN
-%   V = VK_KERNEL_COMPUTE(K, diff_fn, 0.001, ...
+%   V = VK_KERNEL_COMPUTE(K, f, 0.001, ...
 %       'discretisation, [50, 50], ...
 %       'cell_fn', @(varargin) parcellfun(2, varargin{:}, 'UniformOutput', false));
 %
 % See also: CELLFUN, PARCELLFUN, TOOLS, OPTIONS/VK_OPTIONS, VIABLE/VK_VIABLE,
 %   VIKAASA
-function V = vk_kernel_compute(K, diff_fn, c, varargin)
+function V = vk_kernel_compute(K, f, c, varargin)
 
     %% Build options.
-    options = vk_options(K, diff_fn, c, varargin{:});
+    options = vk_options(K, f, c, varargin{:});
 
     %% These are the options that we are interested in.
     numvars = options.numvars;
@@ -69,7 +69,7 @@ function V = vk_kernel_compute(K, diff_fn, c, varargin)
     %% Create vectors of points for each dimension
     %   LINSPACE is used to accomplish this.  Discretisation in each dimension
     %   is potentially different.
-    ax = cell(numvars, 1)
+    ax = cell(numvars, 1);
     for i = 1:numvars
         ax{i} = linspace(K(2*i - 1), ...
             K(2*i), discretisation(i));
@@ -81,15 +81,14 @@ function V = vk_kernel_compute(K, diff_fn, c, varargin)
     %   VK_KERNEL_COMPUTE_RECURSIVE, below.
     fn = @(start, posn) vk_kernel_compute_recursive(...
         zeros(prod(discretisation(2:end)), numvars), start, 0, posn, ...
-        ax(2:end), K, diff_fn, c, ...
-        options);
+        ax(2:end), K, f, c, options);
 
     %% Create a cell of 'starts'.
     %   These are used by progress feedback functions to tell how far along the
     %   algorithm is.
     start_cells = cell(1, discretisation(1));
     for i = 1:discretisation(1)
-        start_cells{i} = (i - 1) * (prod(discretisation(2:end));
+        start_cells{i} = (i - 1) * prod(discretisation(2:end));
     end
 
     %% Call CELLFUN or PARCELLFUN
@@ -123,10 +122,10 @@ end
 %     cases where posn is not fully constructed, points are taken from the ax
 %     variable to produce points.
 function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
-    K, diff_fn, c, options)
+    K, f, c, options)
 
     cancel_test = options.cancel_test;
-    discretisation = options.discretisaton;
+    discretisation = options.discretisation;
 
     % More than one axis still under consideration -- call
     % vk_kernel_compute_recursive on the subset of points.
@@ -139,7 +138,7 @@ function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
 
             s = start + (i-1) * prod(discretisation(length(posn)+2:end));
             [V,cnt] = vk_kernel_compute_recursive(V, s, cnt, ...
-                [posn, curr_ax(i)], ax(2:end), K, diff_fn, c, options);
+                [posn; curr_ax(i)], ax(2:end), K, f, c, options);
         end
     else % Only one axis remaining -- call options.viable_fn on each point.
         curr_ax = ax{1};
@@ -148,7 +147,7 @@ function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
                 break;
             end
 
-            x = transpose(horzcat(posn, curr_ax(i)));
+            x = [posn; curr_ax(i)];
 
             if (options.debug)
                 disp(start + i);
@@ -163,7 +162,7 @@ function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
 
             if (viable)
                 cnt = cnt + 1;
-                V(cnt, :) = [posn, curr_ax(i)];
+                V(cnt, :) = transpose(x);
             end
         end
     end
