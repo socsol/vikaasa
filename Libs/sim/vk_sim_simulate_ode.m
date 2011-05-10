@@ -1,10 +1,10 @@
-%% VK_SIMULATE_ODE Simulate system trajectory using a MATLAB ODE solver
+%% VK_SIM_SIMULATE_ODE Simulate system trajectory using a MATLAB ODE solver
 %   Simulates the path that the system would take over some number of
 %   periods, given a starting point, and using some specified control
 %   algorithm.
 %
 %   This function takes and returns identical arguments to
-%   TOOLS/VK_SIMULATE_EULER, but it uses an ODE solver (e.g., ODE45)
+%   TOOLS/VK_SIM_SIMULATE_EULER, but it uses an ODE solver (e.g., ODE45)
 %   instead of an Euler approximation.  This means that it is generally
 %   slower, but more accurate for most purposes.
 %
@@ -18,20 +18,20 @@
 %   'ode_solver' option.  See the examples.
 %
 %   Standard usage:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c)
 %
 %   With optional extras added:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, OPTIONS)
 %
-%   See TOOLS/VK_SIMULATE_EULER for a description of all the arguments.
+%   See TOOLS/VK_SIM_SIMULATE_EULER for a description of all the arguments.
 %
 % Examples
 %   % Use ode23 instead of ode45:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver_name', 'ode23');
 %
@@ -40,19 +40,19 @@
 %       'ode_solver_name', 'ode23', ...
 %       'stepsize', 0.5, ...
 %       'sim_stopsteady', 1);
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, options);
 %
 %   % Use a custom-made ODE solver:
 %   myodesolver = @(fn, T, x0) somefunction(fn, x0);
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver', myodesolver);
 %   
 % See also: CONTROLALGS, VCONTROLALGS, TOOLS, TOOLS/VK_COMPUTE,
-%   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER
-function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
+%   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIM_SIMULATE_EULER
+function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     start, time_horizon, control_fn, V, distances, layers, ...
     K, f, c, varargin)
 
@@ -65,8 +65,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
     small = options.small;
     
     %% Create the function for use with the ODE solver.
-    control_fn = vk_make_control_fn(control_fn, K, f, c, options);
-    odefun = @(t, x0) vk_simulate_ode_helper(f, control_fn, x0(1:end-1,1));
+    control_fn = vk_control_wrap_fn(control_fn, K, f, c, options);
+    odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-1,1));
     
     %% Run the ODE solver.
     [T, Y] = ode_solver(odefun, [0, time_horizon], [start;0]);
@@ -104,9 +104,9 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
     viablepath = zeros(4, length(T));    
     for i = 1:length(T)
         x = path(:, i);
-        [viablepath(1, i), viablepath(2, i)] = vk_inkernel(x, V, ...
+        [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
             distances, layers);
-        viablepath(3, i) = ~isempty(vk_exited(x, K, f, c, options));
+        viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
         viablepath(4, i) = normpath(i) <= small;
     end
     
@@ -115,7 +115,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_ode(...
 end
 
 %% A function that returns the state space, augmented by the control choice.
-function ret = vk_simulate_ode_helper(f, control_fn, x)
+function ret = vk_sim_simulate_ode_helper(f, control_fn, x)
     u = control_fn(x);
     ret = [f(x, u); u];
 end

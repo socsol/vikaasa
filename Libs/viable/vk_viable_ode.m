@@ -1,8 +1,8 @@
-%% Determines viability of a point.
+%% VK_VIABLE_ODE Determines viability of a point using and ODE solver
 %
 % The algorithm attempts to bring the system to a steady state by applying
 % some control (specified in settings).
-function varargout = vk_viable(posn, constraint_set, delta_fn, ...
+function varargout = vk_viable_ode(posn, constraint_set, delta_fn, ...
     controlmax, options)
 
     numvars = options.numvars;    

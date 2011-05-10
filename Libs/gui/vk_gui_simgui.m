@@ -1,26 +1,26 @@
-function varargout = vk_simgui(varargin)
-% VK_SIMGUI M-file for vk_simgui.fig
-%      VK_SIMGUI, by itself, creates a new VK_SIMGUI or raises the existing
+function varargout = vk_gui_simgui(varargin)
+% VK_GUI_SIMGUI M-file for vk_gui_simgui.fig
+%      VK_GUI_SIMGUI, by itself, creates a new VK_GUI_SIMGUI or raises the existing
 %      singleton*.
 %
-%      H = VK_SIMGUI returns the handle to a new VK_SIMGUI or the handle to
+%      H = VK_GUI_SIMGUI returns the handle to a new VK_GUI_SIMGUI or the handle to
 %      the existing singleton*.
 %
-%      VK_SIMGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in VK_SIMGUI.M with the given input arguments.
+%      VK_GUI_SIMGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in VK_GUI_SIMGUI.M with the given input arguments.
 %
-%      VK_SIMGUI('Property','Value',...) creates a new VK_SIMGUI or raises the
+%      VK_GUI_SIMGUI('Property','Value',...) creates a new VK_GUI_SIMGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before vk_simgui_OpeningFcn gets called.  An
+%      applied to the GUI before vk_gui_simgui_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to vk_simgui_OpeningFcn via varargin.
+%      stop.  All inputs are passed to vk_gui_simgui_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help vk_simgui
+% Edit the above text to modify the response to help vk_gui_simgui
 
 % Last Modified by GUIDE v2.5 04-Dec-2010 17:07:59
 
@@ -28,8 +28,8 @@ function varargout = vk_simgui(varargin)
 gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @vk_simgui_OpeningFcn, ...
-                   'gui_OutputFcn',  @vk_simgui_OutputFcn, ...
+                   'gui_OpeningFcn', @vk_gui_simgui_OpeningFcn, ...
+                   'gui_OutputFcn',  @vk_gui_simgui_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,15 +44,15 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before vk_simgui is made visible.
-function vk_simgui_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before vk_gui_simgui is made visible.
+function vk_gui_simgui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to vk_simgui (see VARARGIN)
+% varargin   command line arguments to vk_gui_simgui (see VARARGIN)
 
-    % Choose default command line output for vk_simgui
+    % Choose default command line output for vk_gui_simgui
     handles.output = hObject;
         
     handles.sim_state = varargin{1};
@@ -65,8 +65,8 @@ function vk_simgui_OpeningFcn(hObject, eventdata, handles, varargin)
         [1/length(handles.sim_state.T), ...
         1/handles.sim_state.time_horizon]);   
     
-    handles = vk_simgui_setup(hObject, handles);
-    handles = vk_simgui_drawstep(length(handles.sim_state.T), ...
+    handles = vk_gui_simgui_setup(hObject, handles);
+    handles = vk_gui_simgui_drawstep(length(handles.sim_state.T), ...
         hObject, handles, handles.plotspace);
     
     set(hObject, 'Name', ['Simulation starting from [', ...
@@ -79,13 +79,13 @@ function vk_simgui_OpeningFcn(hObject, eventdata, handles, varargin)
     % Update handles structure
     guidata(hObject, handles);
 
-    % UIWAIT makes vk_simgui wait for user response (see UIRESUME)
+    % UIWAIT makes vk_gui_simgui wait for user response (see UIRESUME)
     % uiwait(handles.figure1);
 
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = vk_simgui_OutputFcn(hObject, eventdata, handles) 
+function varargout = vk_gui_simgui_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -104,7 +104,7 @@ function timer_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
     i = round(get(hObject,'Value'));
-    handles = vk_simgui_drawstep(i, hObject, handles, handles.plotspace);
+    handles = vk_gui_simgui_drawstep(i, hObject, handles, handles.plotspace);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -145,7 +145,7 @@ function play_button_Callback(hObject, eventdata, handles)
     T = handles.sim_state.T;
         
     for i = start:length(T)
-        handles = vk_simgui_drawstep(i, hObject, handles, handles.plotspace);
+        handles = vk_gui_simgui_drawstep(i, hObject, handles, handles.plotspace);
         % Make the timer match.
         set(handles.timer, 'Value', i);
         refresh;
@@ -159,7 +159,7 @@ function play_button_Callback(hObject, eventdata, handles)
     % Return to normal.
     set(hObject, 'String', 'Play');
     set(hObject, 'Callback', @(hObject,eventdata) ...
-        vk_simgui('play_button_Callback', ...
+        vk_gui_simgui('play_button_Callback', ...
         hObject,eventdata,guidata(hObject)));
     set(handles.figure1, 'WindowStyle', 'normal');
 
@@ -170,7 +170,7 @@ function stop_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-function handles = vk_simgui_drawstep(i, hObject, handles, handle, varargin)
+function handles = vk_gui_simgui_drawstep(i, hObject, handles, handle, varargin)
     
     V = handles.sim_state.V;
     K = handles.sim_state.K;    
@@ -322,7 +322,7 @@ function tofig_button_Callback(hObject, eventdata, handles)
         % Insert data into figure.
         ax = get(h, 'CurrentAxes');
         i = round(get(handles.timer,'Value'));
-        handles = vk_simgui_drawstep(i, hObject, handles, ax, h);
+        handles = vk_gui_simgui_drawstep(i, hObject, handles, ax, h);
         guidata(hObject, handles);                
         
     catch exception
@@ -330,7 +330,7 @@ function tofig_button_Callback(hObject, eventdata, handles)
         h = figure;
         ax = get(h, 'CurrentAxes');
         i = round(get(handles.timer,'Value'));
-        handles = vk_simgui_drawstep(i, hObject, handles, ax);
+        handles = vk_gui_simgui_drawstep(i, hObject, handles, ax);
         guidata(hObject, handles);
     end
 
@@ -346,9 +346,9 @@ function showpoints_checkbox_Callback(hObject, eventdata, handles)
     guidata(hObject, handles);
     
     i = round(get(handles.timer,'Value'));
-    handles = vk_simgui_drawstep(i, hObject, handles, handles.plotspace);
+    handles = vk_gui_simgui_drawstep(i, hObject, handles, handles.plotspace);
 
-function handles = vk_simgui_setup(hObject, handles)
+function handles = vk_gui_simgui_setup(hObject, handles)
     h = handles.plotspace;
     set(handles.figure1, 'CurrentAxes', h);
     hold on;
@@ -369,8 +369,8 @@ function handles = vk_simgui_setup(hObject, handles)
         end
     end    
     
-    limits = vk_plot_box(K);
-    limits = vk_plot_path_limits(limits, path);
+    limits = vk_figure_plot_box(K);
+    limits = vk_figure_plot_path_limits(limits, path);
     axis(limits);      
     grid on;
     

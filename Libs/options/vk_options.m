@@ -19,7 +19,7 @@
 %
 %   Available options (default values in brackets):
 %
-%       - bound_fn (vk_bound): The function to use for bounding when
+%       - bound_fn (vk_control_bound): The function to use for bounding when
 %         the 'controlbounded' option is set to '1'.  See below.
 %
 %       - cancel_test (0): Whether to test to see if the user has
@@ -87,7 +87,7 @@
 %         tested for viability.  Lower discretisation is faster, but less
 %         useful.
 %
-%       - enforce_fn (vk_enforce): The function to use when controlenforce
+%       - enforce_fn (vk_control_enforce): The function to use when controlenforce
 %         is set to 1.  See above.
 %
 %       - maxloops (46000): Maximum number of loops performed by
@@ -264,7 +264,6 @@ function options = vk_options(K, f, c, varargin)
     % default is to use a norm where each axis is weighted relative to
     % the size of the constraint set.
     if (~isfield(options, 'norm_fn'))
-        %options.norm_fn = @(x) vk_wnorm(x, K);
         options.norm_fn = @norm;
     end
 
@@ -301,7 +300,7 @@ function options = vk_options(K, f, c, varargin)
     % whether a trajectory is non-viable (i.e., if it is violating a
     % constraint that can't be repaired).
     if (~isfield(options, 'bound_fn'))
-        options.bound_fn = @vk_bound;
+        options.bound_fn = @vk_control_bound;
     end
 
     % This is the control algorithm to use.  This algorithm should accept
@@ -314,11 +313,11 @@ function options = vk_options(K, f, c, varargin)
     % The function used to make sure that the control choice is within
     % [-c,c].
     if (~isfield(options, 'enforce_fn'))
-        options.enforce_fn = @vk_enforce;
+        options.enforce_fn = @vk_control_enforce;
     end
 
-    % The cell function is used by vk_compute.  It needs to take a variable
-    % number of cell array inputs.
+    % The cell function is used by vk_kernel_compute.  It needs to take a
+    % variable number of cell array inputs.
     if (~isfield(options, 'cell_fn'))
 
         % If we are computing the kernel in parallel, try to find a
@@ -352,7 +351,6 @@ function options = vk_options(K, f, c, varargin)
     % viability.
     if (~isfield(options, 'viable_fn'))
         options.viable_fn = @vk_viable;
-        %options.viable_fn = @vk_viable_redo4d28aug;
     end
 
     % The custom constraint set function.  Called by VK_EXITED if
@@ -408,6 +406,6 @@ function options = vk_options(K, f, c, varargin)
     end
 
     if (~isfield(options, 'sim_fn'))
-        options.sim_fn = @vk_simulate_ode;
+        options.sim_fn = @vk_sim_simulate_ode;
     end
 end

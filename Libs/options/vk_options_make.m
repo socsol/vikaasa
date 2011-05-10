@@ -1,18 +1,18 @@
-%% VK_MAKE_OPTIONS Creates an options structure from a project file.
+%% VK_OPTIONS_MAKE Creates an options structure from a project file.
 %   This function is used to wrap TOOLS/VK_OPTIONS in VIKAASA.  It reads
 %   options out of project and feeds them into VK_OPTIONS.
 %
 %   Standard usage:
-%   options = VK_4DGUI_MAKE_OPTIONS(PROJECT, F)
+%   options = VK_OPTIONS_MAKE(PROJECT, F)
 %
 %   PROJECT should be a VIKAASA project.
 %   F should be a function, as created with VK_MAKE_DIFF_FN
 %
 %   Optionally, a waitbar can also be specified:
-%   options = VK_4DGUI_MAKE_OPTIONS(project, f, wb, numcomputations, message)
+%   options = VK_OPTIONS_MAKE(project, f, wb, numcomputations, message)
 %
 % See also: VIKAASA, TOOLS/VK_OPTIONS
-function options = vk_make_options(project, f, varargin)
+function options = vk_options_make(project, f, varargin)
     K = project.K;
     numvars = length(K)/2;
     c = project.c;
@@ -39,7 +39,7 @@ function options = vk_make_options(project, f, varargin)
 
         cost_fn = inline(project.custom_cost_fn, ...
             fnparams1{:}, fnparams2{:});
-        cost_fn2 = @(x,xdot) vk_cost_fn(cost_fn, x, xdot);
+        cost_fn2 = @(x,xdot) vk_control_cost_fn(cost_fn, x, xdot);
         cost_fn_opts = {'cost_fn', cost_fn2};
     else
         cost_fn_opts = {};
@@ -67,9 +67,9 @@ function options = vk_make_options(project, f, varargin)
     % sim_fn is determined by whether the drop-down is set to 'ode' or
     % 'euler'.
     if (strcmp(project.sim_method, 'euler'))
-        sim_fn = @vk_simulate_euler;
+        sim_fn = @vk_sim_simulate_euler;
     else
-        sim_fn = @vk_simulate_ode;
+        sim_fn = @vk_sim_simulate_ode;
     end
 
     % 'small' must be constructed by creating a vector of size 'stopping

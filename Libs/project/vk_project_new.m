@@ -1,6 +1,6 @@
-%% VK_NEW_PROJECT Creates a new project structure.
+%% VK_PROJECT_NEW Creates a new project structure.
 %   This function returns a newly initialised project structure.
-function project = vk_new_project(varargin)
+function project = vk_project_new(varargin)
     project = struct(varargin{:});
 
     if (~isfield(project, 'numvars'))

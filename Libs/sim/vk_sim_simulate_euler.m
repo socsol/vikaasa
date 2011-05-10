@@ -1,10 +1,10 @@
-%% VK_SIMULATE_EULER Simulate system trajectory using Euler approximation
+%% VK_SIM_SIMULATE_EULER Simulate system trajectory using Euler approximation
 %   This funciton simulates the path that the system would take over some
 %   number of iterations, given a starting point, and using some specified
 %   control algorithm.
 %
 %   Standard usage:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_EULER(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_EULER(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c)
 %
@@ -60,20 +60,20 @@
 %   - 'c': The absolute maximum size of the control.
 %
 %   Usage with additional options:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIMULATE_EULER(...
+%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_EULER(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, OPTIONS)
 %
 %   OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or otherwise
 %   a set of (name, 'value') pairs.
 %
-%   An imporant option for VK_SIMULATE_EULER is 'sim_stopsteady', which
+%   An imporant option for VK_SIM_SIMULATE_EULER is 'sim_stopsteady', which
 %   causes the simulation to terminate as soon as a steady state is
 %   encountered, instead of waiting.
 %
-% See also: CONTROLALGS, VCONTROLALGS, TOOLS, TOOLS/VK_COMPUTE,
-%   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_ODE
-function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
+% See also: CONTROLALGS, VCONTROLALGS, KERNEL/VK_KERNEL_COMPUTE,
+%   KERNEL/VK_KERNEL_INSIDE, OPTIONS/VK_OPTIONS, SIM/VK_SIM_SIMULATE_ODE
+function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(...
     x, time_horizon, control_fn, V, distances, layers, ...
     K,  f, c, varargin)
 
@@ -92,7 +92,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
     
     
     %% Create the bounded control function
-    fn = vk_make_control_fn(control_fn, K, f, c, options);
+    fn = vk_control_wrap_fn(control_fn, K, f, c, options);
     
     
     %% Set up information variables
@@ -127,9 +127,9 @@ function [T, path, normpath, controlpath, viablepath] = vk_simulate_euler(...
         
         
         %% Record viability, etc. at this point
-        [viablepath(1, i), viablepath(2, i)] = vk_inkernel(x, V, ...
+        [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
             distances, layers);
-        viablepath(3, i) = ~isempty(vk_exited(x, K, f, c, options));
+        viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
         
         
         %% Record velocity and steadyness

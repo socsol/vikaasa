@@ -1,7 +1,7 @@
-%% VK_SAVE Save vk_state to a specified file.
+%% VK_PROJECT_SAVE Save a project to a specified file.
 %
 % See also: VIKAASA, GUI
-function success = vk_save_project(project, filename)
+function success = vk_project_save(project, filename)
     try        
         save(filename,'-struct','project', '-v7');
         success = 1;
