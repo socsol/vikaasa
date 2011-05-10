@@ -70,7 +70,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
       filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     end
     fprintf('Loading file: %s\n', filename);
-    handles = vk_gui_load_project(hObject, handles, filename);
+    handles = vk_gui_project_load(hObject, handles, filename);
 
     handles.version = '0.9.4';
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
@@ -313,7 +313,7 @@ function load_menu_Callback(hObject, eventdata, handles)
     % Otherwise construct the fullfilename and Check and load the file.
     else
         File = fullfile(pathname,filename);
-        handles = vk_gui_load_project(hObject, handles, File);
+        handles = vk_gui_project_load(hObject, handles, File);
         guidata(hObject, handles);
     end
 end
@@ -322,7 +322,7 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function save_menu_Callback(hObject, eventdata, handles)
-    vk_save_project(handles.project, handles.filename);
+    vk_project_save(handles.project, handles.filename);
 end
 
 % hObject    handle to saveas_menu (see GCBO)
@@ -343,7 +343,7 @@ function saveas_menu_Callback(hObject, eventdata, handles)
 
         % Construct the full path and save
         File = fullfile(pathname,filename);
-        success = vk_save_project(handles.project, File);
+        success = vk_project_save(handles.project, File);
 
         % If successful, allow the 'save' menu option to work.
         if (success)
@@ -360,7 +360,7 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function new_menu_Callback(hObject, eventdata, handles)
     % Create the new project and save it in the GUI state.
-    handles.project = vk_new_project( ...
+    handles.project = vk_project_new( ...
         'numvars', 2, ...
         'labels', char('Variable 1', 'Variable 2'), ...
         'symbols', char('x', 'y'), ...
@@ -385,13 +385,13 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function vartable_CellEditCallback(hObject, eventdata, handles)
     vardata = get(hObject, 'Data');
-    ret = vk_project_from_vardata(vardata);
-    changes = struct(ret{:});
+    ret = vk_project_parse_vardata(vardata);
+    changes = struct(ret{:})
 
-    handles.project.vardata = vardata;
     handles.project.labels = changes.labels;
     handles.project.symbols = changes.symbols;
     handles.project.K = changes.K;
+    handles.project.discretisation = changes.discretisation;
     handles.project.diff_eqns = changes.diff_eqns;
 
     handles = vk_gui_update_inputs(hObject, handles);
