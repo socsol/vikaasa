@@ -40,7 +40,7 @@ function u = SatisficeMaxMin(info, x, K, f, c, varargin)
     end
         
     % Otherwise, check to see whether we are on edge.
-    [inside, edge] = vk_inkernel(x, V, distances, layers);
+    [inside, edge] = vk_kernel_inside(x, V, distances, layers);
        
     % If we are on edge, we need to exert either max, or min.
     if (~inside)        
