@@ -1,4 +1,10 @@
-VERSION=0.10.0
+VERSION=0.10.1
 
 zip:
-	zip -r ../vikaasa-${VERSION}.zip vikaasa.m vikaasa.fig Docs Cli/*.m ControlAlgs/*.m Gui/*.m Gui/*.fig Projects Tools/*.m VControlAlgs/*.m
+	zip -r ../vikaasa-${VERSION}.zip vikaasa vikaasa_cli.m vikaasa.m vikaasa.fig \
+	  Docs \
+	  ControlAlgs/*.m \
+	  VControlAlgs/*.m \
+	  Libs/*.m \
+	  Libs/*/*.m \
+	  Libs/*/*.fig

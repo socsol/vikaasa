@@ -1,19 +1,10 @@
-%% VK_SETUP A script to set paths and 
-addpath(...
-  pwd, ...
-  fullfile(pwd, 'Cli'), ...
-  fullfile(pwd, 'Gui'), ...
-  fullfile(pwd, 'Tools'), ...
-  fullfile(pwd, 'ControlAlgs'), ...
-  fullfile(pwd, 'VControlAlgs'));
+%% VIKAASA_CLI Initialise the VIKAASA enviroment for use from the commandline.
 
-disp('Commands');
-disp('--------');
-disp('');
-disp('vk_view_kernel FILENAME -- Plot the kernel in FILENAME, according to the settings therein.');
-disp('proj = vk_run FILENAME -- Compute the kernel in FILENAME');
+%% This sets up the paths, and defines the vk_version and vk_copyright variables.
+run Libs/vk_init.m
 
-% For use with bleeding-edge Octave.  Not in use for now.
-%if (exist('graphics_toolkit'))
-%    graphics_toolkit fltk;
-%end
+%% Display that information
+fprintf('%s\n', char('-'*ones(1, 79)));
+fprintf('VIKAASA Version %s\n', vk_version);
+fprintf('%s.\n', vk_copyright);
+fprintf('%s\n\n', char('-'*ones(1, 79)));

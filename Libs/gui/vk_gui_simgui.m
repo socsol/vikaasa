@@ -203,7 +203,7 @@ function handles = vk_gui_simgui_drawstep(i, hObject, handles, handle, varargin)
             end
         end
 
-        V = vk_slice(V, slices);
+        V = vk_kernel_slice(V, slices);
     end
 
     if (length(K) / 2 - size(slices, 1) == 2)

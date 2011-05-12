@@ -57,9 +57,9 @@ function project = vk_project_sanitise(project)
             usevars = min(numvars, length(v));
             padvars = max(0, numvars - length(v));
             if (iscell(v))
-                project.(varlength{i}) = [v(1:usevars), cell(padvars, 1)];
+                project.(varlength{i}) = [v(1:usevars); cell(padvars, 1)];
             else
-                project.(varlength{i}) = [v(1:usevars), zeros(padvars, 1)];
+                project.(varlength{i}) = [v(1:usevars); zeros(padvars, 1)];
             end
         end
     end

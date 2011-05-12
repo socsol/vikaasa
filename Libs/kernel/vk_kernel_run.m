@@ -48,7 +48,7 @@ function varargout = vk_kernel_run(varargin)
     computations = prod(project.discretisation);
     options = vk_options(K, f, c, options, ...
         'report_progress', 1, ...
-        'progress_fn', @(x) fprintf('%6.2f%% done\r', (x/computations)*100));
+        'progress_fn', @(x) fprintf('\r%6.2f%% done', (x/computations)*100));
 
     %% Display debugging information
     if (project.debug)

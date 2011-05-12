@@ -50,19 +50,14 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
     handles.interface = mfilename;
 
-    % Add these paths
+    %% Initialise the VIKAASA environment.
     handles.path = pwd;
-    cellfun(@(dir) addpath(fullfile(handles.path, dir)), ...
-        {'.', 'Libs', 'ControlAlgs', 'VControlAlgs'});
-
-    % Additionally, add all of the sub-folders inside of 'Libs':
-    libsfolders = dir(fullfile(handles.path, 'Libs'));
-    for i = 1:length(libsfolders)
-        if (libsfolders(i).isdir && ~strcmp(libsfolders(i).name(1),'.'))
-            addpath(fullfile(handles.path, 'Libs', libsfolders(i).name));
-        end
-    end
-
+    run Libs/vk_init.m
+    handles.version = vk_version;
+    handles.copyright = vk_copyright;
+    fprintf('\nVIKAASA %s\n', vk_version);
+    fprintf('%s.\n\n', vk_copyright);
+    
     % If a file was passed in, load it.
     if (nargin > 3)
       filename = varargin{1};
@@ -72,7 +67,6 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_project_load(hObject, handles, filename);
 
-    handles.version = '0.10.0';
     set(hObject, 'Name', ['VIKAASA ', handles.version]);
     set(hObject, 'Tag', 'vikaasa');
 
@@ -1241,10 +1235,17 @@ function addvar_button_Callback(hObject, eventdata, handles)
 % hObject    handle to addvar_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    data = get(handles.vartable, 'Data');
-    data = [data; {'New Variable', 'new', 0, 1, '0'}];
-    set(handles.vartable, 'Data', data);
-    handles.project.vardata = data;
+    project = handles.project;
+    
+    project.labels = [project.labels; {'New Variable'}];
+    project.symbols = [project.symbols; {'new'}];
+    project.K = [project.K, 0, 1];
+    project.discretisation = [project.discretisation; 11];
+    project.diff_eqns = [project.diff_eqns; {'0'}];
+    
+    project.numvars = project.numvars + 1;
+    handles.project = vk_project_sanitise(project);
+
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end
@@ -1254,10 +1255,11 @@ function deletevar_button_Callback(hObject, eventdata, handles)
 % hObject    handle to deletevar_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    data = get(handles.vartable, 'Data');
-    data = data(1:end-1, :);
-    set(handles.vartable, 'Data', data);
-    handles.project.vardata = data;
+    project = handles.project;
+
+    project.numvars = project.numvars - 1;
+    handles.project = vk_project_sanitise(project);
+
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end
@@ -1348,4 +1350,13 @@ function deleteresults_button_Callback(hObject, eventdata, handles)
 % hObject    handle to deleteresults_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+  b = questdlg('Are you sure you want to delete the kernel results?', ...
+    'Confirm');
+
+  if (b == 'Yes')
+    handles.project = vk_kernel_delete_results(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+  end
 end
