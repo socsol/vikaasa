@@ -1,4 +1,6 @@
 %% VK_FIGURE_PLOT_AREA Plots a 2D filled viability kernel
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_plot_area(V, colour, method, alpha_val)   
     grid on;
 

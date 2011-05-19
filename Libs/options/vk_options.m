@@ -90,6 +90,9 @@
 %       - enforce_fn (vk_control_enforce): The function to use when controlenforce
 %         is set to 1.  See above.
 %
+%       - h (1): The step-size used in numerical approximation of the
+%         differential equations.
+%
 %       - maxloops (46000): Maximum number of loops performed by
 %         TOOLS/VK_VIABLE before it gives up on a point.  This option is
 %         present to prevent infinite loops.
@@ -126,8 +129,7 @@
 %       - ode_solver (@ode45): Used by TOOLS/VK_SIMULATE_ODE to undertake
 %         numerical analysis of the differential system of equations.  This
 %         function is by default rigged to interact with 'cancel_test_fn'
-%         and the 'progress_fn', and has 'MaxStep' equal to the 'stepsize'
-%         option.
+%         and the 'progress_fn', and has 'MaxStep' equal to the 'h' option.
 %
 %       - ode_solver_name ('ode45'): This string can be used to change the
 %         function used by 'ode_solver' (see above), without altering that
@@ -153,10 +155,6 @@
 %       - steps (1): The number of forward-looking steps used by
 %         finite-time optimising control algorithms such as
 %         CONTROLALGS/COSTSUMMIN.
-%
-%       - stepsize (1): The step-size used in numerical
-%         approximation of the differential equations.  Usually denoted by
-%         'h' in mathematical literature.
 %
 %       - sim_fn (TOOLS/VK_SIMULATE_ODE):  The 'simulation function' to
 %         use.  This is only really an important option if you decide to
@@ -203,6 +201,8 @@
 %   FMINBND, FZERO, NORM, ODE45, TOOLS/VK_COMPUTE, TOOLS/VK_CORNERSOLN,
 %   TOOLS/VK_EXITED, TOOLS/VK_FMINBND, TOOLS/VK_SIMULATE_EULER,
 %   TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function options = vk_options(K, f, c, varargin)
 
     % If exactly four arguments are passed in, then the fourth argument
@@ -237,7 +237,7 @@ function options = vk_options(K, f, c, varargin)
                 'parallel_processors', 2, ...
                 'report_progress', 0, ...
                 'steps', 1, ...
-                'stepsize', 1, ...
+                'h', 1, ...
                 'sim_stopsteady', 0, ...
                 'small', 1e-3, ...
                 'use_controldefault', 0, ...
@@ -373,7 +373,7 @@ function options = vk_options(K, f, c, varargin)
 
     % A function to progress to the next step.
     if (~isfield(options, 'next_fn'))
-        h = options.stepsize;
+        h = options.h;
         options.next_fn = @(x,u) x + h*f(x, u);
     end
 
@@ -381,7 +381,7 @@ function options = vk_options(K, f, c, varargin)
     % size set accordingly.
     if (~isfield(options, 'ode_solver'))
         if (exist('odeset'))
-            ode_opts = odeset('MaxStep', options.stepsize);
+            ode_opts = odeset('MaxStep', options.h);
 
             % If we are being interactive, then we pass in the outputfcn
             % argument too.
@@ -398,7 +398,7 @@ function options = vk_options(K, f, c, varargin)
             options.ode_solver = eval(['@(varargin) ', ...
                 options.ode_solver_name, '(varargin{:}, ode_opts)']);
         elseif (exist('lsode'))
-            lsode_options('maximum step size', options.stepsize);
+            lsode_options('maximum step size', options.h);
             options.ode_solver = @lsode;
         else
             options.ode_solver = @(varargin) error('Could not find an ODE solver');

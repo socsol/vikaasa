@@ -3,7 +3,9 @@
 %   for a given state-space point (represented as a column vector), and a
 %   control choice (represented by a scalar).
 %
-% See also: CLI
+% See also: diff, vk_diff_fn
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function diff_fn = vk_diff_make_fn(project)
     symbols = project.symbols;
     controlsymbol = project.controlsymbol;

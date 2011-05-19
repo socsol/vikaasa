@@ -1,4 +1,6 @@
 %% VK_FIGURE_PLOT_PATH Draw a trajectory into a viability kernel window.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
 
     if (nargin > 4)

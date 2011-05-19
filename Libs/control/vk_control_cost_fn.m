@@ -10,6 +10,8 @@
 %   xdot.
 %
 % See also: CONTROL, VK_CONTROL_EVAL_FN
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function cost = vk_control_cost_fn(cost_fn, x, xdot)
     vars = num2cell([x;xdot]);
     cost = cost_fn(vars{:});

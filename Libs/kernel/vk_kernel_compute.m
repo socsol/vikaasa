@@ -57,6 +57,8 @@
 %
 % See also: CELLFUN, PARCELLFUN, TOOLS, OPTIONS/VK_OPTIONS, VIABLE/VK_VIABLE,
 %   VIKAASA
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function V = vk_kernel_compute(K, f, c, varargin)
 
     %% Build options.

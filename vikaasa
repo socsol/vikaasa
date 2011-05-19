@@ -1,4 +1,3 @@
 #!/usr/bin/octave --persist 
 vikaasa_cli
 graphics_toolkit fltk
-fprintf('Type ''vk_help'' for more information.\n\n');

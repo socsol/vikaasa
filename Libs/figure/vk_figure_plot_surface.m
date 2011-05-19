@@ -2,6 +2,8 @@
 %   Draws a 3D representation of a viability kernel.
 %
 % See also: VK_FIGURE_MAKE, VK_FIGURE_MAKE_SLICE, VK_FIGURE_PLOT_AREA
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_plot_surface(V, colour, method, alpha_val)
 
     if (isempty(V))

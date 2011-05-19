@@ -9,6 +9,8 @@
 %    * point: the position to do the slice at. NaN means all points
 %    * distance (> 0): the "width of the blade" -- i.e., the space to
 %      either side of the point that will be considered within the range.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function SV = vk_kernel_slice(V, slices)
 
     % Order slices from largest to smallest dimension.  There is a bug in

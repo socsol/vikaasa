@@ -27,6 +27,8 @@
 %     'sooner' (something akin to being more risk-averse).
 %
 % See also: KERNEL/VK_KERNEL_COMPUTE, VIABLE/VK_VIABLE, VCONTROLALGS
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function neighbour_elts = vk_kernel_neighbours(x, V, distances, layers)
     neighbour_elts = zeros(size(V));
     cnt = 0;

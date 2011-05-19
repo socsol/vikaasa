@@ -14,6 +14,8 @@
 %   vk_view_kernel(proj);
 %
 % See also: VIKAASA, SCRIPTS, TOOLS
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_kernel_view(input)
     if (ischar(input))
       project = vk_project_load(input);

@@ -13,6 +13,8 @@
 %   [T, Y] = ode45(odefun, T, Y, odeopts);
 %
 % See also: TOOLS, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_ODE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo 
 function status = vk_ode_outputfcn(T, Y, flag, report_progress, ...
     progress_fn, cancel_test, cancel_test_fn, stopsteady, norm_fn, small)
 

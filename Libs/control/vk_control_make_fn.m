@@ -3,6 +3,8 @@
 %   first (those control algorithms in the 'VControlAlgs' folder), or they
 %   don't.   This function works out which is the case, and adds info (which
 %   needs to be specified as a second argument) if necessary.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function control_fn = vk_control_make_fn(fn_name, varargin)
     % Test for the existence of the function.  If it does not exist, attempt
     % to display an error.

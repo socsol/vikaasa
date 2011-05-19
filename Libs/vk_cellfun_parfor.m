@@ -2,6 +2,8 @@
 %   This is a MATLAB equivalent of parcellfun for GNU Octave.
 %
 % See also: CELLFUN, PARCELLFUN, PARFOR
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function varargout = vk_cellfun_parfor(numprocs, fun, varargin)
 
     if (nargin < 3)

@@ -2,6 +2,8 @@
 %
 % The algorithm attempts to bring the system to a steady state by applying
 % some control (specified in settings).
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function varargout = vk_viable_ode(posn, constraint_set, delta_fn, ...
     controlmax, options)
 
@@ -9,7 +11,7 @@ function varargout = vk_viable_ode(posn, constraint_set, delta_fn, ...
     maxloops = options.maxloops;
         
     % This is our time discretisation variable.
-    h = options.timediscretisation;
+    h = options.h;
     
     norm_fn = options.norm_fn;
     ode_solver = options.ode_solver;

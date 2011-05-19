@@ -1,3 +1,6 @@
+%% VK_GUI_FIGURE_CLOSE Catch close events in the VIKAASA GUI
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_gui_figure_close(h, event, varargin)    
     hObject = findobj('Tag', 'vikaasa');
     handles = guidata(hObject);

@@ -32,6 +32,8 @@
 %   - 'viablepath': Information about the viability of each point.
 %
 % See also: VIKAASA, GUI, TOOLS/VK_SIM_SIMULATE_EULER, TOOLS/VK_SIM_SIMULATE_ODE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function sim_state = vk_sim_make(project, varargin)
 
     %% Extract settings from project.

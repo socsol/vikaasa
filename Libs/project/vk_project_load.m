@@ -1,6 +1,8 @@
 %% VK_PROJECT_LOAD Loads a file and returns a project structure
 %   Performs checks to see if the file is in the old format.  If it is,
 %   then it is converted.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function project = vk_project_load(File)
     if (exist(File,'file') == 2)
         

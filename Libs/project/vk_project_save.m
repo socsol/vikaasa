@@ -8,6 +8,8 @@
 %   If saving is not successful, an error will be thrown.
 %
 % See also: VIKAASA, PROJECT VK_PROJECT_LOAD
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function success = vk_project_save(project, filename)
     try        
         save(filename,'-struct','project', '-v7');

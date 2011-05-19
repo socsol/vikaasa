@@ -1,29 +1,7 @@
+%% VK_GUI_SIMGUI GUI for interactive view of simulations
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function varargout = vk_gui_simgui(varargin)
-% VK_GUI_SIMGUI M-file for vk_gui_simgui.fig
-%      VK_GUI_SIMGUI, by itself, creates a new VK_GUI_SIMGUI or raises the existing
-%      singleton*.
-%
-%      H = VK_GUI_SIMGUI returns the handle to a new VK_GUI_SIMGUI or the handle to
-%      the existing singleton*.
-%
-%      VK_GUI_SIMGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in VK_GUI_SIMGUI.M with the given input arguments.
-%
-%      VK_GUI_SIMGUI('Property','Value',...) creates a new VK_GUI_SIMGUI or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before vk_gui_simgui_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to vk_gui_simgui_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
-% Edit the above text to modify the response to help vk_gui_simgui
-
-% Last Modified by GUIDE v2.5 10-May-2011 16:01:19
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 0;
 gui_State = struct('gui_Name',       mfilename, ...

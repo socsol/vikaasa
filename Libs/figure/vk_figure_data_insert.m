@@ -1,3 +1,6 @@
+%% VK_FIGURE_DATA_INSERT Add data into a figure handle.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_data_insert(h, limits, slices)
     % Create a rectangular set of cells.
     data = {...

@@ -1,26 +1,11 @@
 %% VK_HELP Display a help message.
-fprintf('VIKAASA %s\n\n', vk_version);
-fprintf('ABOUT\n');
-fprintf('    VIKAASA provides a library of functions for working with viability\n');
-fprintf('    kernels.  For more information, see the manual.\n\n');
-fprintf('    VIKAASA is %s.\n\n', vk_copyright);
-fprintf('GETTING STARTED\n');
-fprintf('    %% Loading a VIKAASA project:\n');
-fprintf('    project = vk_project_load(''filename.mat'');\n\n');
-fprintf('    %% Projects are just structs, so you can alter them easily.\n');
-fprintf('    %% To alter the discretisation of next kernel to run, and enable\n');
-fprintf('    %% parallel processing:\n');
-fprintf('    proj.discretisation = [10; 12];\n');
-fprintf('    proj.use_parallel = 1;\n\n');
-fprintf('    %% Compute a kernel using these settings, and store the result in a\n');
-fprintf('    %% new project:\n');
-fprintf('    project2 = vk_kernel_run(project);\n\n');
-fprintf('    %% View the kernel (according to the settings in the project):\n');
-fprintf('    vk_kernel_view(project2);\n\n');
-fprintf('    %% Saving the project to a file:\n');
-fprintf('    vk_project_save(project2, ''filename.mat'');\n\n');
-fprintf('SEE ALSO\n');
-fprintf('    Type ''help <subject>'' for any VIKAASA command, as well as any of\n');
-fprintf('    the following:\n\n');
-fprintf('        Libs, control, diff, figure, gui, kernel, options, project,\n');
-fprintf('        sim, test, viable\n');
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
+
+cd ..
+vk_readme = fileread('README');
+if (size(vk_readme, 2) == 1)
+    vk_readme = transpose(vk_readme);
+end
+
+disp(vk_readme);

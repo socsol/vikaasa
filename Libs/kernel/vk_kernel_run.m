@@ -27,6 +27,8 @@
 %   vk_project_save(project, 'Projects/newproject.mat');
 %
 % See also: VIKAASA_CLI, KERNEL, PROJECT, VK_KERNEL_COMPUTE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function varargout = vk_kernel_run(varargin)
     if (nargin == 0)
         error('You must specify at least one input.');
@@ -92,7 +94,7 @@ function varargout = vk_kernel_run(varargin)
         if (nargin > 1)
             % If a separate file was specified, save to that.
             save(varargin{2}, '-struct', 'project');
-        elseif (nargout == 0 && isschar(varargin{1}))
+        elseif (nargout == 0 && ischar(varargin{1}))
             % Otherwise, if no other option was given, save back to the
             % original file. 
             save(varargin{1}, '-struct', 'project');

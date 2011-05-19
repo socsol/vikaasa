@@ -1,8 +1,13 @@
 %% VK_INIT Initialise the VIKAASA environment
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 
 %% Info
-vk_version = '0.10.1';
-vk_copyright = 'Copyright (C) 2011 Jacek B. Krawczyk and Alastair Pharo';
+vk_version = '0.10.3';
+vk_copyright = fileread('../NOTICE');
+if (size(vk_copyright, 2) == 1)
+    vk_copyright = transpose(vk_copyright);
+end
 
 %% Paths
 cd ..

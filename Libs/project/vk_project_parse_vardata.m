@@ -1,4 +1,6 @@
 %% VK_PROJECT_FROM_VARDATA Returns a skeleton project from a cell array
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function ret = vk_project_parse_vardata(vardata)
     ret = { ...
         'vardata', {vardata}, ...

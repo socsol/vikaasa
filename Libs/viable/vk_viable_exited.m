@@ -19,6 +19,8 @@
 %     the upper bound was violated.
 %
 % See also: VIABLE, VIABLE/VK_VIABLE, OPTIONS/VK_OPTIONS
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function exited_on = vk_viable_exited(x, K, f, c, varargin)
 
     options = vk_options(K, f, c, varargin{:});

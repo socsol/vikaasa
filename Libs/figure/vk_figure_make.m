@@ -10,6 +10,8 @@
 %   - box: Whether or not to draw a box around the kernel
 %   - alpha_val: The degree of transparency
 %   - handle: the handle to display the figure in.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_make(V, K, labels, colour, method, box, ...
     alpha_val, handle)
   

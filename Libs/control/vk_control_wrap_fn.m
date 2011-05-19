@@ -2,6 +2,8 @@
 %   This function wraps the result of a control choice in up to two
 %   functions.  Firsltly, if enforcement of the control range is in place,
 %   then the outcome of calling the 
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function fn = vk_control_wrap_fn(control_fn, K, f, c, varargin)
 
     %% Create options structure

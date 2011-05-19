@@ -12,6 +12,7 @@
 %  - alpha_val: The transparency to give the kernel (certain drawing methods only)
 %  - handle: The handle to display the figure in.
 %
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function vk_figure_make_slice(V, slices, K, labels, ...
     colour, method, box, alpha_val, handle)
 

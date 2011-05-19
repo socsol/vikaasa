@@ -3,6 +3,8 @@
 %   to use this function directly.  Instead, call VK_MAKE_DIFF_FN
 %
 % See also: VK_MAKE_DIFF_FN
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function xdot = vk_diff_fn(f, x, u)
     args = num2cell(x);    
     xdot = f(args{:}, u);

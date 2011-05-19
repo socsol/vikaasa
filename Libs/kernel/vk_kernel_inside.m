@@ -30,6 +30,8 @@
 %
 % See also: VIABLE/VK_VIABLE_COMPUTE, VK_KERNEL_NEIGHBOURS, VIABLE/VK_VIABLE,
 %   VCONTROLALGS
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function [inside, edge] = vk_kernel_inside(x, V, distances, layers)
 % Whether the point x is within the (assumed convex) viability kernel V.
 

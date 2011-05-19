@@ -1,6 +1,8 @@
 %% VK_GUI_SET_VARTABLE Update the vartable to reflect the project
 %
 % See also: VIKAASA
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function handles = vk_gui_set_vartable(hObject, handles)
     project = handles.project;
 

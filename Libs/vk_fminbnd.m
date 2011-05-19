@@ -1,3 +1,7 @@
+%% VK_FMINBND
+%   A naive (slow) minimisation function.  Better to use the real fminbnd.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function min = vk_fminbnd(fn, minvar, maxvar, tolerance)
   minval = fn(maxvar);
   min = maxvar;

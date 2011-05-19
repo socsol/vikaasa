@@ -3,22 +3,31 @@
 %   Simulation Application.
 %
 %   The VIKAASA graphical user interface (GUI) provides a front-end to the
-%   VIKAASA Toolbox for computation and analysis of viability kernels with
+%   VIKAASA library for computation and analysis of viability kernels with
 %   two to four variables.
 %
-%   Running VIKAASA, by itself, opens the VIKAASA GUI, or raises the GUI window if
-%   VIKAASA is already open (only one instance of VIKAASA can be open at a
+%   Running VIKAASA opens the VIKAASA GUI, or raises the GUI window if VIKAASA
+%   is already open (only one instance of the VIKAASA GUI can be open at a
 %   time).
 %
-%   VIKAASA('filename.mat') loads the specified MAT file into VIKAASA.  The
-%   file should have been created with VIKAASA.  If no MAT file is
-%   specified, 'Projects/vikaasa_default.mat' will be loaded.
+%   See the VIKAASA manual for more detailed information on using the GUI.
 %
-% See also: GUI, GUIDE, GUIDATA, GUIHANDLES, TOOLS/VK_COMPUTE,
-%   TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE,
-%   TOOLS/VK_VIABLE
+% See also: vikaasa_cli, gui, project
+
+%%
+%    Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
 %
-% Last Modified by GUIDE v2.5 10-May-2011 17:47:49
+%   Licensed under the Apache License, Version 2.0 (the "License");
+%   you may not use this file except in compliance with the License.
+%   You may obtain a copy of the License at
+%
+%       http://www.apache.org/licenses/LICENSE-2.0
+%
+%   Unless required by applicable law or agreed to in writing, software
+%   distributed under the License is distributed on an "AS IS" BASIS,
+%   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%   See the License for the specific language governing permissions and
+%   limitations under the License.
 function varargout = vikaasa(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,15 +64,9 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     run Libs/vk_init.m
     handles.version = vk_version;
     handles.copyright = vk_copyright;
-    fprintf('\nVIKAASA %s\n', vk_version);
-    fprintf('%s.\n\n', vk_copyright);
+    fprintf('%s\n\n', vk_copyright);
     
-    % If a file was passed in, load it.
-    if (nargin > 3)
-      filename = varargin{1};
-    else
-      filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
-    end
+    filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_project_load(hObject, handles, filename);
 
@@ -495,7 +498,7 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function timediscretisation_Callback(hObject, eventdata, handles)
-    handles.project.timediscretisation = str2double(get(hObject,'String'));
+    handles.project.h = str2double(get(hObject,'String'));
     guidata(hObject, handles);
 end
 

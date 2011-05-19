@@ -46,6 +46,8 @@
 %   case, it simply checks for constraint set violations.
 %
 % See also: CONTROL, VK_CONTROL_ENFORCE, VIABLE/VK_VIABLE_EXITED, OPTIONS/VK_OPTIONS, VIABLE/VK_VIABLE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
     %% Create options structure

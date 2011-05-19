@@ -16,6 +16,8 @@
 %   [isviable, paths] = VK_VIABLE(x, K, f, c, OPTIONS);
 %
 % See also: CONTROLALGS, VIABLE, KERNEL/VK_KERNEL_COMPUTE, OPTIONS/VK_OPTIONS
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function varargout = vk_viable(x, K, f, c, varargin)
 
     %% Construct options

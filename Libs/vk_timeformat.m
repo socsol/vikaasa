@@ -1,4 +1,6 @@
-%% Helper function that formatting seconds into something human readable.
+%% VK_TIMEFORMAT Helper function that formats seconds into something human readable.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function formatted = vk_timeformat(seconds)
     if (seconds > 22896000)
         formatted = 'unknown time';

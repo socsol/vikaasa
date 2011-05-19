@@ -52,6 +52,8 @@
 %   
 % See also: CONTROLALGS, VCONTROLALGS, TOOLS, TOOLS/VK_COMPUTE,
 %   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIM_SIMULATE_EULER
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     start, time_horizon, control_fn, V, distances, layers, ...
     K, f, c, varargin)

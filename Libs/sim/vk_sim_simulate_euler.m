@@ -73,6 +73,8 @@
 %
 % See also: CONTROLALGS, VCONTROLALGS, KERNEL/VK_KERNEL_COMPUTE,
 %   KERNEL/VK_KERNEL_INSIDE, OPTIONS/VK_OPTIONS, SIM/VK_SIM_SIMULATE_ODE
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(...
     x, time_horizon, control_fn, V, distances, layers, ...
     K,  f, c, varargin)
@@ -96,7 +98,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
     
     
     %% Set up information variables
-    h = options.timediscretisation;
+    h = options.h;
     T = 0:h:time_horizon;
     iterations = length(T);    
     

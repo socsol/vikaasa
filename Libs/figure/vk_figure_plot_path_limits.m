@@ -4,6 +4,8 @@
 %   necessary display window.
 %
 % See also: VK_FIGURE_PLOT_PATH
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function limits = vk_figure_plot_path_limits(limits, path)
     for j = 1:length(limits) / 2
         limits(2*j - 1) = min([limits(2*j - 1), path(j, :)]);

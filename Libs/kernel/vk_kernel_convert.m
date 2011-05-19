@@ -11,7 +11,9 @@
 %   Standard usage:
 %   V = vk_convert({xax, yax, zax}, dispgrid)
 %
-% See also: TOOLS
+% See also: kernel
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function V = vk_kernel_convert(axes, dispgrid)
   % This will be populated below.
   V = zeros(numel(dispgrid), ndims(dispgrid));

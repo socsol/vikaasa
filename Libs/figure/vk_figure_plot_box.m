@@ -1,6 +1,8 @@
 %% VK_FIGURE_PLOT_BOX Draw a box around a kernel
 %   This function boxes the given figure according to the constraint set.  If
 %   there are slices, then these are considered too.
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function limits = vk_figure_plot_box(K, varargin)
 
     hold on;

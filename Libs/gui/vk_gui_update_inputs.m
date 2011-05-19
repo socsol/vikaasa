@@ -1,6 +1,8 @@
 %% VK_GUI_UPDATE_INPUTS Set the GUI inputs to the values recorded in the system state
 %
 % See also: VIKAASA, GUI
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function handles = vk_gui_update_inputs(hObject, handles)
     project = handles.project;
 
@@ -16,7 +18,7 @@ function handles = vk_gui_update_inputs(hObject, handles)
     set(handles.stoppingtolerance, 'String', ...
         num2str(project.stoppingtolerance));
     set(handles.timediscretisation, 'String', ...
-        num2str(project.timediscretisation));
+        num2str(project.h));
 
     %% Tick the drawbox option, if necessary.
     set(handles.drawbox, 'Value', project.drawbox);

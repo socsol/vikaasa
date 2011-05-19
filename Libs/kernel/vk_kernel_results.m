@@ -1,4 +1,6 @@
 %% VK_KERNEL_RESULTS Returns the results of a kernel approximation
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function results = vk_kernel_results(project)
 
     if (isfield(project, 'comp_datetime'))

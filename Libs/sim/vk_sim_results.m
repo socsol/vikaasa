@@ -1,4 +1,6 @@
 %% VK_SIM_RESULTS Returns the results a simulation in a cell array
+%
+% Copyright (C) 2011 by Jacek B. Krawczyk and Alastair Pharo
 function results = vk_sim_results(project)
     if (isfield(project, 'sim_state') ...
             && isfield(project.sim_state, 'comp_datetime'))
