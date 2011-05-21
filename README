@@ -5,11 +5,9 @@ ABOUT
     working with viability kernels, as well as a graphical user interface for
     MATLAB(R).  For more information, see the manual.
 
-
 STARTING VIKAASA
-    To launch VIKAASA run either the ``vikaasa'' (for the GUI) or
-    ``vikaasa_cli'' (to only initialise the library) scripts from within
-    MATLAB(R) or Octave.
+    To launch VIKAASA run either `vikaasa' (for the GUI) or `vikaasa_cli'
+    (to initialise the library) from within MATLAB(R) or Octave.
 
 COMMAND-LINE EXAMPLES
     % Loading a VIKAASA project:
@@ -32,7 +30,10 @@ COMMAND-LINE EXAMPLES
     vk_project_save(project2, 'filename.mat');
 
 SEE ALSO
-    Type 'help <subject>' for any VIKAASA command from within Octave or
+    The VIKAASA manual should be considered the most authoritative document.
+    It should have been included with this program.
+
+    Type `help <subject>' for any VIKAASA command from within Octave or
     MATLAB(R), as well as any of the following:
 
         Libs, control, diff, figure, gui, kernel, options, project,

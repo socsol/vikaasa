@@ -2,12 +2,25 @@
 %   This control rule simply returns the maximum control, regardless of
 %   position, etc.
 %
-%   u = MAXIMUMCONTROL(x, constraint_set, delta_fn, controlmax)
+%   u = MAXIMUMCONTROL(x, K, f, c)
 %
 % See also: CONTROLALGS/MINIMUMCONTROL, CONTROLALGS/ZEROCONTROL,
 %   TOOLS/VK_VIABLE
-function u = MaximumControl(x, constraint_set, delta_fn, controlmax, ...
-    varargin)
 
-    u = controlmax;
+%%
+%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%
+%  Licensed under the Apache License, Version 2.0 (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      http://www.apache.org/licenses/LICENSE-2.0
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+function u = MaximumControl(x, K, f, c, varargin)
+    u = c;
 end

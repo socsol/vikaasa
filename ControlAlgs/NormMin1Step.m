@@ -9,17 +9,31 @@
 %   make sense in a non-linear dynamic system.
 %
 %   Standard use with required arguments:
-%   u = NORMMIN1STEP(x, constraint_set, delta_fn, controlmax)
+%   u = NORMMIN1STEP(x, K, f, c)
 %
 %   With options passed in. OPTIONS is either a list of 'name', value pairs,
 %   or a structure created by VK_OPTIONS.
-%   u = NORMMIN1STEP(x, constraint_set, delta_fn, controlmax, OPTIONS)
+%   u = NORMMIN1STEP(x, K, f, c, OPTIONS)
 %
 % See also: CONTROLALGS/COSTMIN, CONTROLALGS/COSTSUMMIN, TOOLS/VK_OPTIONS
-function min_control = NormMin1Step(x, constraint_set, delta_fn, ...
-    controlmax, varargin)
 
-    options = vk_options(constraint_set, delta_fn, controlmax, varargin{:});
+%%
+%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%
+%  Licensed under the Apache License, Version 2.0 (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      http://www.apache.org/licenses/LICENSE-2.0
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
+function min_control = NormMin1Step(x, K, f, c, varargin)
+
+    options = vk_options(K, f, c, varargin{:});
 
     controldefault = options.controldefault;
    
@@ -29,16 +43,16 @@ function min_control = NormMin1Step(x, constraint_set, delta_fn, ...
 
     % Check that doing nothing doesn't produce exactly zero movement.
     % If it does, then we are already at a steady state.
-    if (delta_fn(x, controldefault) == 0)
+    if (f(x, controldefault) == 0)
         min_control = controldefault;
     else
         % Otherwise, the 'best' control is found by minimizing the
         % size of the next change that the default control gives.
         cost_of_nextchange_fn = @(u) cost_fn( ...
-            delta_fn(next_fn(x, u), controldefault));
+            f(next_fn(x, u), controldefault));
 
         % Minimise our new cost function.
         min_control = ...
-            min_fn(cost_of_nextchange_fn, -controlmax, controlmax);            
+            min_fn(cost_of_nextchange_fn, -c, c);            
     end
 end
