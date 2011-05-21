@@ -59,7 +59,7 @@ function control_fn = vk_control_make_fn(fn_name, varargin)
     %% Wrap the function if it is a VControlAlg.
     if (strcmp(type, 'VControlAlg'))
         info = varargin{1};
-        
+
         control_fn = @(x, K, f, c, varargin) fn(info, x, K, f, c, varargin{:});
     else
         control_fn = fn;

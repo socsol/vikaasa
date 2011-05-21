@@ -37,25 +37,25 @@ function varargout = vk_viable(x, K, f, c, varargin)
     %% Construct options
     options = vk_options(K, f, c, varargin{:});
 
-    
+
     %% Options of interest
-    numvars = options.numvars;    
+    numvars = options.numvars;
     maxloops = options.maxloops;
     cancel_test = options.cancel_test;
     small = options.small;
-    
+
     norm_fn = options.norm_fn;
     next_fn = options.next_fn;
     cancel_test_fn = options.cancel_test_fn;
-    
-    
+
+
     %% Construct a control function
     % This control function will be bounded by the bound_fn, so that it
     % does not unnecessarily choose any control that causes an immediate
     % crash.  The bound_fn also returns non-viability of the point.
     control_fn = vk_control_wrap_fn(options.control_fn, K, f, c, options);
-   
-    
+
+
     %% Can additionall return the path taken in determining viability
     if (nargout > 1)
         recordpath = true;
@@ -70,13 +70,13 @@ function varargout = vk_viable(x, K, f, c, varargin)
         recordpath = false;
     end
 
-    
+
     %% Check if we pretest x for viability
     % If we do, and the point turns out to be non-viable, we set maxloops
     % to 0 to skip the main loop.
     if (options.use_custom_constraint_set_fn)
         exited_on = vk_viable_exited(x, K, f, c, options);
-        if (~isempty(exited_on))            
+        if (~isempty(exited_on))
             viable = false;
             maxloops = 0;
             path(:, 1) = x;
@@ -84,23 +84,23 @@ function varargout = vk_viable(x, K, f, c, varargin)
         end
     end
 
-    
+
     %% The main loop
     for l = 1:maxloops
-        
+
         %% Record the position.
         if (recordpath)
             path(:, l) = x;
-        end       
-                
+        end
+
         %% Find control for point x
         [u, crashed, exited_on] = control_fn(x);
-                
+
         %% Record the new control.
         if (recordpath)
             control_path(l) = u;
         end
-            
+
         %% Check stopping criteria
         % Either, the algorithm has decided that the point is or isn't
         % viable, the maximum number of loops has been reached, or the user
@@ -116,21 +116,21 @@ function varargout = vk_viable(x, K, f, c, varargin)
             viable = true;
             break;
         end
-        
+
         %% Update x for next iteration.
         x = next_fn(x, u);
     end
-        
-    
+
+
     %% Return the viability of the point.
     varargout{1} = viable;
-    
+
     %% Potentially return extra info too, if requested.
     if (nargout > 1)
         paths = struct;
         paths.path = path(:, 1:l);
         paths.control_path = control_path(1:l, :);
-        
+
         if (viable == false)
             paths.exited_on = exited_on;
         end

@@ -20,10 +20,10 @@ function vk_figure_data_insert(h, limits, slices)
     data = {...
         size(limits, 2), limits, [];
         size(slices, 2)*ones(size(slices, 1), 1), slices, []};
-    
+
     if (size(slices, 1) > 0)
         % Pad the cells.
-        diff = size(limits, 2) - size(slices, 2);   
+        diff = size(limits, 2) - size(slices, 2);
         if (diff > 0)
             data{2, 3} = zeros(size(slices, 1), diff);
         elseif (diff < 0)

@@ -37,24 +37,24 @@ function status = vk_ode_outputfcn(T, Y, flag, report_progress, ...
         T_max = round(max(T));
         progress_fn(T_max);
     end
-    
+
     % Status needs to be 1 when we want to stop.
     if (cancel_test)
         status = cancel_test_fn();
     else
         status = 0; % Don't stop.
     end
-    
+
     % Check if we should stop on account of having reached a steady state.
     if (stopsteady && ~strcmp(flag, 'init') && ~isempty(T))
         Y1 = Y(1:end-1, :);
-        Y2 = Y(2:end, :);        
+        Y2 = Y(2:end, :);
         Ydiff = Y2 - Y1;
-        
+
         T1 = T(1:end-1);
-        T2 = T(2:end);        
+        T2 = T(2:end);
         Tdiff = T2 - T1;
-        
+
         for i = 1:length(Tdiff)
             %fprintf('T = %f; N = %f\n', T2(i), ...
             %norm_fn(Ydiff(i, :) / Tdiff(i)));
@@ -62,7 +62,7 @@ function status = vk_ode_outputfcn(T, Y, flag, report_progress, ...
                 status = 1; % stop
                 break;
             else
-                
+
             end
         end
     end

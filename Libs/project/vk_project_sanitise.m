@@ -86,7 +86,7 @@ function project = vk_project_sanitise(project)
     if (isfield(project, 'K') && length(project.K) ~= 2*numvars)
         usevars = min(2*numvars, length(project.K));
         padvars = max(0, 2*numvars - length(project.K));
-        
+
         project.K = [project.K(1:usevars), zeros(1, padvars)];
     end
 

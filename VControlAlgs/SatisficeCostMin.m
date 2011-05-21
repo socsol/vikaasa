@@ -6,8 +6,8 @@
 function u = SatisficeCostMin(info, x, K, f, c, varargin)
 
     options = vk_options(K, f, c, varargin{:});
-    
-    V = info.V;    
+
+    V = info.V;
     distances = info.distances;
     layers = info.layers;
 
@@ -18,7 +18,7 @@ function u = SatisficeCostMin(info, x, K, f, c, varargin)
 
     % Default -- gets overwritten below, if necessary.
     u = ZeroControl(x, K, f, c, options);
-    
+
     % If doing nothing causes us to move a negligible amount, then stop.
     if (norm_fn(f(x, u)) < small)
         return;
@@ -26,10 +26,10 @@ function u = SatisficeCostMin(info, x, K, f, c, varargin)
 
     % Otherwise, check to see whether we are on edge.
     [inside, edge] = vk_kernel_inside(x, V, distances, layers);
-       
+
     % If we are on edge, we take our control choice from CostMin.
-    if (~inside) 
+    if (~inside)
         u = CostMin(x, K, f, c, options);
-    end 
+    end
 end
 

@@ -19,12 +19,12 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function u = TaylorRule(x, K, f, c, varargin)    
+function u = TaylorRule(x, K, f, c, varargin)
 
     % Coefficients on pi and y
     a_pi = 1.5;
     a_y = 0.5;
-    
+
     % Targets.  In steady state pi = i, so they should be the same. y_T = 0
     % because y represents the output gap.
     pi_T = 0.02;
@@ -33,8 +33,8 @@ function u = TaylorRule(x, K, f, c, varargin)
 
     % State values are stored in the vector x.  We only take the first
     % three so that this algorithm works in both 3D and 4D.
-    y = x(1); pi = x(2); i = x(3);   
-        
+    y = x(1); pi = x(2); i = x(3);
+
     % Note that we subtract i, because u = idot \approx i_desired - i
-    u = (i_T - i) + a_pi*(pi - pi_T) + a_y*(y - y_T); 
+    u = (i_T - i) + a_pi*(pi - pi_T) + a_y*(y - y_T);
 end

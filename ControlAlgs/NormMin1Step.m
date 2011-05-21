@@ -36,7 +36,7 @@ function min_control = NormMin1Step(x, K, f, c, varargin)
     options = vk_options(K, f, c, varargin{:});
 
     controldefault = options.controldefault;
-   
+
     min_fn = options.min_fn;
     cost_fn = @norm;
     next_fn = options.next_fn;
@@ -53,6 +53,6 @@ function min_control = NormMin1Step(x, K, f, c, varargin)
 
         % Minimise our new cost function.
         min_control = ...
-            min_fn(cost_of_nextchange_fn, -c, c);            
+            min_fn(cost_of_nextchange_fn, -c, c);
     end
 end

@@ -1,4 +1,4 @@
-%% VK_CONTROL_COST_FN compose cost functions of x, xdot 
+%% VK_CONTROL_COST_FN compose cost functions of x, xdot
 %   This function is needed by certain cost-minimising control functions in
 %   order to be able to minimise using an un-named vector of variables, instead
 %   of a tuple.

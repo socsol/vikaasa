@@ -38,7 +38,7 @@
 function exited_on = vk_viable_exited(x, K, f, c, varargin)
 
     options = vk_options(K, f, c, varargin{:});
-    
+
     % If we use the custom constraint set, check that first. If that
     % returns false, then give up.
     if (options.use_custom_constraint_set_fn)
@@ -60,7 +60,7 @@ function exited_on = vk_viable_exited(x, K, f, c, varargin)
             exited_on(count) = i;
         end
     end
-    
+
     % Truncate.
     exited_on = exited_on(:, 1:count);
 end

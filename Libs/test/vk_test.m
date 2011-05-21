@@ -12,7 +12,7 @@ labels = char( ...
   'interest rate')
 
 % Constraint set -- also used for axis()
-constraint_set = ... 
+constraint_set = ...
 [-0.1, 0.1, ...  % output gap
  0.01, 0.03, ... % inflation
  0, 0.07]        % interest rate
@@ -32,7 +32,7 @@ try
 catch exception
   fprintf('\n\nRUNNING ALGORITHM ...');
   V = vk_compute(constraint_set, char(fnx, fny), discretisation);
-  fprintf(' done\n');  
+  fprintf(' done\n');
 end
 
 % Create a scatter plot.

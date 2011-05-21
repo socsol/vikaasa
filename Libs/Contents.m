@@ -6,6 +6,6 @@
 %   directory.
 %
 % Directories
-%   
 %
-% 
+%
+%

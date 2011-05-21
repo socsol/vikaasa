@@ -16,15 +16,15 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function slices = vk_kernel_make_slices(data, K, discretisation)      
-    
+function slices = vk_kernel_make_slices(data, K, discretisation)
+
     slices = [];
 
     distances = vk_kernel_distances(K, discretisation);
-    
+
     %% Loop through rows of data
     % There will be one row in data for each variable.
-    for i = 1:size(data, 1)     
+    for i = 1:size(data, 1)
         if (data{i,1})
             % If the first element is checked, then that dimension is
             % sliced for all values, essentially eliminating it from
@@ -32,8 +32,8 @@ function slices = vk_kernel_make_slices(data, K, discretisation)
             slices = [slices; i, NaN, NaN];
         elseif (data{i,2})
             % If the second element is checked, then that dimension is
-            % sliced at a particular value. 
-            % The third element is the 'distance', which tells the slicer how far to either side of the slice value 
+            % sliced at a particular value.
+            % The third element is the 'distance', which tells the slicer how far to either side of the slice value
             slices = [slices; i, data{i, 3}, distances(i)];
         end
     end

@@ -20,6 +20,6 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function xdot = vk_diff_fn(f, x, u)
-    args = num2cell(x);    
+    args = num2cell(x);
     xdot = f(args{:}, u);
 end

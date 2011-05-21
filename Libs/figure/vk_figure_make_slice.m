@@ -42,7 +42,7 @@ function vk_figure_make_slice(V, slices, K, labels, ...
             figure_name = [figure_name, ...
                 labels{slices(i, 1)}, '=', num2str(slices(i, 2))];
         end
-        
+
         if (i < size(slices, 1))
             figure_name = [figure_name, ', '];
         end
@@ -50,7 +50,7 @@ function vk_figure_make_slice(V, slices, K, labels, ...
     figure(handle);
     title(figure_name);
     set(handle, 'Name', figure_name);
-    
+
 
     % Sort by dimension from largest to smallest.
     if (size(slices, 1) > 1)
@@ -81,7 +81,7 @@ function vk_figure_make_slice(V, slices, K, labels, ...
     else
         limits = K;
     end
-    
+
     vk_figure_data_insert(handle, limits, slices);
-    axis(limits);    
+    axis(limits);
 end

@@ -25,7 +25,7 @@ function diff_fn = vk_diff_make_fn(project)
     controlsymbol = project.controlsymbol;
     diff_eqns = cellstr(project.diff_eqns);
     args = cellstr(symbols);
-    
+
     %% Build a string that contains all of the equations
     % With semi-colons separating them
     inline_str = '[';
@@ -40,7 +40,7 @@ function diff_fn = vk_diff_make_fn(project)
 
     %% Create an inline function.
     diff_inline = inline(inline_str, args{:}, controlsymbol);
-    
+
     %% Create the array-based function
     diff_fn = @(x, u) vk_diff_fn(diff_inline, x, u);
 end

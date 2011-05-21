@@ -65,7 +65,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.version = vk_version;
     handles.copyright = vk_copyright;
     fprintf('%s\n\n', vk_copyright);
-    
+
     filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     fprintf('Loading file: %s\n', filename);
     handles = vk_gui_project_load(hObject, handles, filename);
@@ -1239,13 +1239,13 @@ function addvar_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     project = handles.project;
-    
+
     project.labels = [project.labels; {'New Variable'}];
     project.symbols = [project.symbols; {'new'}];
     project.K = [project.K, 0, 1];
     project.discretisation = [project.discretisation; 11];
     project.diff_eqns = [project.diff_eqns; {'0'}];
-    
+
     project.numvars = project.numvars + 1;
     handles.project = vk_project_sanitise(project);
 

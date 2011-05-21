@@ -51,12 +51,12 @@ function [inside, edge] = vk_kernel_inside(x, V, distances, layers)
 
     % Finds the point's neighbours.
     neighbour_elts = vk_kernel_neighbours(x, V, distances, layers);
-    
+
     % Using these neighbours, we see if we can draw a box around the
     %  points.
     inside = vk_kernel_inside_rec(x, neighbour_elts, 1, 'leq') ...
         && vk_kernel_inside_rec(x, neighbour_elts, 1, 'geq');
-        
+
     % If we are not inside, but there are still neighbours, then we are on
     % the edge.
     edge = ~inside && ~isempty(neighbour_elts);
@@ -86,12 +86,12 @@ function inside = vk_kernel_inside_rec(x, N, dim, op)
         end
     end
     N1 = N1(1:cnt, :);
-    
+
     % More dimensions, so do the same in those.
     if (~isempty(N1) && dim < size(N, 2))
         l_inside = vk_kernel_inside_rec(x, N1, dim+1, 'leq');
         u_inside = vk_kernel_inside_rec(x, N1, dim+1, 'geq');
-        
+
         inside = l_inside && u_inside;
     else
         inside = cnt > 0;

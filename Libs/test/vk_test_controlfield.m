@@ -43,10 +43,10 @@ options = vk_options(constraint_set, delta_fn, controlmax, ...
     'sim_fn', @vk_simulate_euler, ...
     'sim_stopsteady', 1, ...
     'stoppingtolerance', stoppingtolerance, ...
-    'timediscretisation', timediscretisation ...  
+    'timediscretisation', timediscretisation ...
     );
 
-        
+
 %% Create axes
 xax = linspace(constraint_set(1), constraint_set(2), discretisation);
 yax = linspace(constraint_set(3), constraint_set(4), discretisation);
@@ -71,7 +71,7 @@ zlabel(labels(3, :));
 view(3);
 
 hold on;
-        
+
 slice(xmesh, ymesh, zmesh, vol, ...
     linspace(constraint_set(1), constraint_set(2), 3), ...
     constraint_set(3) + (constraint_set(4) - constraint_set(3))/2, ...
@@ -121,13 +121,13 @@ zlabel(labels(3, :));
 view(3);
 hold on;
 
-hcones = coneplot(xax, yax, zax, xvel, yvel, zvel, xmesh, ymesh, zmesh,1);        
+hcones = coneplot(xax, yax, zax, xvel, yvel, zvel, xmesh, ymesh, zmesh,1);
 set(hcones,'FaceColor','red','EdgeColor','none');
 
 isosurface(xax, yax, zax, vol, 0);
 
 
-camproj perspective; 
+camproj perspective;
 grid on;
 camlight;
 lighting gouraud;

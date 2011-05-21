@@ -15,7 +15,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_figure_plot_area(V, colour, method, alpha_val)   
+function vk_figure_plot_area(V, colour, method, alpha_val)
     grid on;
 
     hold on;
@@ -24,7 +24,7 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
     end
 
     if (strcmp(method, 'qhull'))
-        try  
+        try
             H = convhull(V(:,1), V(:,2));
             plot(V(H,1), V(H,2));
             ar = fill(V(H,1), V(H,2), colour);
@@ -35,7 +35,7 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
         end
     elseif (strcmp(method, 'isosurface') || strcmp(method, 'isosurface-smooth'))
         try
-        
+
             xax = sort(unique(V(:,1)));
             yax = sort(unique(V(:,2)));
             volume = zeros(length(yax), length(xax), 2);
@@ -46,16 +46,16 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
                 for y = 1:length(yax)
                     if (all(Vsorted(Vidx, :) == [xax(x),yax(y)]))
                         volume(y, x, 1) = 1;
-                        volume(y, x, 2) = 2;                        
+                        volume(y, x, 2) = 2;
                         Vidx = Vidx + 1;
                     end
                 end
-            end        
-            
-            if (strcmp(method, 'isosurface-smooth'))
-                volume = smooth3(volume);                
             end
-            h_iso = patch(isosurface(xax, yax, [0,1], volume, 1));            
+
+            if (strcmp(method, 'isosurface-smooth'))
+                volume = smooth3(volume);
+            end
+            h_iso = patch(isosurface(xax, yax, [0,1], volume, 1));
             isonormals(xax,yax,[0,1],volume,h_iso);
             h_caps = patch(isocaps(xax,yax,[0,1],volume,1));
             set(h_iso,'FaceColor',colour, 'EdgeColor', 'none');
@@ -67,8 +67,8 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
             method = 'scatter';
         end
     end
-        
+
     if (strcmp(method, 'scatter'))
-        scatter(V(:,1), V(:,2));    
+        scatter(V(:,1), V(:,2));
     end
-end    
+end

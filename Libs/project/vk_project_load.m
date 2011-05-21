@@ -19,10 +19,10 @@
 %  limitations under the License.
 function project = vk_project_load(File)
     if (exist(File,'file') == 2)
-        
+
         %% Load the file if it exists.
         contents = load(File);
-        
+
         if (isfield(contents, 'dispgrid'))
             %% Old file
             fprintf('Old file detected -- converting.\n');
@@ -31,7 +31,7 @@ function project = vk_project_load(File)
               'symbols', char('x', 'y', 'z', 'q'), ...
               'discretisation', contents.discret*ones(4, 1) ...
             );
-            
+
             if (ndims(contents.dispgrid) == 4)
                 %% 4D Case
                 project.K = [ ...
@@ -39,11 +39,11 @@ function project = vk_project_load(File)
                     contents.ymin, contents.ymax, ...
                     contents.zmin, contents.zmax, ...
                     contents.qmin, contents.qmax];
-                project.diff_eqns = char(contents.fnx, contents.fny, 'u', contents.fnq); 
+                project.diff_eqns = char(contents.fnx, contents.fny, 'u', contents.fnq);
                 project.V = vk_kernel_convert( ...
                   {contents.xax, contents.yax, contents.zax, contents.qax}, ...
                   contents.dispgrid);
-            else 
+            else
                 %% 3D case
                 project.K = [...
                     contents.xmin, contents.xmax, ...
@@ -53,12 +53,12 @@ function project = vk_project_load(File)
                   {contents.xax, contents.yax, contents.zax}, ...
                   contents.dispgrid);
                 project.diff_eqns = char(contents.fnx, contents.fny, 'u');
-            end                                        
+            end
         else
             %% New file
             project = contents;
         end
-           
+
         %% Repair any problems with the file.
         project = vk_project_sanitise(project);
     else

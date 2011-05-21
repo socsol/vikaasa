@@ -95,9 +95,9 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
 
     %% Create options structure
     options = vk_options(K, f, c, varargin{:});
-    
-    
-    %% Options that we care about   
+
+
+    %% Options that we care about
     next_fn = options.next_fn;
     cancel_test = options.cancel_test;
     cancel_test_fn = options.cancel_test_fn;
@@ -105,62 +105,62 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
     report_progress = options.report_progress;
     progress_fn = options.progress_fn;
     sim_stopsteady = options.sim_stopsteady;
-    
-    
+
+
     %% Create the bounded control function
     fn = vk_control_wrap_fn(control_fn, K, f, c, options);
-    
-    
+
+
     %% Set up information variables
     h = options.h;
     T = 0:h:time_horizon;
-    iterations = length(T);    
-    
+    iterations = length(T);
+
     % Time goes along the column axis.
     path = zeros(length(K)/2, iterations);
     normpath = zeros(1, iterations);
     controlpath = zeros(1, iterations);
     viablepath = zeros(4, iterations);
 
-    
+
     %% Run simulation
     % First x is already set in function args.
     for i = 1:iterations
-        
+
         %% Check to see if we need to cancel
         if (cancel_test && cancel_test_fn())
             break;
         end
-        
-        
+
+
         %% Get the control choice
         u = fn(x);
 
-        
+
         %% Record pah and control choice
         path(:, i) = x;
         controlpath(i) = u;
-        
-        
+
+
         %% Record viability, etc. at this point
         [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
             distances, layers);
         viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
-        
-        
+
+
         %% Record velocity and steadyness
         norm_val = norm_fn(f(x, u));
         steady = norm_val <= options.small;
         viablepath(4, i) = steady;
         normpath(i) = norm_val;
-                
-        
+
+
         %% Report to progress (bar) if necessary
         if (report_progress)
             progress_fn(T(i));
         end
-        
-        
+
+
         %% Stop if necessary
         if (sim_stopsteady && steady)
             break;
@@ -169,8 +169,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
         %% Iterate to next point.
         x = next_fn(x, u);
     end
-    
-    
+
+
     %% If we stopped early, we cut the items down to size.
     if (i < iterations)
         T = T(1:i);

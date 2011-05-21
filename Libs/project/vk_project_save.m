@@ -25,7 +25,7 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function success = vk_project_save(project, filename)
-    try        
+    try
         save(filename,'-struct','project', '-v7');
         success = 1;
     catch

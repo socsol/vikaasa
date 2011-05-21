@@ -31,13 +31,13 @@
 function V = vk_kernel_convert(axes, dispgrid)
   % This will be populated below.
   V = zeros(numel(dispgrid), ndims(dispgrid));
-  
+
   % The recursive call will populate V.
   [counter, V] = vk_convert_recursive(0, V, [], axes, dispgrid);
-  
+
   % Eliminate unfilled rows from V.
   V = V(1:counter, :);
-  
+
 % This function is a helper for  vk_convert.
 function [counter, V] = ...
     vk_convert_recursive(counter, V, coords, axes, dispgrid)
@@ -55,7 +55,7 @@ function [counter, V] = ...
   elseif (length(axes) > 1) % Recursive version, for neq 3 axes.
     % Split the grid into a cell array of rows.
     rows = mat2cell(dispgrid, ones(1,size(dispgrid, 1)));
-    
+
     % Loop through each one and make a recursive call.
     for i = 1:length(rows)
       subgrid = shiftdim(rows{i}, 1);
@@ -70,5 +70,5 @@ function [counter, V] = ...
       end
     end
   end
-  
-  
+
+

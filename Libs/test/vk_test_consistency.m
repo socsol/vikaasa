@@ -49,7 +49,7 @@ options = vk_options(constraint_set, delta_fn, controlmax, ...
     'sim_fn', @vk_simulate_euler, ...
     'sim_stopsteady', 1, ...
     'stoppingtolerance', stoppingtolerance, ...
-    'timediscretisation', timediscretisation ...  
+    'timediscretisation', timediscretisation ...
     );
 
 %% Run the viability algorithm
@@ -112,7 +112,7 @@ fprintf('----------------------------------------------\n\n');
 
 syms u y pi ii
 norm_vals = zeros(1, length(sim_normpath));
-for i = 1:length(sim_normpath)    
+for i = 1:length(sim_normpath)
     norm_vals(i) = norm(subs(subs(subs(subs(...
         [-0.02*y - 0.35*(ii - pi), 0.002*y, u],...
         y,viable_path(1,i)),...
@@ -143,7 +143,7 @@ for i = 2:length(sim_normpath)
         pi,path_vals(2,i-1)),...
         ii,path_vals(3,i-1)),...
         u,sim_controlpath(i-1));
-    
+
     path_vals(:,i) = path_vals(:,i-1) + diff;
 end
 
@@ -169,14 +169,14 @@ for i = 1:length(sim_normpath)
         y,viable_path(1,i)),...
         pi,viable_path(2,i)),...
         ii,viable_path(3,i))
-    
+
     if (uopt > 0.005)
         control_vals(i) = 0.005;
     elseif (uopt < -0.005)
         control_vals(i) = -0.005;
     else
         control_vals(i) = uopt;
-    end            
+    end
 end
 
 fprintf('Control values from the analytical solution:\n');

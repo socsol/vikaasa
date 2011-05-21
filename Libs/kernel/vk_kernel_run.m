@@ -58,7 +58,7 @@ function varargout = vk_kernel_run(varargin)
     K = project.K;
     c = project.c;
     f = vk_diff_make_fn(project);
-    
+
     %% Create options.
     options = vk_options_make(project, f);
     computations = prod(project.discretisation);
@@ -72,32 +72,32 @@ function varargout = vk_kernel_run(varargin)
         K
         f
         c
-        options        
+        options
     end
 
     % Run the computation.
     cl = fix(clock);
-    tic;    
+    tic;
     fprintf('RUNNING ALGORITHM\n');
     success = 0; err = 0;
     %try
         V = vk_kernel_compute(K, f, c, options);
-        
-        if (options.cancel_test_fn())            
+
+        if (options.cancel_test_fn())
             fprintf('CANCELLED\n');
-        else            
+        else
             fprintf('FINISHED\n');
             success = 1;
-        end        
+        end
     %catch
     %    exception = lasterror();
     %    error(exception);
     %    fprintf('ERROR: %s\n', exception.message);
     %    err = 1;
     %end
-    
+
     comp_time = toc;
-    
+
     % Save the results into our state structure if successful.
     if (success)
         project.V = V;
@@ -110,7 +110,7 @@ function varargout = vk_kernel_run(varargin)
             save(varargin{2}, '-struct', 'project');
         elseif (nargout == 0 && ischar(varargin{1}))
             % Otherwise, if no other option was given, save back to the
-            % original file. 
+            % original file.
             save(varargin{1}, '-struct', 'project');
         end
 
@@ -119,7 +119,7 @@ function varargout = vk_kernel_run(varargin)
             varargout{1} = project;
         end
     end
-   
+
     % If we are debugging, rethrow the error
     if (project.debug && err)
         rethrow(exception);

@@ -15,20 +15,20 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_gui_figure_close(h, event, varargin)    
+function vk_gui_figure_close(h, event, varargin)
     hObject = findobj('Tag', 'vikaasa');
     handles = guidata(hObject);
-    
+
     if (nargin == 3 && strcmp(varargin{1}, 'tp'))
         name = 'current_timeprofile';
     else
         name = 'current_figure';
     end
-    
+
     if (isfield(handles, name) && handles.(name) == h)
         handles = rmfield(handles, name);
     end
-    
+
     guidata(hObject, handles);
     delete(h);
 end

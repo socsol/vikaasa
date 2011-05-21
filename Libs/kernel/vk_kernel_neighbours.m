@@ -47,8 +47,8 @@ function neighbour_elts = vk_kernel_neighbours(x, V, distances, layers)
     neighbour_elts = zeros(size(V));
     cnt = 0;
     for i = 1:size(V, 1)
-        within = zeros(1, size(V, 2));        
-        for j = 1:size(V, 2)            
+        within = zeros(1, size(V, 2));
+        for j = 1:size(V, 2)
             dist = abs(x(j) - V(i, j));
             if (dist <= layers*distances(j) ...
                     && dist > (layers - 1)*distances(j))

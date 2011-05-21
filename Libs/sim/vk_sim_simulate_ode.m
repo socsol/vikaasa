@@ -49,7 +49,7 @@
 %   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver', myodesolver);
-%   
+%
 % See also: CONTROLALGS, VCONTROLALGS, TOOLS, TOOLS/VK_COMPUTE,
 %   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIM_SIMULATE_EULER
 %
@@ -74,23 +74,23 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 
     %% Create options structure
     options = vk_options(K, f, c, varargin{:});
-    
+
     %% Options we care about here
     ode_solver = options.ode_solver;
     norm_fn = options.norm_fn;
     small = options.small;
-    
+
     %% Create the function for use with the ODE solver.
     control_fn = vk_control_wrap_fn(control_fn, K, f, c, options);
     odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-1,1));
-    
+
     %% Run the ODE solver.
     [T, Y] = ode_solver(odefun, [0, time_horizon], [start;0]);
 
     % The final column of Y gives the cumulative control choices.  To decode
-    % this then, we need to subract the differences. 
+    % this then, we need to subract the differences.
     path = transpose(Y(:, 1:end-1));
-    
+
     %% Construct information arrays from results.
     % Work out the size of the movements from the differences, relative to
     % the time differences.
@@ -106,8 +106,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 
     pathdiff = transpose(Ydiff(:, 1:end-1));
     controldiff = transpose(Ydiff(:, end));
-    
-    for i = 1:length(T)-1       
+
+    for i = 1:length(T)-1
         normpath(i) = norm_fn(pathdiff(:, i) / Tdiff(i));
         controlpath(i) = controldiff(i) / Tdiff(i);
     end
@@ -116,8 +116,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     final_diff = odefun(T(end), transpose(Y(end, :)));
     normpath(end) = norm_fn(final_diff(1:end-1));
     controlpath(end) = final_diff(end);
-    
-    viablepath = zeros(4, length(T));    
+
+    viablepath = zeros(4, length(T));
     for i = 1:length(T)
         x = path(:, i);
         [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
@@ -125,7 +125,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
         viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
         viablepath(4, i) = normpath(i) <= small;
     end
-    
+
     % T should be returned as a row vector.
     T = transpose(T);
 end

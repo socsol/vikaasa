@@ -41,39 +41,39 @@ function u = CostMin(x, K, f, c, varargin)
     % Get the options structure.
     options = vk_options(K, f, c, varargin{:});
 
-    steps = options.steps;   
+    steps = options.steps;
     min_fn = options.min_fn;
-                    
+
     cost_fn = @(u) vk_costmin_recursive(x, u, steps, K, ...
         f, c, options);
 
-    % Minimise our new cost function.    
-    u = min_fn(cost_fn, -c, c);            
-end    
+    % Minimise our new cost function.
+    u = min_fn(cost_fn, -c, c);
+end
 
 
 %% Helper function for COSTMIN
 function cost = vk_costmin_recursive(x, u, steps, ...
     K, f, c, options)
-    
+
     min_fn = options.min_fn;
     next_fn = options.next_fn;
-    
+
     futurex = next_fn(x,u);
-                
-    if (steps > 1)                                      
+
+    if (steps > 1)
         cost_fn = @(u) vk_costmin_recursive(...
             futurex, u, steps - 1, ...
             K, f, c, options);
-        [min_control, cost] = min_fn(cost_fn, -c, c);                
+        [min_control, cost] = min_fn(cost_fn, -c, c);
     else % steps = 1
         cost_fn = options.cost_fn;
-        
+
         if (options.use_controldefault)
             cost = cost_fn( ...
                 next_fn(futurex, options.controldefault), ...
                 f(futurex, options.controldefault));
-        else                                    
+        else
             % Optimise by minimising the cost of the next change.
             future_cfn = @(u2) cost_fn(...
                 next_fn(futurex, u2), ...

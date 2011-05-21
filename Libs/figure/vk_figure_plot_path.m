@@ -34,8 +34,8 @@ function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
             '-', 'Color', colour, 'LineWidth', width);
     else
         error ('Too many dimensions to plot the path.');
-    end       
-    
+    end
+
     % Next, for each point, we draw a coloured marker:
     %  - Green, if in the kernel.
     %  - Blue on the edge of the kernel.
@@ -50,7 +50,7 @@ function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
     else
         num = 1;
     end
-    
+
     hold on;
     for i = 1:num
         if (i == 1)
@@ -67,11 +67,11 @@ function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
         if (viablepath(3,i) == 1)
                 colour = 'r';
         elseif (viablepath(1,i) == 1)
-            colour = 'g';            
+            colour = 'g';
         elseif (viablepath(2, i) == 1)
             colour = 'b';
         else
-            colour = [1 0.5 0];            
+            colour = [1 0.5 0];
         end
 
         if (size(path,1) == 2)
@@ -85,4 +85,4 @@ function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
                 'MarkerFaceColor', colour, ...
                 'MarkerSize', msize);
         end
-    end    
+    end

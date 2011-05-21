@@ -37,22 +37,22 @@ function u = CostSumMin(x, K, f, c, varargin)
     options = vk_options(K, f, c, varargin{:});
 
     steps = options.steps;
-    min_fn = options.min_fn;    
+    min_fn = options.min_fn;
 
     cost_of_nextchange_fn = @(u) vk_costsum_recursive(x, u, steps, ...
         K, f, c, options);
 
     % Minimise our cost function.
-    u = min_fn(cost_of_nextchange_fn, -c, c);    
+    u = min_fn(cost_of_nextchange_fn, -c, c);
 end
-    
+
 %% Recursive helper function for COSTSUMMIN
 %   This function computes the aggregate cost of continuing some number of
 %   steps into the future, given a starting position (x) and a control
 %   level (u).  If the constraint set is exited, costs become infinite.
 function cost = vk_costsum_recursive(x, u, steps, K, ...
     f, c, options)
-    
+
     cost_fn = options.cost_fn;
     min_fn = options.min_fn;
     next_fn = options.next_fn;
@@ -71,9 +71,9 @@ function cost = vk_costsum_recursive(x, u, steps, K, ...
         future_cfn = @(u2) vk_costsum_recursive(...
             futurex, u2, steps - 1, ...
             K, f, c, options);
-        
+
         [min_control_int, future_costs] = ...
-            min_fn(future_cfn, -c, c);        
+            min_fn(future_cfn, -c, c);
     end
 
     % Then, we add the current cost and return.
