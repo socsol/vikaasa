@@ -1,38 +1,40 @@
-%% VK_SIM_MAKE Create the sim_state structure.
-%   Makes a call to either TOOLS/VK_SIM_SIMULATE_EULER or TOOLS/VK_SIM_SIMULATE_ODE
+%% VK_SIM_MAKE Create the `sim_state' structure.
+%
+% SYNOPSIS
+%   Makes a call to either vk_sim_simulate_euler or vk_sim_simulate_ode
 %   and returns the results in a structure, along with the important input
 %   arguments.
 %
-%   Standard Usage:
-%   sim_state = VK_SIM_MAKE(PROJECT)
+% USAGE
+%   % Standard Usage:
+%   sim_state = vk_sim_make(project)
 %
-%   With additional options:
-%   sim_state = VK_SIM_MAKE(PROJECT, OPTIONS)
+%   % With additional options:
+%   sim_state = vk_sim_make(project, options)
 %
-%   The PROJECT should be a standard VIKAASA project file.
+%   The `project' should be a standard VIKAASA project structure.
 %
-%   OPTIONS can be a structure created with VK_OPTIONS, or a series of
-%   name:value pairs, or both.
+%   `options' can be a structure created with vk_options, or a series of
+%   name:value pairs, or both (the former before the latter).
 %
-%   'sim_state' should contain the following properties (see See
-%   TOOLS/VK_SIM_SIMULATE_EULER for details)
-%   - 'K': A constraint set, K
-%   - 'c': The maximum allowed control.
-%   - 'controlpath': A row-vector of control choices.
-%   - 'distances': The distances vector.
-%   - 'layers': The layers vector.
-%   - 'normpath': A row-vector of norms.
-%   - 'path': The state-space path.
-%   - 'small': The velocity at which the system is considered steady.
-%   - 'start': The starting point.
-%   - 'T': A row-vector of times.
-%   - 'time_horizon': The ending time (planned -- if 'sim_stopsteady' is
-%     specified, this may not be the same as T(end)).
-%   - 'V': A viability kernel
-%   - 'viablepath': Information about the viability of each point.
+%   `sim_state' should contain the following properties (see See
+%   vk_sim_simulate_euler for more details):
+%   - `K': A constraint set.
+%   - `c': The maximum control size.
+%   - `controlpath': A row-vector of control choices.
+%   - `distances': The distances vector.
+%   - `layers': The layers vector.
+%   - `normpath': A row-vector of norms.
+%   - `path': The state-space path.
+%   - `small': The velocity at which the system is considered steady.
+%   - `start': The starting point.
+%   - `T': A row-vector of times.
+%   - `time_horizon': The ending time (planned -- if `sim_stopsteady' is
+%     specified, this may not be the same as `T(end)').
+%   - `V': A viability kernel
+%   - `viablepath': Information about the viability of each point.
 %
-% See also: VIKAASA, GUI, TOOLS/VK_SIM_SIMULATE_EULER, TOOLS/VK_SIM_SIMULATE_ODE
-%
+% See also: vikaasa, project, sim, vk_sim_simulate_euler, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

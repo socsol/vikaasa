@@ -1,16 +1,24 @@
 %% VK_FIGURE_MAKE Plots a viability kernel.
 %
-%   VK_FIGURE_MAKE(V, K, labels, colour, method, box, alpha_val, handle)
+% SYNOPSIS
+%   This function will plot the given viability kernel in an existing figure,
+%   as specified by the `handle'.  Based on the number of dimensions in the
+%   kernel, vk_figure_make determines whether to plot an area or a volume.
 %
-%   - V: The complete viability kernel.
-%   - K: The constraint set
-%   - labels: Labels for the axes
-%   - colour: The colour to draw th kernel
-%   - method: The method for drawing the kernel
-%   - box: Whether or not to draw a box around the kernel
-%   - alpha_val: The degree of transparency
-%   - handle: the handle to display the figure in.
+% USAGE
+%   % Standard usage:
+%   vk_figure_make(V, K, labels, colour, method, box, alpha_val, handle)
 %
+%   - `V': The complete viability kernel.
+%   - `K': The constraint set
+%   - `labels': Labels for the axes
+%   - `colour': The colour to draw th kernel
+%   - `method': The method for drawing the kernel
+%   - `box': Whether or not to draw a box around the kernel
+%   - `alpha_val': The degree of transparency
+%   - `handle': the handle to display the figure in.
+%
+% See also: vk_figure_plot_area, vk_figure_plot_surface, vk_kernel_view
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

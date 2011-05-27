@@ -1,8 +1,9 @@
 %% VK_SIM_START Determine where the starting position is.
-%   This function reads a start state out of the given project.  If the project
-%   has 'sim_use_nearest' checked, then the nearest 'grid' point (according to
-%   the discretisation) is used instead of the given one.
 %
+% SYNOPSIS
+%   This function reads a start state out of the given project.  If the project
+%   has `sim_use_nearest' checked, then the nearest ``grid'' point (according to
+%   the discretisation) is used instead of the given one.
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -1,18 +1,18 @@
 %% VK_KERNEL_CONVERT Converts viability kernels from an old format to new
 %   Takes a cell array of axes, and a multi-dimensional array of points,
-%   'dispgrid'. dispgrid represents the viability kernel.  If there is a
-%   _zero_ in the (i, j, k)th element of dispgrid, then the point [ax1(i),
+%   `dispgrid'. `dispgrid' represents the viability kernel.  If there is a
+%   zero in the (i, j, k)th element of dispgrid, then the point [ax1(i),
 %   ax2(j), ax3(k)] was identified as viable.
 %
-%   The replacement format, V is a n x dim array (n = # of viable points;
-%   dim = # of dimensions.  Each row thus represents a viable point
-%   directly.
+%   The replacement format, V is a $n \times dim$ array, where $n$ is the of
+%   viable points; $dim$ is the number of dimensions.  Each row thus represents
+%   a viable point directly.
 %
-%   Standard usage:
+% USAGE
+%   % Standard usage:
 %   V = vk_convert({xax, yax, zax}, dispgrid)
 %
 % See also: kernel
-%
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

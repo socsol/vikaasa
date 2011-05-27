@@ -1,15 +1,21 @@
 %% MANUALCONTROL Manually choose control from the command line
+%
+% SYNOPSIS
 %   This function allows the user to manually specify control at each
 %   position, and also allows the user to test different possible control
 %   paths.
 %
-%   u = MANUALCONTROL(x, K, f, c)
+% USAGE
+%   % Standard usage:
+%   u = ManualControl(x, K, f, c)
 %
-%   u = MANUALCONTROL(x, K, f, c, OPTIONS)
-%   where OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or
-%   otherwise a series of 'name', value pairs.
+%   % With an options structure attached:
+%   u = ManualControl(x, K, f, c, options)
 %
-% See also: TOOLS/VK_OPTIONS
+%   `options' is either a structure created by vk_options, or otherwise a
+%   series of 'name', value pairs.
+%
+% See also: vk_options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

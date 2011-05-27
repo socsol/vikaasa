@@ -1,11 +1,14 @@
-%% MINIMUMCONTROL Apply minimum control (i.e., -controlmax)
+%% MINIMUMCONTROL Apply minimum control (i.e., $-c$)
+%
+% SYNOPSIS
 %   This function returns the largest negative control available,
 %   regardless of size.
 %
-%   u = MINIMUMCONTROL(x, constraint_set, delta_fn, controlmax)
+% USAGE
+%   % Standard usage:
+%   u = MinimumControl(x, K, f, c)
 %
-% See also: CONTROLALGS/MAXIMUMCONTROL, CONTROLALGS/ZEROCONTROL,
-%   TOOLS/VK_VIABLE
+% See also: MaximumControl, ZeroControl, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

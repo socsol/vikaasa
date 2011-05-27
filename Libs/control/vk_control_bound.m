@@ -1,52 +1,56 @@
 %% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible
+%
+% SYNOPSIS
 %   This function takes a state-space point and a control choice, and
 %   checks to see if that control choice will cause the system to exit the
 %   constraint set in zero, one or two steps.
 %
 %   Zero steps means that the point is already outside the constraint set.
 %
-%   One step means that after applying u, the system violates the
+%   One step means that after applying `u', the system violates the
 %   constraint set.
 %
-%   Two steps makes use of the 'controldefault' option.  This is only
-%   checked if the 'use_controldefault' is specified.  In this case, the
+%   Two steps makes use of the `controldefault' option.  This is only
+%   checked if the `use_controldefault' is specified.  In this case, the
 %   uncontrolled system will crash in the next step.
 %
-%   If VK_CONTROL_BOUND is not able to prevent a crash, it will attempt to
+%   If vk_control_bound is not able to prevent a crash, it will attempt to
 %   minimise the number of variables that crash.
 %
-%   Simple usage:
-%   u = VK_CONTROL_BOUND(x, u, K, f, c)
+% USAGE
+%   % Simple usage:
+%   u = vk_control_bound(x, u, K, f, c)
 %
-%   See KERNEL/VK_KERNEL_COMPUTE for information on the the input parameters.
+%   See vk_kernel_compute for information on the format of the input
+%   parameters.
 %
 %   The return value will be the bounded version of the u specified in the
 %   input list.  Where potential violations were detected that were
 %   salvagable, the new u will differ from the original one.
 %
-%   Getting more informaton:
-%   [u, crashed] = VK_CONTROL_BOUND(x, u, K, f, c)
-%   [u, crashed, exited_on] = VK_CONTROL_BOUND(x, u, K, f, c)
+%   % Getting more informaton:
+%   [u, crashed] = vk_control_bound(x, u, K, f, c)
+%   [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c)
 %
-%   - 'crashed' is a boolean value that indicates whether a crash occurred
+%   - `crashed' is a boolean value that indicates whether a crash occurred
 %     despite any efforts to avoid one.
 %
-%   - 'exited_on' is a row-vector of integers indicating the dimensions
-%     that the system crashed on.  See VIABLE/VK_VIABLE_EXITED for more
-%     information on this.
+%   - `exited_on' is a row-vector of integers indicating the dimensions that
+%     the system crashed on.  See vk_viable_exited for more information on
+%     this.
 %
-%   Specifying options:
-%   [...] = VK_CONTROL_BOUND(x, u, K, f, c, OPTIONS)
+%   % Specifying options:
+%   [u, crashed] = vk_control_bound(x, u, K, f, c, options)
 %
-%   Here OPTIONS is either a structure created by VK_OPTIONS, or
-%   otherwise a list of ('name', value) pairs.
+%   Here `options' is either a structure created by vk_options, or
+%   otherwise a list of 'name', value pairs.
 %
-%   Note that when the 'use_custom_constraint_set' option is specified
-%   VK_CONTROL_BOUND will not be able to improve the control choice.  In this
-%   case, it simply checks for constraint set violations.
+% CAVEATS
+%   When the `use_custom_constraint_set' option is specified, vk_control_bound
+%   will not be able to improve the control choice.  In this case, it simply
+%   checks for constraint set violations.
 %
-% See also: CONTROL, VK_CONTROL_ENFORCE, VIABLE/VK_VIABLE_EXITED, OPTIONS/VK_OPTIONS, VIABLE/VK_VIABLE
-%
+% See also: control, vk_control_enforce, vk_viable_exited, vk_options, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

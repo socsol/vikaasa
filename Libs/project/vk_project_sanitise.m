@@ -1,7 +1,6 @@
-%% VK_4DGUI_PROJECT_SANITISE Set default values for the project, if missing
+%% VK_PROJECT_SANITISE Set default values for the project, if missing
 %
 % See also: VIKAASA, CLI, GUI
-%
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

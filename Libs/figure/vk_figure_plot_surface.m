@@ -1,8 +1,9 @@
 %% VK_FIGURE_PLOT_SURFACE Draw a 3D kernel
+%
+% SYNOPSIS
 %   Draws a 3D representation of a viability kernel.
 %
-% See also: VK_FIGURE_MAKE, VK_FIGURE_MAKE_SLICE, VK_FIGURE_PLOT_AREA
-%
+% See also: vk_figure_make, vk_figure_make_slice, vk_figure_plot_area
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

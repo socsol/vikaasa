@@ -1,9 +1,10 @@
 %% VK_DIFF_FN Returns the vector of derivatives for a state-space and control
+%
+% SYNOPSIS
 %   This function returns a column vector of derivatives.  You don't need
-%   to use this function directly.  Instead, call VK_MAKE_DIFF_FN
+%   to use this function directly.  Instead, call vk_make_diff_fn
 %
-% See also: VK_MAKE_DIFF_FN
-%
+% See also: vk_make_diff_fn
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -1,4 +1,7 @@
-% Test the viability kernel code
+%% VK_TEST Test the viability kernel code
+%   This blah blah
+%
+% See also: VK_TEST7
 
 fprintf('\n\nTesting Viability Code\n');
 fprintf('----------------------\n');

@@ -1,11 +1,14 @@
 %% VK_ODE_OUTPUTFCN Used to make various checks during ODE solver runs.
-%   This function is usually fed by TOOLS/VK_OPTIONS into ODE45 (or
+%
+% SYNOPSIS
+%   This function is usually fed by vk_options into `ode45' (or
 %   similar) so that certain checks can be undertaken while the solver is
-%   running.  Currently, those checks are: testing to see if a steady state
+%   running.  Currently, those checks are testing to see if a steady state
 %   has been acheived and testing to see if the user has issued a cancel
 %   command.
 %
-%   Standard usage:
+% USAGE
+%   % Standard usage:
 %   outputfcn = @(T, Y, flag) VK_ODE_OUTPUTFCN(T, Y, flag, ...
 %       report_progress, progress_fn, cancel_test, cancel_test_fn, ...
 %       stopsteady, norm_fn, small);
@@ -13,7 +16,6 @@
 %   [T, Y] = ode45(odefun, T, Y, odeopts);
 %
 % See also: TOOLS, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_ODE
-%
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

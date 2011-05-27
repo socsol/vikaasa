@@ -1,18 +1,36 @@
 %% SATISFICEMAXMIN Satisficing Viabilty Control Algorithm
+%
+% SYNOPSIS
 %   This control rule does nothing unless it finds itself are in an 'edge'
 %   scenario, in which case either the max or min control available is used
 %   -- whichever is less costly, according to the cost function.
 %
-%   To get the statisficing control rule for point x:
+% USAGE
+%   % To get the statisficing control rule for point x:
 %   u = SatisficeMaxMin(info, x, K, f, c);
 %
-%   info is a structure that must contain:
-%       - info.V: A viability kernel
-%       - info.distances: An array of distances FIXME
-%       - info.layers: How many layers of points before the algorithm
+%   `info' is a structure that must contain:
+%       - `V': A viability kernel
+%       - `distances': An array of distances FIXME
+%       - `layers': How many layers of points before the algorithm
 %         considers that it is in an 'edge' scenario.
 %
-% See also: TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE
+% See also: vk_simulate_euler, vk_simulate_ode, vk_viable
+
+%%
+%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%
+%  Licensed under the Apache License, Version 2.0 (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      http://www.apache.org/licenses/LICENSE-2.0
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
 function u = SatisficeMaxMin(info, x, K, f, c, varargin)
 
     options = vk_options(K, f, c, varargin{:});

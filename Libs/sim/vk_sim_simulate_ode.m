@@ -1,37 +1,38 @@
-%% VK_SIM_SIMULATE_ODE Simulate system trajectory using a MATLAB ODE solver
+%% VK_SIM_SIMULATE_ODE Simulate system trajectory using an ODE solver
+%
+% SYNOPSIS
 %   Simulates the path that the system would take over some number of
 %   periods, given a starting point, and using some specified control
 %   algorithm.
 %
 %   This function takes and returns identical arguments to
-%   TOOLS/VK_SIM_SIMULATE_EULER, but it uses an ODE solver (e.g., ODE45)
+%   vk_sim_simulate_euler, but it uses an ODE solver (e.g., `ode45')
 %   instead of an Euler approximation.  This means that it is generally
 %   slower, but more accurate for most purposes.
 %
-%   The ODE solver that this function uses is given by the 'ode_solver_name'
-%   option.  This is a string, which TOOLS/VK_OPTIONS takes to construct a
-%   wrapper around the specified ODE solver.  By default this is set to
-%   'ode45'.  See the examples below for how you could change this to use a
-%   different solver.
+%   The ODE solver that this function uses is given by the `ode_solver_name'
+%   option (see vk_options).  By default this is set to `ode45'.  See the
+%   examples below for how you could change this to use a different solver.
 %
 %   It is also possible to entirely replace the wrapper by specifying the
-%   'ode_solver' option.  See the examples.
+%   `ode_solver' option.  See the examples.
 %
-%   Standard usage:
+% USAGE
+%   % Standard usage:
 %   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c)
 %
-%   With optional extras added:
+%   % With optional extras added:
 %   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, OPTIONS)
 %
-%   See TOOLS/VK_SIM_SIMULATE_EULER for a description of all the arguments.
+%   See vk_sim_simulate_euler for a description of all the arguments.
 %
-% Examples
+% EXAMPLES
 %   % Use ode23 instead of ode45:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver_name', 'ode23');
 %
@@ -40,19 +41,18 @@
 %       'ode_solver_name', 'ode23', ...
 %       'stepsize', 0.5, ...
 %       'sim_stopsteady', 1);
-%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, options);
 %
 %   % Use a custom-made ODE solver:
 %   myodesolver = @(fn, T, x0) somefunction(fn, x0);
-%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_ODE(...
+%   [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver', myodesolver);
 %
-% See also: CONTROLALGS, VCONTROLALGS, TOOLS, TOOLS/VK_COMPUTE,
-%   TOOLS/VK_INKERNEL, TOOLS/VK_OPTIONS, TOOLS/VK_SIM_SIMULATE_EULER
-%
+% See also: sim, vk_kernel_compute, /vk_kernel_inside, vk_options,
+%   vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -1,14 +1,18 @@
 %% VK_PROJECT_SAVE Save a project to a specified file.
-%   Saves a given project to a specified .MAT file, ensuring that the file is
-%   in MATLAB's version 7 format (so that it can be read from either Octave or
-%   MATLAB).  If the file already exists, it will be overwritten.
 %
-%   VK_PROJECT_SAVE(PROJECT, FILENAME)
+% SYNOPSIS
+%   Saves a given project to a specified .mat file, ensuring that the file is
+%   in MATLAB(R)'s version 7 format (so that it can be read from either Octave
+%   or MATLAB(R)).  If the file already exists, it will be overwritten.
 %
+% USAGE
+%   % Save the `project' structure into `filename':
+%   vk_project_save(project, filename)
+%
+% NOTES
 %   If saving is not successful, an error will be thrown.
 %
-% See also: VIKAASA, PROJECT VK_PROJECT_LOAD
-%
+% See also: vikaasa, project, vk_project_load
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

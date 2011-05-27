@@ -1,10 +1,11 @@
 %% VK_FIGURE_PLOT_PATH_LIMITS Calculate the extended limits of a kernel
+%
+% SYNOPSIS
 %   When a path is being plotted, it is possible that it will travel outside of
 %   the constraint set in doing so.  This function calculates the size of the
 %   necessary display window.
 %
-% See also: VK_FIGURE_PLOT_PATH
-%
+% See also: vk_figure_plot_path
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

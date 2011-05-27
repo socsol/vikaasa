@@ -1,18 +1,20 @@
 %% VK_OPTIONS_MAKE Creates an options structure from a project file.
-%   This function is used to wrap TOOLS/VK_OPTIONS in VIKAASA.  It reads
-%   options out of project and feeds them into VK_OPTIONS.
 %
-%   Standard usage:
-%   options = VK_OPTIONS_MAKE(PROJECT, F)
+% SYNOPSIS
+%   This function is used to wrap vk_options in VIKAASA.  It reads
+%   options out of project and feeds them into vk_options.
 %
-%   PROJECT should be a VIKAASA project.
-%   F should be a function, as created with VK_MAKE_DIFF_FN
+% USAGE
+%   % Standard usage:
+%   options = vk_options_make(project, f)
 %
-%   Optionally, a waitbar can also be specified:
-%   options = VK_OPTIONS_MAKE(project, f, wb, numcomputations, message)
+%   - `project' should be a VIKAASA project.
+%   - `f' should be a function, as created with vk_make_diff_fn
 %
-% See also: VIKAASA, TOOLS/VK_OPTIONS
+%   % Optionally, a waitbar can also be specified:
+%   options = vk_options_make(project, f, wb, numcomputations, message)
 %
+% See also: options, project, vk_options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

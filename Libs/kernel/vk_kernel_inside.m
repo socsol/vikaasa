@@ -1,36 +1,37 @@
 %% VK_KERNEL_INSIDE Test to see whether the given point is inside the kernel
+%
+% SYNOPSIS
 %   This function determines whether the point x lies inside of V or not.
 %
 %   A point x is considered to be inside (for some distances and layers) if
 %   x is surrounded neighbour points in V (i.e., for a 3D problem, there
-%   would need to be 8 points in V around x).  See TOOLS/VK_NEIGHBOURS for
-%   a definition of 'neighbour points'.
+%   would need to be 8 points in V around x).  See vk_neighbours for a
+%   definition of 'neighbour points'.
 %
 %   If the point is not inside, but it still has some neighbours in V, then
 %   it is considered an 'edge' point instead.
 %
-%   Standard usage:
+% USAGE
+%   % Standard usage:
 %   [inside, edge] = VK_KERNEL_INSIDE(x, V, distances, layers)
 %
-%   - 'x' is a column-vector, representing a point in the state space (see
-%     VIABLE/VK_VIABLE for more information).
+%   - `x' is a column-vector, representing a point in the state space (see
+%     vk_viable for more information).
 %
-%   - 'V' is a viability kernel.  See TOOLS/VK_COMPUTE for the format of
-%     this.
+%   - `V' is a viability kernel.  See vk_compute for the format of this.
 %
-%   - 'distances' is a row-vector.  Each element gives the distance between
+%   - `distances' is a row-vector.  Each element gives the distance between
 %     points in V in that dimension.  For some kernel discretisation, d,
 %     the distance between points in the i-th dimension should be
-%     calculable as: distances(i) = (upper(i) - lower(i)) / (d-1), where
-%     'upper' and 'lower' represent the upper- and lower-bounds of the
+%     calculable as: `distances(i) = (upper(i) - lower(i)) / (d-1)', where
+%     `upper' and `lower' represent the upper- and lower-bounds of the
 %     constraint set.
 %
-%   - 'layers' is an integer > 0.  See TOOLS/VK_NEIGHBOURS for information
-%     on how this is used.
+%   - `layers' is an integer greater than zero.  See vk_neighbours for
+%     information on how this is used.
 %
-% See also: VIABLE/VK_VIABLE_COMPUTE, VK_KERNEL_NEIGHBOURS, VIABLE/VK_VIABLE,
-%   VCONTROLALGS
-%
+% See also: vk_viable_compute, vk_kernel_neighbours, vk_viable,
+%   VControlAlgs
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

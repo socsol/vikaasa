@@ -1,207 +1,219 @@
-%% VK_OPTIONS Create an options structure for use with VIKAASA toolbox.
-%   This function is used to specify the options one wants to use with the
-%   VIKAASA toolbox.
+%% VK_OPTIONS Create an options structure for use with the VIKAASA library.
 %
-%   Create an options structure that contains all of the default
-%   settings:
-%   OPTIONS = VK_OPTIONS(K, f, c)
+% SYNOPSIS
+%   This function generates an `options' structure which can be used with a
+%   large number of VIKAASA library functions to modify their behaviour.
 %
-%   Create an options structure, overriding the settings for the
-%   configuration variables, 'name1' and 'name2':
-%   OPTIONS = VK_OPTIONS(K, f, c, ...
+% USAGE
+%   % Create an options structure that contains all of the default settings:
+%   options = vk_options(K, f, c)
+%
+%   % Create an options structure, overriding the settings for the
+%   % configuration variables, 'name1' and 'name2':
+%   options = vk_options(K, f, c, ...
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
-%   Update an existing options structure, changing one or more variables:
-%   OPTIONS = VK_OPTIONS(K, f, c, OPTIONS,
+%   % Update an existing options structure, changing one or more variables:
+%   options = vk_options(K, f, c, options,
 %       'name1', value1, ...
 %       'name2', value2 [, ...])
 %
 %   Available options (default values in brackets):
 %
-%       - bound_fn (vk_control_bound): The function to use for bounding when
-%         the 'controlbounded' option is set to '1'.  See below.
+%       - `bound_fn' (`vk_control_bound'): Function handle specifying the
+%         function to use for bounding when the `controlbounded' option is set
+%         to `1'.
 %
-%       - cancel_test (0): Whether to test to see if the user has
-%         interrupted computation. (e.g., by pressing 'Cancel' in the
-%         VIKAASA GUI.  See VIKAASA)  If this option is set to 1, then the
-%         'cancel_test_fn' will be called from time to time.
+%       - `cancel_test' (0): Whether to test to see if the user has
+%         interrupted computation. (e.g., by pressing ``Cancel'' in the
+%         VIKAASA GUI.  See VIKAASA)  If this option is set to `1', then the
+%         handle specified by `cancel_test_fn' will be called from time to
+%         time.
 %
-%       - cancel_test_fn (@() 0)  This is a function that takes no
+%       - `cancel_test_fn' (`@() 0'): This is a function that takes no
 %         options, and returns either 0 to indicate that the system should
 %         continue, or else 1 to indicate that computation should be
-%         cancelled.  If 'cancel_test' is set to 1, then this option is
-%         used by TOOLS/VK_COMPUTE and TOOLS/VK_SIMULATE_*.
+%         cancelled.  If `cancel_test' is set to `1', then this option is
+%         used by vk_kernel_compute and vk_sim_simulate_euler/vk_sim_simulate_ode.
 %
-%       - cell_fn (CELLFUN): The 'cell function' used by TOOLS/VK_COMPUTE
-%         to divide up the first dimension of the discretised constraint
-%         set sample when testing for viability.  This is an option because
-%         it is possible to replace this function with a parallel version
-%         under GNU Octave, and thereby make TOOLS/VK_COMPUTE operate on
-%         multiple processors.  The cellfun that is chosen needs to use the
-%         option {'UniformOutput', 0}.  For instance:
-%         cell_fn = @(varargin) cellfun(varargin, 'UniformOutput', 0);
+%       - `cell_fn' (`cellfun'): The ``cell function'' used by vk_kernel_compute
+%         to divide up the first dimension of the discretised constraint set
+%         sample when testing for viability.  This is an option because it is
+%         possible to replace this function with a parallel version and thereby
+%         make vk_compute operate on multiple processors.  The cell function
+%         that is chosen needs to use the option `UniformOutput' set to zero
+%         (see `cellfun' for more information).
 %
-%       - controlbounded (0): When set to 1, VIKAASA will attempt to
+%       - `controlbounded' (0): When set to 1, VIKAASA will attempt to
 %         prevent the system from crashing by limiting the control choice
-%         when close to the boundary.  See the manual for more details.
+%         when close to the boundary.
 %
-%       - controldefault (0): The default control (should be a number in
-%         [-c, c]) -- used in some control algorithms
-%         when  'use_controldefault' is enabled (See CONTROLALGS/COSTMIN
-%         for an example.)
+%       - `controldefault' (0): The default control (should be a number in
+%         $[-c, c]$) -- used in some cost-minimising control algorithms
+%         when  `use_controldefault' is enabled (See CostMin for an example.)
 %
-%       - controlenforce (0): When set to 1, VIKAASA will check to ensure
-%         that the control choice is within [-c, c].
+%       - `controlenforce' (0): When set to 1, VIKAASA will check to ensure
+%         that the control choice is within $[-c, c]$.
 %
-%       - controlsymbol ('u'): A string representing the symbol used to
+%       - `controlsymbol' (`u'): A string representing the symbol used to
 %         denote the control in the differential equations.
 %
-%       - controltolerance (1e-3): Used by optimising control algorithms to
+%       - `controltolerance' (1e-3): Used by optimising control algorithms to
 %         decide when enough samples of the cost-function have been made.
 %         The smaller the number, the closer the control will be to the
-%         'true' optimum (See CONTROLALGS/COSTMIN for an example.)
+%         ``true'' optimum (See CostMin for an example.)
 %
-%       - cost_fn (@(x,xdot) norm(xdot)): This function is used by
-%         cost-minimising control algorithms such as CONTROLALGS/COSTMIN to
+%       - `cost_fn' (`@(x,xdot) norm(xdot)'): This function is used by
+%         cost-minimising control algorithms such as CostMin to
 %         determine what control to use.  The default behaviour of this
 %         function is to consider the size of the velocity of the system,
-%         norm(xdot) solely, which may be quite inferior in many cases.
-%         This is therefore a very important option.  It can be modified
-%         easily through VIKAASA.
+%         `norm(xdot)' solely, which may be quite inferior in many cases.
+%         This is therefore a very important option.  See the examples.
 %
-%       - custom_constraint_set_fn (@(x) 1): This function is used by
-%         TOOLS/VK_EXITED if the 'use_custom_constraint_set' option is set
+%       - `custom_constraint_set_fn' (`@(x) 1'): This function is used by
+%         vk_kernel_inside if the `use_custom_constraint_set' option is set
 %         to 1.  If specified, it should give a function that returns 1
 %         when the specified point is in the constraint set, and zero
 %         otherwise.  This functionality can be used to specify
-%         non-rectangular constraint sets.  For instance:
-%         custom_constraint_set_fn = @(x) (x(1)^2 + x(2)^2 < 100)
+%         non-rectangular constraint sets.  See the examples.
 %
-%       - debug (0): Turn on 'debug mode'.  When this is enabled various
-%         data is printed into the MATLAB Command Window during execution.
+%       - `debug' (0): Turn on ``debug mode.''  When this is enabled various
+%         data are printed into the MATLAB(R) Command Window during execution.
 %
-%       - discretisation (10): State-space discretisation.  When the kernel
-%         is being computed, the constraint set is divided into
-%         discretisation^numvars points, each of which is then individually
-%         tested for viability.  Lower discretisation is faster, but less
-%         useful.
+%       - `discretisation' (column vector of `10's): State-space
+%         discretisation.  There should be one value for each variable in the
+%         viability problem.  When the kernel is being computed, the constraint
+%         set is sampled for $\prod_{i=1}^n \delta_i$ points, each of which is
+%         then individually tested for viability.  Lower discretisation is
+%         faster, but less useful.  See
 %
-%       - enforce_fn (vk_control_enforce): The function to use when controlenforce
-%         is set to 1.  See above.
+%       - `enforce_fn' (`vk_control_enforce'): The function to use when
+%         `controlenforce' is set to 1.  See above.
 %
-%       - h (1): The step-size used in numerical approximation of the
+%       - `h' (1): The step-size used in numerical approximation of the
 %         differential equations.
 %
-%       - maxloops (46000): Maximum number of loops performed by
-%         TOOLS/VK_VIABLE before it gives up on a point.  This option is
-%         present to prevent infinite loops.
+%       - `maxloops' (46000): Maximum number of loops performed by vk_viable
+%         before it gives up on a point.  This option is present to prevent
+%         infinite loops.
 %
-%       - min_fn (fminbnd): The function used by cost-minimising algorithms
-%         such as CONTROLALGS/COSTMIN to find the control which entails the
-%         least cost, as specified by the cost function (see the 'cost_fn'
-%         option.)  The default is to use FMINBND which uses a golden ratio
-%         search.  This minimisation algorithm is therefore only suitable
-%         for cost functions that have a single global minimum in the range
-%         [-c, c].  By default this function is sensitive
-%         to the 'controltolerance' option. i.e.,
-%         min_fn = @(f, min, max) fminbnd(f, min, max, ...
-%             struct('TolX', options.controltolerance));
+%       - `min_fn' (`fminbnd'): The function used by cost-minimising algorithms
+%         such as CostMin to find the control which entails the least cost, as
+%         specified by the cost function (see the `cost_fn' option.)  The
+%         default is to use `fminbnd' which uses a golden ratio search.  This
+%         minimisation algorithm is therefore only suitable for cost functions
+%         that have a single global minimum in the range $[-c, c]$.  By default
+%         this function is sensitive to the `controltolerance' option.  See the
+%         examples, below.  Also, note that VIKAASA comes with an alternative
+%         minimisation function that does a linear search instead.  See
+%         vk_fminbnd.
 %
-%         Also, note that VIKAASA comes with an alternative minimisation
-%         function that does a linear search instead.  See
-%         TOOLS/VK_FMINBND.
+%       - `next_fn' (`@(x,u) x + h*f(x,u)'): This function is used by vk_viable
+%         and vk_simulate_euler to work out the next point to consider.  By
+%         default a 1st-order Euler approximation is used.
 %
-%       - next_fn (@(x,u) x + h*f(x,u)): This function is used by
-%         VK_VIABLE and VK_SIMULATE_EULER to work out the next point to
-%         consider.  By default a 1st-order Euler approximation is used.
+%       - `norm_fn' (`norm'): The function used to calculate the size of the
+%         system velocity.  Used by vk_viable to decide when the system is slow
+%         enough to be considered steady.  This function should take a single
+%         argument, which is a (column) vector of velocities, and should return
+%         a single numeric result.
 %
-%       - norm_fn (NORM): The function used to calculate the size of the
-%         system velocity.  Used by TOOLS/VK_VIABLE to decide when the
-%         system is slow enough to be considered steady.  This function
-%         should take a single argument, which is a (column) vector of
-%         velocities, and should return a single numeric result.
+%       - `numvars': Gives the number of variables in the viability problem.
+%         This is usually calculated as half the length of the constraint set,
+%         `K'.  You shouldn't change this unless you know what you are doing.
 %
-%       - numvars: This is usually calculated as half the length of the
-%         constraint set.  You shouldn't change this unless you know what
-%         you are doing.
+%       - `ode_solver' (defaults to a function handle making use of
+%         `ode_solver_name'): A function handle used by vk_simulate_ode to
+%         compute a numerical solution to the differential system of equations.
+%         This function is by default rigged to interact with `cancel_test_fn'
+%         and the `progress_fn', and has `MaxStep' equal to the `h' option.
+%         Rather than changing this function, it may be best to change
+%         `ode_solver_name'.
 %
-%       - ode_solver (@ode45): Used by TOOLS/VK_SIMULATE_ODE to undertake
-%         numerical analysis of the differential system of equations.  This
-%         function is by default rigged to interact with 'cancel_test_fn'
-%         and the 'progress_fn', and has 'MaxStep' equal to the 'h' option.
-%
-%       - ode_solver_name ('ode45'): This string can be used to change the
-%         function used by 'ode_solver' (see above), without altering that
-%         function's use of 'MaxStep', etc.  Unless you are doing something
+%       - `ode_solver_name' (`ode45'): This string specifies the the name of
+%         the function used by `ode_solver' (see above), without altering that
+%         function's use of `MaxStep', etc.  Unless you are doing something
 %         fancy, this is probably what you want to use.
 %
-%       - parallel_processors (2): Used in conjunction with use_parallel,
-%         this option specifies how many processors (or MATLAB workers to
+%       - `parallel_processors' (2): Used in conjunction with `use_parallel',
+%         this option specifies how many processors (or MATLAB workers) to
 %         create.
 %
-%       - progress_fn (@(x) 1): A function that gets called periodically by
-%         TOOLS/VK_COMPUTE and TOOLS/VK_SIMULATE_* when 'report_progress'
-%         is set to 1.  It takes one parameter, which is either the
-%         number of points that have been assessed for viability (under
-%         TOOLS/VK_COMPUTE), or otherwise the number of time-frames that
-%         have been simulated (under TOOLS/VK_SIMULATE_*).
+%       - `progress_fn' (`@(x) 1'): A function that gets called periodically by
+%         vk_kernel_compute and vk_sim_simulate_euler/vk_sim_simulate_ode when
+%         `report_progress' is set to 1.  It takes one parameter, which is
+%         either the number of points that have been assessed for viability
+%         (under vk_kernel_compute), or otherwise the number of time-frames
+%         that have been simulated.
 %
-%       - report_progress (0): Whether TOOLS/VK_COMPUTE and
-%         TOOLS/VK_SIMULATE_* should call a progress report function
-%         (specified by 'progress_fn') to indicate how far they are through
-%         their tasks.
+%       - `report_progress' (0): Whether vk_kernel_compute and
+%         vk_sim_simulate_euler/vk_sim_simulate_ode should call a progress
+%         report function (specified by `progress_fn') to indicate how far they
+%         are through their tasks.
 %
-%       - steps (1): The number of forward-looking steps used by
-%         finite-time optimising control algorithms such as
-%         CONTROLALGS/COSTSUMMIN.
+%       - `steps' (1): The number of forward-looking steps used by finite-time
+%         optimising control algorithms such as CostMin.
 %
-%       - sim_fn (TOOLS/VK_SIMULATE_ODE):  The 'simulation function' to
-%         use.  This is only really an important option if you decide to
-%         use TOOLS/VK_MAKE_SIMULATION.  It should be either
-%         TOOLS/VK_SIMULATE_ODE or TOOLS/VK_SIMULATE_EULER.
+%       - `sim_fn' (vk_sim_simulate_ode):  The ``simulation function'' to
+%         use.  This is only really an important option if you decide to use
+%         vk_sim_make.  It should be either vk_simulate_ode or
+%         vk_simulate_euler.
 %
-%       - sim_stopsteady (0): Used by TOOLS/VK_SIMULATE_* to decide whether
+%       - `sim_stopsteady' (0): Used by
+%         vk_sim_simulate_euler/vk_sim_simulate_ode to decide whether
 %         to continue the simulation on to the end, or to stop once the
 %         near-steady state has been determined.
 %
-%       - small (1e-3): Used by TOOLS/VK_SIMULATE_* and TOOLS/VK_VIABLE to
-%         decide when to consider a system state to be 'steady-enough' to
-%         be viable.  This value is compared to the value of function
-%         specified by the 'norm_fn' option, evaluated over the size of the
-%         differential equations at the given point.  If the function value
-%         is less than or equal to the value of 'small', then the point
-%         will be considered viable.  Thus, a smaller value of 'small' is
-%         in theory more accurate, but may lead to much longer computation
-%         times.
+%       - `small' (1e-3): Used by vk_sim_simulate_euler/vk_sim_simulate_ode and
+%         vk_viable to decide when to consider a system state to be
+%         ``steady-enough'' to be viable.  This value is compared to the value
+%         of function specified by the `norm_fn' option, evaluated over the
+%         size of the differential equations at the given point.  If the
+%         function value is less than or equal to the value of `small', then
+%         the point will be considered viable.  Thus, a smaller value of
+%         `small' is in theory more accurate, but may lead to much longer
+%         computation times.
 %
-%       - use_controldefault (0): See 'controldefault' above for an
+%       - `use_controldefault' (0): See `controldefault' above for an
 %         explanation of this option.
 %
-%       - use_custom_constraint_set_fn (0): See the
-%         'custom_constraint_set_fn' option for more information on this.
+%       - `use_custom_constraint_set_fn' (0): See the
+%         `custom_constraint_set_fn' option for more information on this.
 %
-%       - use_parallel (0):  If set to 1, VIKAASA will try to use a
-%         parallel cellfun (either PARCELLFUN or VK_CELLFUN_PARFOR) so as
-%         to compute viability kernels in parallel.  In MATLAB you need to
-%         have the Parallel Computing Toolbox for this to work.  In GNU
-%         Octave PARCELLFUN is available from OctaveForge.
+%       - `use_parallel' (0):  If set to 1, vk_kernel_compute will try to use a
+%         parallel implementation of `cellfun' (either `parcellfun' or
+%         `vk_cellfun_parfor') so as to compute viability kernels in parallel.
+%         In MATLAB you need to have the Parallel Computing Toolbox for this to
+%         work.  In GNU Octave parcellfun is available from Octave-Forge.
 %
-%       - viable_fn (TOOLS/VK_VIABLE): This is the function used by
-%         TOOLS/VK_COMPUTE to determine whether a point is viable or not.
-%         The default is to use TOOLS/VK_VIABLE; however, this could
-%         potentially be replaced with a different implementation.
+%       - `viable_fn' (vk_viable): This is the function used by
+%         vk_kernel_compute to determine whether a point is viable or not.  The
+%         default is to use vk_viable; however, this could potentially be
+%         replaced with a different implementation.
 %
-%       - zero_fn (fzero): This function is used by TOOLS/VK_CORNERSOLN to
-%         solve situations where the control should be chosen to prevent
-%         the system leaving the constraint set.  It is sensitive to the
-%         'controltolerance' option.
+%       - `zero_fn' (`fzero'): A function handle used by vk_control_bound to
+%         solve situations where the control should be chosen to prevent the
+%         system leaving the constraint set.  It is sensitive to the
+%         `controltolerance' option.
 %
-% See also: VIKAASA, CELLFUN, CONTROLALGS/COSTMIN, CONTROLALGS/COSTSUMMIN,
-%   FMINBND, FZERO, NORM, ODE45, TOOLS/VK_COMPUTE, TOOLS/VK_CORNERSOLN,
-%   TOOLS/VK_EXITED, TOOLS/VK_FMINBND, TOOLS/VK_SIMULATE_EULER,
-%   TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE
+% EXAMPLES
+%   % Specifying a cost function:
+%   options = vk_options( ...
+%       'cost_fn', @(x, xdot) (x(1) - x(2))^2);
 %
+%   % Specifying a circular custom constraint set:
+%   options = vk_options( ...
+%       'custom_constraint_set_fn', @(x) (x(1)^2 + x(2)^2 < 100);
+%
+%   % Specifying an optimising function which is sensitive to controltolerance:
+%   options = vk_options(options, ...
+%       'min_fn', @(f, min, max) fminbnd(f, min, max, ...
+%           struct('TolX', options.controltolerance)));
+%
+% See also: vikaasa, cellfun, CostMin, CostSumMin, fminbnd, fzero, norm, ode45,
+%   vk_compute,vk_control_bound, vk_kernel_inside, vk_fminbnd,
+%   vk_sim_simulate_euler, vk_sim_simulate_ode, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -244,7 +256,7 @@ function options = vk_options(K, f, c, varargin)
                 'controlenforce', 0, ...
                 'controltolerance', 1e-3, ...
                 'debug', false, ...
-                'discretisation', 10, ...
+                'discretisation', 10*ones(length(K)/2, 1),
                 'maxloops', 46000, ...
                 'numvars', length(K)/2, ...
                 'ode_solver_name', 'ode45', ...

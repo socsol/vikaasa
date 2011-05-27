@@ -1,32 +1,35 @@
 %% VK_KERNEL_NEIGHBOURS Find a point's neighbours in a viability kernel.
-%   This function goes through the kernel V, looking for all points that
-%   are leq than layers*distances(dim) away, and greater than
-%   (layers-1)*distances(dim) away, along each axis.
 %
-%   Standard usage:
-%   neighbour_elts = VK_KERNEL_NEIGHBOURS(x, V, distances, layers)
+% SYNOPSIS
+%   This function goes through the kernel `V', looking for all points that
+%   are at most $layers\cdot distances(dim)$ away, and greater than
+%   $(layers-1) \cdot distances(dim)$ away, along each axis.
 %
-%   - 'x' is a column-vector, representing a point in the state space (see
-%     VIABLE/VK_VIABLE for more information).
+% USAGE
+%   % Standard usage:
+%   neighbour_elts = vk_kernel_neighbourS(x, V, distances, layers)
 %
-%   - 'V' is a viability kernel.  See KERNEL/VK_KERNEL_COMPUTE for the format
+%   - `x' is a column-vector, representing a point in the state space (see
+%     vk_viable for more information).
+%
+%   - `V' is a viability kernel.  See vk_kernel_compute for the format
 %     of this.
 %
-%   - 'distances' is a row-vector.  Each element gives the distance between
-%     points in V in that dimension.  For some kernel discretisation, d,
+%   - `distances' is a row-vector.  Each element gives the distance between
+%     points in V in that dimension.  For some kernel discretisation, $d$,
 %     the distance between points in the i-th dimension should be
-%     calculable as: distances(i) = (upper(i) - lower(i)) / (d-1), where
-%     'upper' and 'lower' represent the upper- and lower-bounds of the
+%     calculable as: $distances(i) = (upper(i) - lower(i)) / (d-1)$, where
+%     $upper$ and $lower$ represent the upper- and lower-bounds of the
 %     constraint set.
 %
-%   - 'layers' is an integer > 0.  As explained above, this variable
-%     is used to filter out elements in V that are too close to V.  Thus, a
-%     the higher the layers, the fewer possible points can be considered
-%     within V.  This can be used to make algorithms that care about
-%     whether they are on the edge of the kernel or not take action
-%     'sooner' (something akin to being more risk-averse).
+%   - `layers' is an integer > 0.  As explained above, this variable is used to
+%     filter out elements in `V' that are too close to `V'.  Thus, a the higher
+%     the layers, the fewer possible points can be considered within `V'.  This
+%     can be used to make algorithms that care about whether they are on the
+%     edge of the kernel or not take action ``sooner'' (something akin to being
+%     more risk-averse).
 %
-% See also: KERNEL/VK_KERNEL_COMPUTE, VIABLE/VK_VIABLE, VCONTROLALGS
+% See also: vk_kernel_compute, vk_viable, VControlAlgs
 %
 
 %%

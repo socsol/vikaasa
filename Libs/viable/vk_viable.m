@@ -1,4 +1,6 @@
-%% VK_VIABLE Determine the viability of a point, x
+%% VK_VIABLE Determine the viability of a point in the state space
+%
+% SYNOPSIS
 %   The algorithm attempts to bring the system to a near-steady state by
 %   applying a bounded control.
 %
@@ -6,17 +8,17 @@
 %   structure that gives information about how the point was determined
 %   viable or non-viable.
 %
-%   Standard usage:
+% EXAMPLES
+%   % Standard usage:
 %   isviable = VK_VIABLE(x, K, f, c);
 %
-%   With an OPTIONS structure created by TOOLS/VK_OPTIONS:
+%   % With an OPTIONS structure created by VK_OPTIONS:
 %   isviable = VK_VIABLE(x, K, f, c, OPTIONS);
 %
-%   Returning additional information:
+%   % Returning additional information:
 %   [isviable, paths] = VK_VIABLE(x, K, f, c, OPTIONS);
 %
 % See also: CONTROLALGS, VIABLE, KERNEL/VK_KERNEL_COMPUTE, OPTIONS/VK_OPTIONS
-%
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

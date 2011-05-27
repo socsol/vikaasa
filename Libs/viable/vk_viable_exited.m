@@ -1,4 +1,6 @@
 %% VK_VIABLE_EXITED Indicate whether a point has exited the constraint set.
+%
+% SYNOPSIS
 %   This function returns a list of axes on which the point has violated
 %   the given constraint set.  If the number is negative, the lower bound
 %   is violated; if the number is positive, the upper bound is violated.
@@ -7,19 +9,19 @@
 %   means that a custom constraint set function was used, in which case it
 %   is impossible to know which axis the crash occurred on.
 %
-%   Standard usage:
-%   exited_on = VK_VIABLE_EXITED(x, K, f, c);
+% USAGE
+%   % Standard usage:
+%   exited_on = vk_viable_exited(x, K, f, c);
 %
-%   With optional params:
-%   exited_on = VK_VIABLE_EXITED(x, K, f, c, OPTIONS);
+%   % With optional params:
+%   exited_on = vk_viable_exited(x, K, f, c, options);
 %
-%   - 'exited_on' is a row-vector of numbers.  Each number is either zero,
-%     or it represents an axis.  If the number is negative, then that
-%     indicates that the lower bound was violated.  If it's positive then
-%     the upper bound was violated.
+%   `exited_on' is a row-vector of numbers.  Each number is either zero, or it
+%   represents an axis.  If the number is negative, then that indicates that
+%   the lower bound was violated.  If it's positive then the upper bound was
+%   violated.
 %
-% See also: VIABLE, VIABLE/VK_VIABLE, OPTIONS/VK_OPTIONS
-%
+% See also: viable, vk_viable, vk_options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

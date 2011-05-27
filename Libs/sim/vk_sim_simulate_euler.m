@@ -1,79 +1,82 @@
 %% VK_SIM_SIMULATE_EULER Simulate system trajectory using Euler approximation
-%   This funciton simulates the path that the system would take over some
+%
+% SYNOPSIS
+%   This function simulates the path that the system would take over some
 %   number of iterations, given a starting point, and using some specified
 %   control algorithm.
 %
-%   Standard usage:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_EULER(...
+% USAGE
+%   % Standard usage:
+%   [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c)
 %
 %   Return arguments are:
-%   - 'T': Row-vector of time values, starting with zero.
+%   - `T': Row-vector of time values, starting with zero.
 %
-%   - 'path': numvars x length(T) matrix.  Each column represents a
-%     the state-space position of the system at the time in the
-%     correponding element in T.  Thus for instance, path(0,:) = x.
+%   - `path': $n \times |T|$ matrix.  Each column represents a the state-space
+%     position of the system at the time in the correponding element in `T'.
+%     Thus for instance, The first column will equal `x'.
 %
-%   - 'normpath': A row-vector, of same length as T, giving the value of
-%     the norm (as specified by the 'norm_fn' option in TOOLS/VK_OPTIONS)
+%   - `normpath': A row-vector, of same length as `T', giving the value of
+%     the norm (as specified by the `norm_fn' option in vk_options)
 %     velocity of the system at each point in time.
 %
-%   - 'controlpath': A row-vector, of same length as T, giving the control
+%   - `controlpath': A row-vector, of same length as `T', giving the control
 %     choice at each point in time.
 %
-%   - 'viablepath': 4 x length(T) matrix.  Each column represents four
+%   - `viablepath': $4 \times |T|$ matrix.  Each column represents four
 %     information flags (1 or 0) for that point in time:
-%     1) Whether or not the point is inside the kernel, V.  See
-%        TOOLS/VK_INKERNEL for how this is computed.
-%     2) Whether or not the point is considered to be an 'edge' point.  See
-%        TOOLS/VK_INKERNEL for info on this.
-%     3) Whether or not the point is outside of the constraint set.
-%     4) Whether or not the system velocity is slow enough for the point to
+%     (i) whether or not the point is inside the kernel, V (See
+%        vk_kernel_inside for how this is computed);
+%     (ii) whether or not the point is considered to be an ``edge' point (See
+%        vk_kernel_inside for info on this);
+%     (iii) whether or not the point is outside of the constraint set; and
+%     (iv) whether or not the system velocity is slow enough for the point to
 %        be considered steady.
 %
 %   Input arguments are:
-%   - 'x': A column vector of length numvars, specifying the starting point
+%   - `x': A column vector of length numvars, specifying the starting point
 %     of the simulation.
 %
-%   - 'time_horizon': A number > 0, specifying the end time of the
-%     simulation.  The start time is always 0.
+%   - `time_horizon': A number greater than zero, specifying the end time of
+%     the simulation.  The start time is always zero.
 %
-%   - 'control_fn': See CONTROLALGS for a specification of this function.
+%   - `control_fn': A control algorithm.  See vk_control_wrap_fn.
 %
-%   - 'V': A viability kernel.  This is used to give information about the
-%     system trajectory in relation to the kernel (through the 'viablepath'
+%   - `V': A viability kernel.  This is used to give information about the
+%     system trajectory in relation to the kernel (through the `viablepath'
 %     return variable).  If you don't care about this, you can specify an
 %     empty matrix, [] as the kernel.
 %
-%   - 'distances': A row vector of length numvars, giving the distance
-%     between points in V in each dimension.  See TOOLS/VK_INKERNEL for an
+%   - `distances': A row vector of length numvars, giving the distance
+%     between points in `V' in each dimension.  See vk_kernel_inside for an
 %     explanation of this.
 %
-%   - 'layers': See TOOLS/VK_INKERNEL for an explanation.
+%   - `layers': See vk_kernel_inside for an explanation.
 %
-%   - 'K': A constraint set.  See TOOLS/VK_COMPUTE for the format of this.
+%   - `K': A constraint set.  See vk_kernel_compute for the format of this.
 %
-%   - 'f': A set of difference equations. See TOOLS/VK_COMPUTE for
-%     the format of this.
+%   - `f': A function that gives the velocity of each variable in the system,
+%     given some state space vector, x and some control choice, `u'.
 %
-%   - 'c': The absolute maximum size of the control.
+%   - `c': The absolute maximum size of the control.
 %
-%   Usage with additional options:
-%   [T, path, normpath, controlpath, viablepath] = VK_SIM_SIMULATE_EULER(...
+%   % Usage with additional options:
+%   [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(...
 %       x, time_horizon, control_fn, V, distances, layers, ...
-%       K,  f, c, OPTIONS)
+%       K,  f, c, options)
 %
-%   OPTIONS is either a structure created by TOOLS/VK_OPTIONS, or otherwise
-%   a set of (name, 'value') pairs.
+%   `options' is either a structure created by vk_options, or a set of ('name',
+%   value) pairs, or both.
 %
-%   An imporant option for VK_SIM_SIMULATE_EULER is 'sim_stopsteady', which
+% NOTES
+%   An imporant option for vk_sim_simulate_euler is `sim_stopsteady', which
 %   causes the simulation to terminate as soon as a steady state is
 %   encountered, instead of waiting.
 %
-% See also: CONTROLALGS, VCONTROLALGS, KERNEL/VK_KERNEL_COMPUTE,
-%   KERNEL/VK_KERNEL_INSIDE, OPTIONS/VK_OPTIONS, SIM/VK_SIM_SIMULATE_ODE
-%
+% See also: ControlAlgs, VControlAlgs, vk_kernel_compute, vk_kernel_inside,
+%   vk_options, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

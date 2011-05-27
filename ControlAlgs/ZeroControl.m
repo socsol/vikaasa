@@ -1,9 +1,13 @@
 %% ZEROCONTROL Apply control of zero
+%
+% SYNOPSIS
 %   This function chooses a control of zero every time.
 %
-%   u = ZEROCONTROL(x, constraint_set, delta_fn, controlmax)
+% USAGE
+%   % Standard usage:
+%   u = ZeroControl(x, K, f, c)
 %
-% See also: CONTROLALGS/MAXIMUMCONTROL, CONTROLALGS/MINIMUMCONTROL
+% See also: MaximumControl, MinimumControl
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
