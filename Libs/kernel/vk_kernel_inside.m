@@ -30,8 +30,9 @@
 %   - `layers' is an integer greater than zero.  See vk_neighbours for
 %     information on how this is used.
 %
-% See also: vk_viable_compute, vk_kernel_neighbours, vk_viable,
-%   VControlAlgs
+% Requires: vk_kernel_neighbours
+%
+% See also: vk_viable_compute, vk_viable, VControlAlgs
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -69,6 +69,6 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
     end
 
     if (strcmp(method, 'scatter'))
-        scatter(V(:,1), V(:,2));
+        scatter(V(:,1), V(:,2), 10, colour);
     end
 end

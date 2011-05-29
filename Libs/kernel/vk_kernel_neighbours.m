@@ -50,6 +50,7 @@ function neighbour_elts = vk_kernel_neighbours(x, V, distances, layers)
     neighbour_elts = zeros(size(V));
     cnt = 0;
     for i = 1:size(V, 1)
+        %% For each member of V, check each of it's elements.
         within = zeros(1, size(V, 2));
         for j = 1:size(V, 2)
             dist = abs(x(j) - V(i, j));
@@ -58,9 +59,14 @@ function neighbour_elts = vk_kernel_neighbours(x, V, distances, layers)
                 within(j) = 1;
             end
         end
+
+        %% If all elements are in the right zone, then add the point.
         if (all(within))
             cnt = cnt + 1;
             neighbour_elts(cnt, :) = V(i, :);
         end
     end
+
+    %% return the list truncated to the correct size.
     neighbour_elts = neighbour_elts(1:cnt, :);
+end

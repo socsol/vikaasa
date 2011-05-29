@@ -758,21 +758,11 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
         return;
     end
 
-    sim_state = handles.project.sim_state;
-    T = sim_state.T;
-    path = sim_state.path;
-    normpath = sim_state.normpath;
-    controlpath = sim_state.controlpath;
-    viablepath = sim_state.viablepath;
-
-    labels = handles.project.labels;
-    K = handles.project.K;
-    c = handles.project.c;
-    colour = handles.project.sim_line_colour;
-    width = handles.project.sim_line_width;
+    % Information from the project
+    project = handles.project;
 
     % Make a figure (or use an existing one)
-    if (handles.project.holdfig && isfield(handles, 'current_timeprofile'))
+    if (project.holdfig && isfield(handles, 'current_timeprofile'))
         h = handles.current_timeprofile;
     else
         h = figure(...
@@ -783,48 +773,8 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
             'Name', 'Time Profiles' ...
             );
     end
-    figure(h);
 
-    rows = size(path, 1) + 2;
-
-    for i = 1:size(path, 1)
-        subplot(rows, 1, i);
-        hold on;
-        plot(T, K(2*i - 1) * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, K(2*i) * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, path(i, :), 'Color', colour, 'LineWidth', width);
-        title(labels(i, :));
-        axis tight;
-%         axis([...
-%             T(1), T(end), ...
-%             min([path(i, :), K(2*i - 1)]), ...
-%             max([path(i, :), K(2*i)])]);
-    end
-
-    subplot(rows, 1, rows-1);
-    hold on;
-    plot(T, normpath, 'Color', colour, 'LineWidth', width);
-    plot(T, sim_state.small * ones(1, length(T)), ...
-        'Color', 'r', 'LineWidth', 1);
-    ind = find(viablepath(4, :));
-    plot(T(ind), normpath(ind), '.g');
-    title('velocity');
-    axis tight;
-
-    if (length(controlpath) == length(T))
-        subplot(rows, 1, rows);
-        hold on;
-        plot(T, c * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, -c * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, controlpath, 'Color', colour, 'LineWidth', width);
-        title('control');
-        axis tight;
-    end
-
+    h = vk_figure_timeprofiles_make(project, 'handle', h);
     handles.current_timeprofile = h;
     guidata(hObject, handles);
 end
@@ -1362,4 +1312,14 @@ function deleteresults_button_Callback(hObject, eventdata, handles)
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
   end
+end
+
+
+% --- Executes on button press in sim_showkernel_checkbox.
+function sim_showkernel_checkbox_Callback(hObject, eventdata, handles)
+% hObject    handle to sim_showkernel_checkbox (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.sim_showkernel = get(hObject,'Value');
+    guidata(hObject, handles);
 end

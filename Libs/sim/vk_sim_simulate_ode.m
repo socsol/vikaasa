@@ -82,7 +82,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
 
     %% Create the function for use with the ODE solver.
     control_fn = vk_control_wrap_fn(control_fn, K, f, c, options);
-    odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-1,1));
+    odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-1));
 
     %% Run the ODE solver.
     [T, Y] = ode_solver(odefun, [0, time_horizon], [start;0]);

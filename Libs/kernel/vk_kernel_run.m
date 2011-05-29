@@ -4,13 +4,13 @@
 %   contained within.  Then, it either returns the result, or saves it into a
 %   file.
 %
-%   VK_KERNEL_RUN(FILENAME)  Runs the project contained in FILENAME, and when
+%   vk_kernel_run(FILENAME)  Runs the project contained in FILENAME, and when
 %   complete saves the result back into that file.
 %
-%   VK_KERNEL_RUN(FILE1, FILE2) Runs the project contained in FILE1, and when
+%   vk_kernel_run(FILE1, FILE2) Runs the project contained in FILE1, and when
 %   complete, saves the result into FILE2.
 %
-%   PROJ2 = VK_KERNEL_RUN(PROJ1) Runs the project represented by PROJ1 and
+%   proj2 = vk_kernel_run(PROJ1) Runs the project represented by PROJ1 and
 %   returns a new structure.
 %
 % Examples

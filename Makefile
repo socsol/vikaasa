@@ -1,4 +1,4 @@
-VERSION=0.10.3
+VERSION=0.11.0
 
 zip:
 	zip -r ../vikaasa-${VERSION}.zip vikaasa vikaasa_cli.m vikaasa.m vikaasa.fig \

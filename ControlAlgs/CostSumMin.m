@@ -1,21 +1,24 @@
 %% COSTSUMMIN Find the control which minimises the sum of costs
+%
+% SYNOPSIS
 %   This function finds the control that minimises the sum of cost function
 %   realisations  for some set number of steps.
 %
-%   - The cost function is given in 'options.cost_fn'.
-%   - The number of forward-looking steps is given by 'options.steps'.
-%   - If 'options.use_controldefault' is set to 1, then the algorithm will
+%   - The cost function is given in `options.cost_fn'.
+%   - The number of forward-looking steps is given by `options.steps'.
+%   - If `options.use_controldefault' is set to 1, then the algorithm will
 %     not bother finding an optimal control for the final step, but will
 %     instead apply 'options.controldefault'.
 %
-%   Standard use, with required parameters:
-%   u = COSTSUMMIN(x, K, f, c)
+% USAGE
+%   % Standard use, with required parameters:
+%   u = CostSumMin(x, K, f, c)
 %
-%   With optional parameters.  OPTIONS is either a list of name,value
-%   pairs, or a structure created by VK_OPTIONS.
-%   u = COSTSUMMIN(x, K, f, c, OPTIONS)
+%   % With optional parameters.  options is either a list of name,value
+%   % pairs, or a structure created by vk_options.
+%   u = CostSumMin(x, K, f, c, options)
 %
-% See also: CONTROLALGS/COSTMIN, CONTROLALGS/NORMMIN1STEP, TOOLS/VK_OPTIONS
+% See also: CostMin, NormMin1Step, vk_options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

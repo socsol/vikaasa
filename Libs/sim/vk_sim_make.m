@@ -6,19 +6,21 @@
 %   arguments.
 %
 % USAGE
-%   % Standard Usage:
-%   sim_state = vk_sim_make(project)
+%   % Standard Usage.  In this case, the simulation is created using options
+%   % from the project.
+%   project.sim_state = vk_sim_make(project);
 %
-%   % With additional options:
-%   sim_state = vk_sim_make(project, options)
+%   % Or, create an options structure yourself, then use it to make a
+%   % simulation:
+%   simulation = vk_sim_make(project, options);
 %
-%   The `project' should be a standard VIKAASA project structure.
+%   % Similar, but with an additional setting:
+%   simulation = vk_sim_make(project, options, 'sim_fn', @vk_sim_simulate_euler);
 %
-%   `options' can be a structure created with vk_options, or a series of
-%   name:value pairs, or both (the former before the latter).
-%
-%   `sim_state' should contain the following properties (see See
-%   vk_sim_simulate_euler for more details):
+%   The `project' should be a standard VIKAASA project structure.  `options'
+%   can be a structure created with vk_options, or a series of name:value
+%   pairs, or both (the former before the latter).  `sim_state' should contain
+%   the following properties (see See vk_sim_simulate_euler for more details):
 %   - `K': A constraint set.
 %   - `c': The maximum control size.
 %   - `controlpath': A row-vector of control choices.
@@ -55,7 +57,13 @@ function sim_state = vk_sim_make(project, varargin)
     %% Extract settings from project.
     start = vk_sim_start(project);
     time_horizon = project.sim_iterations;
-    V = project.V;
+
+    if (isfield(project, 'V'))
+        V = project.V;
+    else
+        V = [];
+    end
+
     distances = vk_kernel_distances(project.K, project.discretisation);
     layers = project.layers;
     K = project.K;
@@ -71,7 +79,16 @@ function sim_state = vk_sim_make(project, varargin)
     control_fn = vk_control_make_fn(project.sim_controlalg, info);
 
     %% Make options.
-    options = vk_options(K, f, c, varargin{:});
+    %   Use vk_options_make (to build options from project data) if no options
+    %   were passed in.
+    if (nargin > 1)
+        options = vk_options(K, f, c, varargin{:});
+    else
+        computations = project.sim_iterations;
+        options = vk_options(K, f, c, vk_options_make(project, f), ...
+          'report_progress', 1, ...
+          'progress_fn', @(x) fprintf('\r%6.2f%% done', (x/computations)*100));
+    end
 
     %% The simulation function to use.
     sim_fn = options.sim_fn;

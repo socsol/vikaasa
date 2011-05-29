@@ -1,26 +1,29 @@
 %% COSTMIN Apply the control that minimises the specified cost function.
+%
+% SYNOPSIS
 %   This function attempts to minimise the cost function at some number of
 %   steps in the future.  The function can work with any arbitrary number
 %   of forward-looking steps, but becomes exponentially slower for each
 %   one.
 %
-%   - The cost function is given in 'options.cost_fn'.
-%   - The number of forward-looking steps is given by 'options.steps'.
-%   - If 'options.use_controldefault' is set to 1, then the algorithm will
+%   - The cost function is given in `options.cost_fn'.
+%   - The number of forward-looking steps is given by `options.steps'.
+%   - If `options.use_controldefault' is set to 1, then the algorithm will
 %     not bother finding an optimal control for the final step, but will
 %     instead apply 'options.controldefault'.
 %
-%   Standard use with required arguments:
-%   u = COSTMIN(x, K, f, c)
+% USAGE
+%   % Standard use with required arguments:
+%   u = CostMin(x, K, f, c)
 %
-%   See CONTROLALGS for informaton on the required parameters, and the
+%   See `ControlAlgs' for informaton on the required parameters, and the
 %   return value.
 %
-%   With additional options structure passed in.  OPTIONS is either a list
-%   of name,value pairs, or a structure created by TOOLS/VK_OPTIONS.
-%   u = COSTMIN(x, K, f, c, OPTIONS)
+%   % With additional options structure passed in.  `options' is either a list
+%   % of name,value pairs, or a structure created by vk_options.
+%   u = CostMin(x, K, f, c, options)
 %
-% See also: CONTROLALGS, TOOLS/VK_OPTIONS
+% See also: ControlAlgs, options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
