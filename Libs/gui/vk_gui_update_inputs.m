@@ -241,4 +241,7 @@ function handles = vk_gui_update_inputs(hObject, handles)
     else
         set(handles.parfor_processors, 'Enable', 'off');
     end
+
+    set(handles.sim_timeprofile_cols, 'String', num2str(project.sim_timeprofile_cols));
+    set(handles.sim_showrealinterest, 'Value', project.sim_showrealinterest);
 end

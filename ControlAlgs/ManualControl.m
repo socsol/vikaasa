@@ -38,7 +38,7 @@ function u = ManualControl(x, K, f, c, varargin)
     disp('Current position:');
     disp(transpose(x));
 
-    if (~isempty(vk_exited(x, K, f, c, options)))
+    if (~isempty(vk_viable_exited(x, K, f, c, options)))
         disp('- Outside the constraint set');
     else
         disp('- Inside the constraint set');

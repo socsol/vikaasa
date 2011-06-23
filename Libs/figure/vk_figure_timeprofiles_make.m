@@ -49,13 +49,33 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
     K = project.K;
     discretisation = project.discretisation;
     c = project.c;
+
+    %% If this is enabled, add an extra pseudo-element, composed from var3-var2.
+    if (project.sim_showrealinterest)
+        labels = [labels; {'real interest rate'}];
+
+        % The additional constraint is just worked out as being the largest
+        % possible and lowest possible value of r.
+        K = [K, K(5)-K(4), K(6)-K(3)];
+
+        % Just pick the largest discretisation.
+        discretisation = [discretisation; max(discretisation(2), discretisation(3))];
+
+        sim_state.path = [sim_state.path; sim_state.path(3,:)-sim_state.path(2,:)];
+    end
+
     if (isfield(project, 'V'))
         V = project.V;
+
+        if (project.sim_showrealinterest)
+            V = [V, V(:,3)-V(:,2)];
+        end
     else
         V = [];
     end
 
     sim_line_colour = project.sim_line_colour;
+    sim_timeprofile_cols = project.sim_timeprofile_cols;
     plotcolour = project.plotcolour;
     width = project.sim_line_width;
     showpoints = project.sim_showpoints;
@@ -65,5 +85,5 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
 
     handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, ...
         plotcolour, sim_line_colour, width, showpoints, showkernel, plottingmethod, ...
-        alpha_val, sim_state, handle);
+        alpha_val, sim_timeprofile_cols, sim_state, handle);
 end

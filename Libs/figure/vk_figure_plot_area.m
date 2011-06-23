@@ -28,9 +28,12 @@ function vk_figure_plot_area(V, colour, method, alpha_val)
             H = convhull(V(:,1), V(:,2));
             plot(V(H,1), V(H,2));
             ar = fill(V(H,1), V(H,2), colour);
-            alpha(ar, alpha_val);
+
+            if (exist('alpha'))
+                alpha(ar, alpha_val);
+            end
         catch
-            warning('Couldn''t do a isosurface around points, so reverting to a scatterplot');
+            warning('Couldn''t do a qhull around points, so reverting to a scatterplot');
             method = 'scatter';
         end
     elseif (strcmp(method, 'isosurface') || strcmp(method, 'isosurface-smooth'))

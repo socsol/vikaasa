@@ -17,7 +17,7 @@
 %  limitations under the License.
 
 %% Info
-vk_version = '0.11.0';
+vk_version = '0.11.3';
 vk_copyright = fileread('../NOTICE');
 if (size(vk_copyright, 2) == 1)
     vk_copyright = transpose(vk_copyright);

@@ -32,8 +32,8 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, ...
-    plotcolour, line_colour, width, showpoints, showkernel, plottingmethod, alpha_val, ...
-    simulation, handle)
+    plotcolour, line_colour, width, showpoints, showkernel, plottingmethod, ...
+    alpha_val, cols, simulation, handle)
 
     T = simulation.T;
     path = simulation.path;
@@ -47,11 +47,12 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
     %% Set handle as the active figure (for plotting in below)
     figure(handle);
 
-    rows = size(path, 1) + 2;
+    numplots = size(path, 1) + 2;
+    rows = ceil(numplots/cols);
 
     for i = 1:size(path, 1)
         %% Select the correct subplot, and hold any current contents.
-        subplot(rows, 1, i);
+        subplot(rows, cols, i);
         hold on;
 
         %% Plot the kernel cross-sections through time if this is checked.
@@ -73,14 +74,20 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
 
                 %% S should be a single column vector of values.
                 S = vk_kernel_slice(V, slices);
-                Vt(cnt + 1:cnt + size(S, 1), :) = [T(j)*ones(size(S, 1), 1), S];
-                cnt = cnt + size(S, 1);
+                sort(S);
+                plot(T(j)*ones(length(S),1),S, 'Color', plotcolour);
+                if (length(S) > 0)
+                  plot(T(j), S(1), '^',  'Color', plotcolour);
+                  plot(T(j), S(end), 'v',  'Color', plotcolour);
+                end
+                %Vt(cnt + 1:cnt + size(S, 1), :) = [T(j)*ones(size(S, 1), 1), S];
+                %cnt = cnt + size(S, 1);
             end
 
-            Vt = Vt(1:cnt, :);
+            %Vt = Vt(1:cnt, :);
 
             %% Plot the kernel-in-time by using vk_figure_plot_area:
-            vk_figure_plot_area(Vt, plotcolour, plottingmethod, alpha_val);
+            %vk_figure_plot_area(Vt, plotcolour, plottingmethod, alpha_val);
         end
 
         %% Plot the rectangular constraint set boundaries in red.
@@ -95,7 +102,7 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
         axis tight;
     end
 
-    subplot(rows, 1, rows-1);
+    subplot(rows, cols, numplots-1);
     hold on;
     plot(T, normpath, 'Color', line_colour, 'LineWidth', width);
     plot(T, simulation.small * ones(1, length(T)), ...
@@ -108,7 +115,7 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
     axis tight;
 
     if (length(controlpath) == length(T))
-        subplot(rows, 1, rows);
+        subplot(rows, cols, numplots);
         hold on;
         plot(T, c * ones(1, length(T)), ...
             'Color', 'r', 'LineWidth', 1);

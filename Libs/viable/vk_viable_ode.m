@@ -120,7 +120,7 @@ function varargout = vk_viable_ode(posn, constraint_set, delta_fn, ...
         paths.control_path = control_path(1:l, :);
 
         if (viable == false)
-            paths.exited = vk_exited(posn, constraint_set);
+            paths.exited = vk_viable_exited(posn, constraint_set);
         end
 
         varargout{2} = paths;

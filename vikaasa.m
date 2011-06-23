@@ -1323,3 +1323,32 @@ function sim_showkernel_checkbox_Callback(hObject, eventdata, handles)
     handles.project.sim_showkernel = get(hObject,'Value');
     guidata(hObject, handles);
 end
+
+
+
+function sim_timeprofile_cols_Callback(hObject, eventdata, handles)
+% hObject    handle to sim_timeprofile_cols (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.sim_timeprofile_cols = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+end
+
+% --- Executes during object creation, after setting all properties.
+function sim_timeprofile_cols_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sim_timeprofile_cols (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+% --- Executes on button press in sim_showrealinterest.
+function sim_showrealinterest_Callback(hObject, eventdata, handles)
+% hObject    handle to sim_showrealinterest (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.sim_showrealinterest = get(hObject,'Value');
+    guidata(hObject, handles);
+end
