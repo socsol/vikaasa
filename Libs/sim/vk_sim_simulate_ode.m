@@ -117,13 +117,15 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     normpath(end) = norm_fn(final_diff(1:end-1));
     controlpath(end) = final_diff(end);
 
-    viablepath = zeros(4, length(T));
+    viablepath = zeros(5, length(T));
     for i = 1:length(T)
         x = path(:, i);
         [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
             distances, layers);
-        viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
-        viablepath(4, i) = normpath(i) <= small;
+        exited_on = vk_viable_exited(x, K, f, c, options);
+        viablepath(3, i) = any(~isnan(exited_on(:,1)));
+        viablepath(4, i) = any(~isnan(exited_on(:,2)));
+        viablepath(5, i) = normpath(i) <= small;
     end
 
     % T should be returned as a row vector.

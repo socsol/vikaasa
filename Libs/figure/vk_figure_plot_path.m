@@ -64,8 +64,10 @@ function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
             msize = 5;
         end
 
-        if (viablepath(3,i) == 1)
-                colour = 'r';
+        if (viablepath(4,i) == 1)
+            colour = [0.5 0 0.7];
+        elseif (viablepath(3,i) == 1)
+            colour = 'r';
         elseif (viablepath(1,i) == 1)
             colour = 'g';
         elseif (viablepath(2, i) == 1)

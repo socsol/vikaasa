@@ -1,4 +1,4 @@
-%% VK_VIABLE Determine the viability of a point in the state space
+% VK_VIABLE Determine the viability of a point in the state space
 %
 % SYNOPSIS
 %   The algorithm attempts to bring the system to a near-steady state by
@@ -78,7 +78,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
     % to 0 to skip the main loop.
     if (options.use_custom_constraint_set_fn)
         exited_on = vk_viable_exited(x, K, f, c, options);
-        if (~isempty(exited_on))
+        if (any(any(~isnan(exited_on))))
             viable = false;
             maxloops = 0;
             path(:, 1) = x;

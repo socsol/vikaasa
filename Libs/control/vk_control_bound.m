@@ -35,9 +35,7 @@
 %   - `crashed' is a boolean value that indicates whether a crash occurred
 %     despite any efforts to avoid one.
 %
-%   - `exited_on' is a row-vector of integers indicating the dimensions that
-%     the system crashed on.  See vk_viable_exited for more information on
-%     this.
+%   - `exited_on' is matrix of the form described by vk_viable_exited.
 %
 %   % Specifying options:
 %   [u, crashed] = vk_control_bound(x, u, K, f, c, options)
@@ -47,10 +45,11 @@
 %
 % CAVEATS
 %   When the `use_custom_constraint_set' option is specified, vk_control_bound
-%   will not be able to improve the control choice.  In this case, it simply
-%   checks for constraint set violations.
+%   will not be able to improve the control choice for real (non-imaginary)
+%   violations.  In this case, it simply checks for constraint set violations.
 %
-% See also: control, vk_control_enforce, vk_viable_exited, vk_options, vk_viable
+% Requires: vk_options, vk_viable_exited 
+% See also: control, vk_control_enforce, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -83,16 +82,16 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
 
     %% If we are not interested in bounding, then return for zero steps
-    if (~controlbounded || options.use_custom_constraint_set_fn)
+    if (~controlbounded)
         exited_on = vk_viable_exited(x, K, f, c, options);
-        crashed = ~isempty(exited_on);
+        crashed = any(any(~isnan(exited_on)));
         return;
     end
 
 
     %% Next, check to see if the point has exited on one step.
     exited_on = vk_viable_exited(next_fn(x, u), K, f, c, options);
-    crashed = ~isempty(exited_on);
+    crashed = any(any(~isnan(exited_on)));
     if (crashed)
         fn = @(x, u) next_fn(x, u);
         [u, crashed, exited_on, allowed_min, allowed_max] = ...
@@ -115,7 +114,7 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
     %% Next check to see if we exit on two steps.
     exited_on = vk_viable_exited(next_fn(next_fn(x, u), controldefault), K, ...
         f, c, options);
-    crashed = ~isempty(exited_on);
+    crashed = any(any(~isnan(exited_on)));
     if (crashed)
         fn = @(x, u) next_fn(next_fn(x, u), controldefault);
         [u, crashed, exited_on] = vk_newcontrol(x, u, crashed, ...
@@ -135,23 +134,62 @@ end
 %% Helper function to try to determine new control
 function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     vk_newcontrol(x, u, crashed, exited_on, allowed_min, allowed_max, ...
-    next_fn, K, f, c, options)
+    fn, K, f, c, options)
 
     zero_fn = options.zero_fn;
 
     new_u = u;
 
-    %% If zero is amongst the crash elements then give up.
-    if (any(exited_on == 0))
+    %% Check for violations in the complex plane first.
+    if (any(~isnan(exited_on(:,2))))
+        %% Check for the existence of a boundary control that fixes this.
+        if (isreal(fn(x, allowed_max)))
+            %% The maximum allowed control eliminates the imaginary part.
+            %   In this case, we start from slightly above u, and search
+            %   upwards for the value closest to u that solves the problem.
+            %
+            %   We also adjust the allowed_min, in the hope that the range
+            %   between the value we identify and the allowed_max all avoid
+            %   the complex numbers.
+            for uu = u+options.controltolerance:controltolerance:allowed_max
+                if (isreal(fn(x, uu)))
+                    new_u = uu;
+                    allowed_min = new_u;
+                    break;
+                end
+            end
+        elseif (isreal(fn(x,allowed_min)))
+            range = allowed_min:controltolerance:u-options.controltolerance;
+            for uu = range(end:-1:1)
+                if (isreal(fn(x, uu)))
+                    new_u = uu;
+                    allowed_max = new_u;
+                    break;
+                end
+            end
+        end
+
+        %% if we found a new_u above, re-evaluate.
+        if (u ~= new_u)
+            u = new_u;
+            exited_on = vk_viable_exited(fn(x, u), K, f, c, ...
+                options);
+            crashed = any(any(~isnan(exited_on)));
+        end
+    end
+
+
+    %% If there are still complex numbers, or if the first column is zeros, give up.
+    if (~crashed || any(~isnan(exited_on(:,2))) || all(exited_on(:,1) == 0))
         return;
     end
 
 
-    %% Consider the each crashed element.
-    for i = 1:length(exited_on)
-        % A negative value means the lower bound.
-        upper = sign(exited_on(i)) == 1;
-        dim = abs(exited_on(i));
+    %% In this case, there are only real violations of the rectangular constraint set.
+    dims = find(~isnan(exited_on));
+    for i = 1:length(dims)
+        dim = dims(i);
+        upper = sign(exited_on(dim,1)) == 1;
 
         % Create a function to make equal to zero using the
         % vk_distance_fn helper.
@@ -160,12 +198,13 @@ function [u, crashed, exited_on, allowed_min, allowed_max] = ...
         else
             need_equal = K(dim*2 - 1) + options.controltolerance;
         end
-        f = @(u) vk_distance_fn(@(u) next_fn(x, u), u, need_equal, dim);
+        dist = @(u) vk_distance_fn(@(u) fn(x, u), u, need_equal, dim);
 
         % We need the signs of the upper and lower values to be
-        % different; otherwise, we shouldn't use fzero.
-        if (sign(f(allowed_min)) ~= sign(f(allowed_max)))
-            new_u = zero_fn(f, [allowed_min, allowed_max]);
+        % different and real; otherwise, we shouldn't use fzero.
+        if (sign(dist(allowed_min)) ~= sign(dist(allowed_max)) ...
+          && isreal([dist(allowed_min), dist(allowed_max)]))
+            new_u = zero_fn(dist, [allowed_min, allowed_max]);
         else
             continue; % Try the next dimension.
         end
@@ -190,9 +229,9 @@ function [u, crashed, exited_on, allowed_min, allowed_max] = ...
     %% If anything new was computed, recalculate.
     if (new_u ~= u)
         u = new_u;
-        exited_on = vk_viable_exited(next_fn(x, u), K, f, c, ...
+        exited_on = vk_viable_exited(fn(x, u), K, f, c, ...
             options);
-        crashed = ~isempty(exited_on);
+        crashed = any(any(~isnan(exited_on)));
     end
 end
 

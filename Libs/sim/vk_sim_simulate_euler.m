@@ -25,14 +25,17 @@
 %   - `controlpath': A row-vector, of same length as `T', giving the control
 %     choice at each point in time.
 %
-%   - `viablepath': $4 \times |T|$ matrix.  Each column represents four
+%   - `viablepath': $5 \times |T|$ matrix.  Each column represents four
 %     information flags (1 or 0) for that point in time:
 %     (i) whether or not the point is inside the kernel, V (See
 %        vk_kernel_inside for how this is computed);
 %     (ii) whether or not the point is considered to be an ``edge' point (See
 %        vk_kernel_inside for info on this);
-%     (iii) whether or not the point is outside of the constraint set; and
-%     (iv) whether or not the system velocity is slow enough for the point to
+%     (iii) whether or not the point is outside of the constraint set in a real
+%        dimension;
+%     (iv) whether or not the poimnt is outside the constraint set in a complex
+%        dimension; and
+%     (v) whether or not the system velocity is slow enough for the point to
 %        be considered steady.
 %
 %   Input arguments are:
@@ -123,7 +126,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
     path = zeros(length(K)/2, iterations);
     normpath = zeros(1, iterations);
     controlpath = zeros(1, iterations);
-    viablepath = zeros(4, iterations);
+    viablepath = zeros(5, iterations);
 
 
     %% Run simulation
@@ -148,13 +151,15 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
         %% Record viability, etc. at this point
         [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
             distances, layers);
-        viablepath(3, i) = ~isempty(vk_viable_exited(x, K, f, c, options));
+        exited_on = vk_viable_exited(x, K, f, c, options);
+        viablepath(3, i) = any(~isnan(exited_on(:,1)));
+        viablepath(4, i) = any(~isnan(exited_on(:,2)));
 
 
         %% Record velocity and steadyness
         norm_val = norm_fn(f(x, u));
         steady = norm_val <= options.small;
-        viablepath(4, i) = steady;
+        viablepath(5, i) = steady;
         normpath(i) = norm_val;
 
 
