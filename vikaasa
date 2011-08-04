@@ -1,3 +1,6 @@
 #!/usr/bin/octave --persist 
+page_screen_output(0);
+if (any(cellfun(@(x) strcmp(x, 'fltk'), available_graphics_toolkits())))
+  graphics_toolkit fltk
+end
 vikaasa_cli
-graphics_toolkit fltk

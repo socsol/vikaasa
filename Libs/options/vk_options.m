@@ -72,7 +72,7 @@
 %         This is therefore a very important option.  See the examples.
 %
 %       - `custom_constraint_set_fn' (`@(x) 1'): This function is used by
-%         vk_kernel_inside if the `use_custom_constraint_set' option is set
+%         vk_kernel_inside if the `use_custom_constraint_set_fn' option is set
 %         to 1.  If specified, it should give a function that returns 1
 %         when the specified point is in the constraint set, and zero
 %         otherwise.  This functionality can be used to specify
@@ -306,6 +306,7 @@ function options = vk_options(K, f, c, varargin)
     % the function.
     min_fn_opts = struct( ...
         'TolX', options.controltolerance, ...
+        'FunValCheck', true, ...
         'abstol', options.controltolerance);
     if (~isfield(options, 'min_fn'))
         %options.min_fn = @(f, minimum, maximum) ...

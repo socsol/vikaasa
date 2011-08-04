@@ -71,7 +71,6 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
     %% Create options structure
     options = vk_options(K, f, c, varargin{:});
 
-
     %% Options that we care about
     use_controldefault = options.use_controldefault;
     controldefault = options.controldefault;
@@ -84,7 +83,7 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
 
     %% If we are not interested in bounding, then return for zero steps
-    if (~controlbounded)
+    if (~controlbounded || options.use_custom_constraint_set_fn)
         exited_on = vk_viable_exited(x, K, f, c, options);
         crashed = ~isempty(exited_on);
         return;
