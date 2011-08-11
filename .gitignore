@@ -1,4 +1,6 @@
 *~
 *.asv
 .*.swp
-bin
+/release
+/tmp
+octave-core

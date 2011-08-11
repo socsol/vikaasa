@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+
+my @files = @ARGV;
+
+for my $filename (@files) {
+  open my $infile, '<:crlf', $filename;
+
+  my @lines;
+  while (<$infile>) {
+    push @lines, $_;
+  }
+
+  close $infile;
+
+  open my $outfile, '>', $filename;
+
+  for (@lines) {
+    $_ =~ s/(?:\S|^)\K\s+$/\n/;
+    print $outfile $_;
+  }
+}

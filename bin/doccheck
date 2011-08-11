@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my @files = @ARGV;
+
+# Loop through all files in our list.
+for my $filename (@files) {
+  open my $file, '<', $filename;
+
+  my $contents = '';
+  while (<$file>) {
+    last unless /^\%/;
+    chomp;
+    $contents .=  $_ . "\n";
+  }
+
+  # Check that the file begins with %% FUNCTION_NAME.  If it does, lop it off.
+  my ($shortfn) = ($filename =~ /\/([^\/]+)\.m$/);
+  if ($contents =~ /^%%\s\Q${\uc $shortfn}\E/s) {
+    ($contents) = ($contents =~ /^[^\v]+\v(.*)$/s);
+  }
+  else {
+    warn "$filename: Correct header not found\n";
+  }
+
+  # Check that the following sections are present.
+  for my $section (qw(SYNOPSIS USAGE EXAMPLES See)) {
+    warn "$filename: missing '$section'\n"
+      unless $contents =~ /^% \Q$section\E/m;
+  }
+  
+  # Check for naughty capitalised terms.
+  warn "$filename: Found capitalised term: $1\n"
+    if $contents =~ /\b([A-Z0-9]+_[A-Z0-9_]+)\b/m;
+
+  # Check that lowercase terms that don't begin with vk_ are enclosed in `'
+  warn "$filename: Term not enclosed in single quotes: $1\n"
+    if $contents =~ /(?<![`a-z0-9_])((?:[^v]|v[^ik])[a-z0-9]*_[a-z0-9_]*)[^a-z0-9_]/im;
+
+  # print $contents;
+}

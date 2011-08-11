@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my ($noticeversion, $initversion, $aboutversion, $makeversion);
+
+$noticeversion = $1
+  if `grep VIKAASA NOTICE` =~ /VIKAASA\s+([\d.]+)[^\d.]/;
+
+$initversion = $1
+  if `grep version Libs/vk_init.m` =~ /version\s+=\s+'([\d.]+)'/;
+
+$aboutversion = $1
+  if `grep Version Docs/html/about_vikaasa.html` =~ /<p>Version\s+([\d.]+)<\/p>/;
+
+warn "NOTICE and vk_init versions do not match\n"
+  unless $noticeversion eq $initversion;
+
+warn "vk_init and about_vikaasa.html versions do not match\n"
+  unless $initversion eq $aboutversion;
+
+die "! Version numbers do not match.\n"
+  unless $noticeversion eq $initversion
+    && $initversion eq $aboutversion;
+
+print "=> Version numbers match.\n";

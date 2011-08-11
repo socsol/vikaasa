@@ -1,0 +1,127 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+# Sort the files by their names.
+my @files = sort {
+  my ($l, $r) = grep(m!\b([^/])$!, ($a, $b));
+  return $l cmp $r;
+} @ARGV;
+
+# Loop through files specified.  For each one, we will extract the first
+# comments block, and print it with special formatting.
+for my $filename (@files) {
+  open my $file, '<', $filename;
+
+  my $content = '';
+  while (<$file>) {
+    last unless /^\%/;
+
+    # Get rid of the comment symbol at the beginning of each line.
+    s/^\%++\s?+//;
+
+    # Remove any CR from the end.
+    chomp;
+
+    # Append to the string.
+    $content .= $_ . "\n";
+  }
+
+  close $file;
+
+  # Any line that is not indented, and begins with all caps is a heading.  The
+  # first of these is the main heading.
+  if ($content =~ /^([A-Z0-9_]+)\s*(\S.*)?\n/) {
+    my ($before, $title, $description, $after) = ($`, $1, $2, $');
+    # Replace the title with the filename (so that capitalisation is correct),
+    # where this matches what is in the file.
+    my ($filename_short) = ($filename =~ /\/([^\/]+)\.m$/);
+    
+    $title = $filename_short
+      if uc($filename_short) eq $title;
+
+    my $label = $title;
+
+    $content = <<EOF;
+$before\\begin{vkfunction}{$title} \\label{func:$label} 
+$description
+$after
+\\end{vkfunction}
+EOF
+
+    # Replace each sub-heading found
+    while ($content =~ /^([A-Z_]+)$/m) {
+      $content =  "$`\\vkfunctionsection{${\ucfirst(lc($1))}}$'";
+    }
+  }
+
+  # Any indented block of lines where the first in the block begins with '%' is
+  # a code block.  These get turned into "\lstlisting"s.
+  my $remaining = $content;
+  while ($remaining =~ /^(?:\S.*)?\v\K ^(\h+\%\V+\v (?:^\h+\S.*\v)+) ^(?=\S|$)/mx) {
+    # Match whatever is left next time around.
+    $remaining = $';
+    my $match = $&;
+    my $lines = $1;
+
+    # Remove excess spaces from the front of each line
+    my @lengths = sort { $a <=> $b } map length, $lines =~ /^(\h*)(?=\H)/gm;
+    $lines =~ s/^\h{$lengths[0]}//gm;
+
+    # Make the lstlisting:
+    my $listing = <<EOF;
+\\begin{lstwrapper}
+\\begin{lstlisting}
+$lines
+\\end{lstlisting}
+\\end{lstwrapper}
+
+EOF
+
+    # Replace the old content with the new one.
+    $content =~ s/\Q$match\E/$listing/m;
+  } 
+
+  # Replace the ``See also:'' section (should be at the end)
+  if ($content =~ /\vSee also:?\h+\b(.*\S)\s*(?=\\end{vkfunction}$)/si) {
+    my $links = join', ', map { "\\vkfunctionref{$_}" } split(/\b\s*,\s*\b/m, $1);
+    
+    $content = $`. <<EOF . $links . "\n" . $';
+\n\\vkfunctionsection{See also}
+EOF
+  }
+
+  # Similarly for any `@(thing) in_single_quotes':
+  $content =~ s/(?<!`)`([a-z_0-9@(,)*+-= ]+)'(?!`)/\\lstinline!$1!/gmi;
+
+  # Replace any bare function words with \vkfunctionref{...}
+  while ($content =~ /[^!{]\K([:])?(CostMin|(?:vk_|vikaasa_)[a-z_]+)(?![}A-Z_])/gmi) {
+    my ($before, $match, $after) = ($`, $2, $');
+
+    next if defined($1);
+
+    # Check that we are not inside of a lstlisting
+    my $inlisting = 0;
+    while ($before =~ /\\begin{lstlisting}/gm) {
+      $inlisting = ($' !~ /\\end{lstlisting}/m);
+    }
+
+    $content = "$before\\vkfunctionref{$match}$after"
+      if !$inlisting;
+  }
+
+  # Replace a '- ' at the beginning of a line with '\item':
+  $content =~ s/^\h*-\h/\\item /gm;
+
+  # Group all paragraphs beginning with '\item' into an itemize environment:
+  $content =~ s/^((\\item([^\v]|\v[^\v])*\v\v)+)/\\begin{itemize}\n$1\\end{itemize}\n\n/gm;
+
+  # Replace MATLAB(R) with \matlab{}
+  $content =~ s/MATLAB\(R\)/\\matlab{}/gm;
+
+  # Replace .MAT or .M with \texttt{...}
+  $content =~ s/(?<=\s)(.M(?:AT)?)(?=[^A-Z])/\\texttt{${\lc $1}}/i;
+
+  print $content;
+}
