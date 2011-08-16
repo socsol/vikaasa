@@ -79,6 +79,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     ode_solver = options.ode_solver;
     norm_fn = options.norm_fn;
     small = options.small;
+    hardupper = options.sim_hardupper;
+    hardlower = options.sim_hardlower;
 
     %% Create the function for use with the ODE solver.
     control_fn = vk_control_wrap_fn(control_fn, K, f, c, options);
@@ -90,6 +92,23 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     % The final column of Y gives the cumulative control choices.  To decode
     % this then, we need to subract the differences.
     path = transpose(Y(:, 1:end-1));
+
+    % Check to see if any 'hard' constraints were violated.  If they were, then
+    % truncate path and T accordingly.
+    if (~isempty(hardupper) || ~isempty(hardlower))
+        for i = 1:length(T)-1
+            x = path(:, i);
+            exited_on = vk_viable_exited(x, K, f, c, options);
+
+            if (  (~isempty(hardupper) && any(exited_on(hardupper, 1) > 0)) ...
+               || (~isempty(hardlower) && any(exited_on(hardlower, 1) < 0)))
+                path = path(:, 1:i+1);
+                T = T(1:i+1);
+                break;
+            end
+        end
+    end
+
 
     %% Construct information arrays from results.
     % Work out the size of the movements from the differences, relative to

@@ -41,6 +41,10 @@ function vk_figure_make_slice(V, slices, K, labels, ...
 
     SV = vk_kernel_slice(V, slices);
 
+    if (size(SV, 2) > 3 || size(V, 2) < 2)
+        vk_error('Too many dimensions to plot.  Please select some more slices.');
+    end
+
     % Construct the figure name
     figure_name = 'Slice through ';
     for i = 1:size(slices, 1)

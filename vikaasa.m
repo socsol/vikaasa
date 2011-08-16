@@ -237,9 +237,9 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function plot_button_Callback(hObject, eventdata, handles)
-    V = handles.project.V;
-    K = handles.project.K;
-    labels = handles.project.labels;
+    V = vk_kernel_augment(handles.project);
+    K = vk_kernel_augment_constraints(handles.project);
+    labels = [handles.project.labels; handles.project.addnlabels];
     colour = handles.project.plotcolour;
     method = handles.project.plottingmethod;
     box = handles.project.drawbox;
@@ -255,8 +255,11 @@ function plot_button_Callback(hObject, eventdata, handles)
             @(h, event) eval('try vk_gui_figure_focus(h, event), catch, end'));
     end
 
-    if (size(handles.project.slices, 1) > 0)
-        slices = handles.project.slices;
+    % If we are ignoring any variables, elminate them from the slices, and all
+    % slice = all values.
+    slices = vk_kernel_augment_slices(handles.project)
+    
+    if (size(slices, 1) > 0)
         vk_figure_make_slice(V, slices, K, labels, colour, ...
             method, box, alpha_val, h);
     else % Just plot the whole thing.
@@ -382,8 +385,14 @@ end
 % handles    structure with handles and user data (see GUIDATA)
 function vartable_CellEditCallback(hObject, eventdata, handles)
     vardata = get(hObject, 'Data');
-    ret = vk_project_parse_vardata(vardata);
-    changes = struct(ret{:});
+    changes = struct(...
+        'labels', {vardata(:,1)}, ...
+        'symbols', {vardata(:, 2)}, ...
+        'K', ...
+            reshape(transpose(cell2mat(vardata(:, 3:4))), 1, []), ...
+        'discretisation', cell2mat(vardata(:, 5)), ...
+        'diff_eqns', {vardata(:, 6)} ...
+    );
 
     handles.project.labels = changes.labels;
     handles.project.symbols = changes.symbols;
@@ -712,7 +721,12 @@ end
 %    Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 function sim_start_CellEditCallback(hObject, eventdata, handles)
-    handles.project.sim_start = cell2mat(get(hObject, 'Data'));
+    data = get(hObject, 'Data');
+    handles.project.sim_start = cell2mat(data(:,1));
+
+    handles.project.sim_hardupper = find(cell2mat(data(:,2)));
+    handles.project.sim_hardlower = find(cell2mat(data(:,3)));
+
     guidata(hObject, handles);
 end
 
@@ -809,7 +823,7 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
     h = handles.current_figure;
     figure(h);
 
-    sim_state = handles.project.sim_state;
+    sim_state = vk_sim_augment(handles.project);
     [limits, slices] = vk_figure_data_retrieve(h);
 
     T = sim_state.T;
@@ -842,18 +856,20 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
     % Display settings.
     display_opts = struct(...
         'alpha', handles.project.alpha, ...
-        'labels', {handles.project.labels}, ...
+        'labels', {[handles.project.labels; handles.project.addnlabels]}, ...
         'colour', handles.project.plotcolour, ...
         'line_colour', handles.project.sim_line_colour, ...
         'line_width', handles.project.sim_line_width, ...
         'method', handles.project.plottingmethod, ...
         'showpoints', handles.project.sim_showpoints, ...
-        'slices', handles.project.slices, ...
+        'slices', vk_kernel_augment_slices(handles.project), ...
         'parent', handles.figure1 ...
     );
 
+    display_opts.labels
+
     if (isfield(handles.project, 'sim_state'))
-        vk_gui_simgui(handles.project.sim_state, display_opts);
+        vk_gui_simgui(vk_sim_augment(handles.project), display_opts);
     else
         errordlg('Could not create interactive simulation, because there is no data present.');
     end
@@ -934,14 +950,14 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
         ' for ', num2str(handles.project.sim_state.T(end)), ...
         ' time intervals']);
 
-    sim_state = handles.project.sim_state;
+    sim_state = vk_sim_augment(handles.project);
 
     T = sim_state.T;
     path = sim_state.path;
 
-    slices = handles.project.slices;
-    K = handles.project.K;
-    labels = handles.project.labels;
+    slices = vk_kernel_augment_slices(handles.project);
+    K = vk_kernel_augment_constraints(handles.project);
+    labels = [handles.project.labels; handles.project.addnlabels];
     if (~isempty(slices))
         slices = sortrows(slices, -1);
         for i = 1:size(slices, 1)
@@ -1211,11 +1227,19 @@ function deletevar_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
     project = handles.project;
 
-    project.numvars = project.numvars - 1;
-    handles.project = vk_project_sanitise(project);
+    if (project.numvars > 2)
+        index = find(project.slices(:,1) == project.numvars);
+        if (index)
+            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        end
+        project.numvars = project.numvars - 1;
 
-    handles = vk_gui_update_inputs(hObject, handles);
-    guidata(hObject, handles);
+        handles.project = vk_project_sanitise(project);
+
+        handles = vk_gui_update_inputs(hObject, handles);
+
+        guidata(hObject, handles);
+    end
 end
 
 
@@ -1246,6 +1270,7 @@ function slices_CellEditCallback(hObject, eventdata, handles)
 
     handles.project.slices = vk_kernel_make_slices( ...
         data, handles.project.K, handles.project.discretisation);
+    handles.project.slices
     guidata(hObject, handles);
 end
 
@@ -1345,11 +1370,69 @@ function sim_timeprofile_cols_CreateFcn(hObject, eventdata, handles)
     end
 end
 
-% --- Executes on button press in sim_showrealinterest.
-function sim_showrealinterest_Callback(hObject, eventdata, handles)
-% hObject    handle to sim_showrealinterest (see GCBO)
+% --- Executes on button press in addaddnvar_button.
+function addaddnvar_button_Callback(hObject, eventdata, handles)
+% hObject    handle to addaddnvar_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    handles.project.sim_showrealinterest = get(hObject,'Value');
+    project = handles.project;
+
+    project.addnlabels = [project.addnlabels; {'New Variable'}];
+    project.addnsymbols = [project.addnsymbols; {'new'}];
+    project.addneqns = [project.addneqns; {'0'}];
+    project.addnignore = [project.addnignore; 0];
+
+    project.numaddnvars = project.numaddnvars + 1;
+    handles.project = vk_project_sanitise(project);
+
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% --- Executes on button press in deleteaddnvar_button.
+function deleteaddnvar_button_Callback(hObject, eventdata, handles)
+% hObject    handle to deleteaddnvar_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    project = handles.project;
+
+    if (project.numaddnvars > 0)
+        index = find(project.slices(:,1) == project.numvars + project.numaddnvars);
+        if (index)
+            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        end
+        project.numaddnvars = project.numaddnvars - 1;
+        handles.project = vk_project_sanitise(project);
+
+        handles = vk_gui_update_inputs(hObject, handles);
+        guidata(hObject, handles);
+    end
+end
+
+
+% --- Executes when entered data in editable cell(s) in addnvartable.
+function addnvartable_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to addnvartable (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+    vardata = get(hObject, 'Data');
+    changes = struct( ...
+        'addnlabels', {vardata(:,1)}, ...
+        'addnsymbols', {vardata(:, 2)}, ...
+        'addneqns', {vardata(:, 3)}, ...
+        'addnignore', cell2mat(vardata(:, 4)) ...
+    );
+
+    handles.project.addnlabels = changes.addnlabels;
+    handles.project.addnsymbols = changes.addnsymbols;
+    handles.project.addneqns = changes.addneqns;
+    handles.project.addnignore = changes.addnignore;
+
+    handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
 end

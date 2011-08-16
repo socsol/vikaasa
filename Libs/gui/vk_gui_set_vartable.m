@@ -20,6 +20,7 @@
 function handles = vk_gui_set_vartable(hObject, handles)
     project = handles.project;
 
+    %% Populate vartable
     vartable = cell(project.numvars, 6);
 
     vartable(:, 1) = project.labels;
@@ -32,4 +33,14 @@ function handles = vk_gui_set_vartable(hObject, handles)
     end
 
     set(handles.vartable, 'Data', vartable);
+
+    %% Populate addnvartable 
+    addnvartable = cell(project.numaddnvars, 4);
+    if (project.numaddnvars > 0)
+      addnvartable(:, 1) = project.addnlabels;
+      addnvartable(:, 2) = project.addnsymbols;
+      addnvartable(:, 3) = project.addneqns;
+      addnvartable(:, 4) = num2cell(logical(project.addnignore));
+    end
+    set(handles.addnvartable, 'Data', addnvartable);
 end

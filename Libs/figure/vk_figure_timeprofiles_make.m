@@ -40,38 +40,32 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
     end
 
     if (isfield(opts, 'simulation'))
-        sim_state = opts.simulation;
+        sim_state = vk_sim_augment(project, opts.simulation);
     else
-        sim_state = project.sim_state;
+        sim_state = vk_sim_augment(project);
     end
 
-    labels = project.labels;
-    K = project.K;
-    discretisation = project.discretisation;
+    labels = [project.labels; project.addnlabels];
+    K = vk_kernel_augment_constraints(project);
+    discretisation = [project.discretisation; max(project.discretisation)*ones(project.numaddnvars, 1)];
     c = project.c;
 
-    %% If this is enabled, add an extra pseudo-element, composed from var3-var2.
-    if (project.sim_showrealinterest)
-        labels = [labels; {'real interest rate'}];
+    %% Work out what is being ignored.
+    ignoreindices = sort(find(project.addnignore), 'descend') + project.numvars;
 
-        % The additional constraint is just worked out as being the largest
-        % possible and lowest possible value of r.
-        K = [K, K(5)-K(4), K(6)-K(3)];
-
-        % Just pick the largest discretisation.
-        discretisation = [discretisation; max(discretisation(2), discretisation(3))];
-
-        sim_state.path = [sim_state.path; sim_state.path(3,:)-sim_state.path(2,:)];
+    for i = ignoreindices
+        K = [K(1:(2*i-2)), K((2*i+1):end)];
+        discretisation = [discretisation(1:i-1); discretisation(i+1:end)];
+        sim_state.path = [sim_state.path(1:i-1, :); sim_state.path(i+1:end, :)];
+        labels = [labels(1:i-1); labels(i+1:end)];
     end
 
     if (isfield(project, 'V'))
-        V = project.V;
+        V = vk_kernel_augment(project);
 
-        if (project.sim_showrealinterest)
-            V = [V, V(:,3)-V(:,2)];
+        for i = ignoreindices
+            V = [V(:, 1:i-1), V(:, i+1:end)];
         end
-    else
-        V = [];
     end
 
     sim_line_colour = project.sim_line_colour;

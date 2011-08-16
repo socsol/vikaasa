@@ -118,7 +118,19 @@ function handles = vk_gui_update_inputs(hObject, handles)
 
     %% Simulation options
     set(handles.sim_start, 'RowName', project.symbols);
-    set(handles.sim_start, 'Data', num2cell(project.sim_start));
+    sim_start_data = [num2cell(project.sim_start), ...
+        num2cell(logical(zeros(project.numvars, 2)))];
+    if (length(project.sim_hardupper) > 0)
+        sim_start_data(project.sim_hardupper, 2) = ...
+            num2cell(logical(ones(length(project.sim_hardupper),1)));
+    end
+
+    if (length(project.sim_hardlower) > 0)
+    sim_start_data(project.sim_hardlower, 3) = ...
+        num2cell(logical(ones(length(project.sim_hardlower),1)));
+    end
+
+    set(handles.sim_start, 'Data', sim_start_data);
 
     set(handles.sim_iterations, 'String', ...
         num2str(project.sim_iterations));
@@ -215,19 +227,36 @@ function handles = vk_gui_update_inputs(hObject, handles)
         project.controlbounded);
 
     %% Slices
-    set(handles.slices, 'RowName', project.symbols);
-    slice_data = cell(length(project.K)/2, 3);
+    numslicevars = project.numvars + length(find(project.addnignore == false));
+    set(handles.slices, 'RowName', ...
+        [project.symbols; project.addnsymbols(find(project.addnignore == false))]);
+    slice_data = cell(numslicevars, 3);
     slice_data(:, 1:2) = mat2cell( ...
-        logical(zeros(length(project.K)/2, 2)), ...
-        ones(1, length(project.K)/2), [1 1]);
-    slice_data(:, 3) = num2cell(zeros(length(project.K)/2, 1));
+        logical(zeros(numslicevars, 2)), ...
+        ones(1, numslicevars), [1 1]);
+    slice_data(:, 3) = num2cell(zeros(numslicevars, 1));
 
     for i = 1:size(project.slices, 1)
-        if (isnan(project.slices(i, 2)))
-            slice_data{project.slices(i, 1), 1} = true;
+        % If the slice relates to one of the additional vars, then we need to
+        % check that the element in question isn't ignored.  If it is, we
+        % skip/ignore the slice.
+        skip = 0;
+        if (project.slices(i, 1) <= project.numvars)
+            index = project.slices(i, 1);
+        elseif (project.addnignore(project.slices(i,1) - project.numvars))
+            skip = 1;
         else
-            slice_data{project.slices(i, 1), 2} = true;
-            slice_data{project.slices(i, 1), 3} = project.slices(i, 2);
+            index = project.slices(i, 1) - ...
+                length(find(project.addnignore(1:(project.slices(i,1)-project.numvars))));
+        end
+
+        if (~skip)
+            if (isnan(project.slices(i, 2)))
+                slice_data{index, 1} = true;
+            else
+                slice_data{index, 2} = true;
+                slice_data{index, 3} = project.slices(i,2);
+            end
         end
     end
     set(handles.slices, 'Data', slice_data);
@@ -243,5 +272,4 @@ function handles = vk_gui_update_inputs(hObject, handles)
     end
 
     set(handles.sim_timeprofile_cols, 'String', num2str(project.sim_timeprofile_cols));
-    set(handles.sim_showrealinterest, 'Value', project.sim_showrealinterest);
 end

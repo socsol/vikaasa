@@ -366,8 +366,7 @@ function handles = vk_gui_simgui_setup(hObject, handles)
             path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
             K = [K(1:2*slices(i, 1)-2), ...
                 K(2*slices(i, 1)+1:end)];
-            labels = [labels(1:slices(i, 1)-1, :); ...
-                labels(slices(i, 1)+1:end, :)];
+            labels = [labels(1:slices(i, 1)-1); labels(slices(i, 1)+1:end)];
         end
     end
 

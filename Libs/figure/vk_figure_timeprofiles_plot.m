@@ -102,13 +102,15 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
         axis tight;
     end
 
+    %% Plot the system velocity.
     subplot(rows, cols, numplots-1);
     hold on;
     plot(T, normpath, 'Color', line_colour, 'LineWidth', width);
     plot(T, simulation.small * ones(1, length(T)), ...
         'Color', 'r', 'LineWidth', 1);
-    ind = find(viablepath(4, :));
     if (showpoints)
+        % Ind should give the steady points.
+        ind = find(viablepath(5, :));
         plot(T(ind), normpath(ind), '.g');
     end
     title('velocity');

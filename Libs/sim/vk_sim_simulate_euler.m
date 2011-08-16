@@ -111,6 +111,8 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
     report_progress = options.report_progress;
     progress_fn = options.progress_fn;
     sim_stopsteady = options.sim_stopsteady;
+    hardupper = options.sim_hardupper;
+    hardlower = options.sim_hardlower;
 
 
     %% Create the bounded control function
@@ -171,6 +173,14 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
 
         %% Stop if necessary
         if (sim_stopsteady && steady)
+            break;
+        end
+
+        % Hard upper and lower bounds only count for real dimensions here.
+        if (...
+             (~isempty(hardupper) && any(exited_on(hardupper, 1) > 0)) ...
+          || (~isempty(hardlower) && any(exited_on(hardlower, 1) < 0)) ...
+        )
             break;
         end
 

@@ -37,6 +37,10 @@
 function vk_figure_make(V, K, labels, colour, method, box, ...
     alpha_val, handle)
 
+  if (size(V, 2) > 3 || size(V, 2) < 2)
+      vk_error('Too many dimensions to plot.  Please select some slices.');
+  end
+
   figure_name = 'Viability Kernel';
 
   figure(handle);
