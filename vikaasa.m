@@ -257,7 +257,7 @@ function plot_button_Callback(hObject, eventdata, handles)
 
     % If we are ignoring any variables, elminate them from the slices, and all
     % slice = all values.
-    slices = vk_kernel_augment_slices(handles.project)
+    slices = vk_kernel_augment_slices(handles.project);
     
     if (size(slices, 1) > 0)
         vk_figure_make_slice(V, slices, K, labels, colour, ...
