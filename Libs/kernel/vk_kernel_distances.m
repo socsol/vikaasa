@@ -38,6 +38,8 @@
 function distances = vk_kernel_distances(K, discretisation)
     distances = zeros(1, length(K)/2);
     for i = 1:length(K)/2
-        distances(i) = (K(2*i) - K(2*i - 1)) / (discretisation(i)-1);
+        if (length(discretisation) >= i)
+            distances(i) = (K(2*i) - K(2*i - 1)) / (discretisation(i)-1);
+        end
     end
 end

@@ -53,19 +53,25 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
     %% Work out what is being ignored.
     ignoreindices = sort(find(project.addnignore), 'descend') + project.numvars;
 
-    for i = ignoreindices
-        K = [K(1:(2*i-2)), K((2*i+1):end)];
-        discretisation = [discretisation(1:i-1); discretisation(i+1:end)];
-        sim_state.path = [sim_state.path(1:i-1, :); sim_state.path(i+1:end, :)];
-        labels = [labels(1:i-1); labels(i+1:end)];
+    if (~isempty(ignoreindices))
+        for i = ignoreindices
+            K = [K(1:(2*i-2)), K((2*i+1):end)];
+            discretisation = [discretisation(1:i-1); discretisation(i+1:end)];
+            sim_state.path = [sim_state.path(1:i-1, :); sim_state.path(i+1:end, :)];
+            labels = [labels(1:i-1); labels(i+1:end)];
+        end
     end
 
     if (isfield(project, 'V'))
         V = vk_kernel_augment(project);
 
-        for i = ignoreindices
-            V = [V(:, 1:i-1), V(:, i+1:end)];
+        if (~isempty(ignoreindices))
+            for i = ignoreindices
+                V = [V(:, 1:i-1), V(:, i+1:end)];
+            end
         end
+    else
+        V = [];
     end
 
     sim_line_colour = project.sim_line_colour;
