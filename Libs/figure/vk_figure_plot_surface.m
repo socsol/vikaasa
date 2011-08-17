@@ -113,7 +113,17 @@ function vk_figure_plot_surface(V, colour, method, alpha_val)
                 alpha(h_caps, alpha_val);
                 alpha(h_iso, alpha_val);
             end
-            set(h_iso,'FaceColor',colour, 'EdgeColor', 'none');
+
+            set(h_iso,'FaceColor',colour);
+
+            try
+                camlight left;
+                camlight right;
+                lighting gouraud;
+                set(h_iso,'EdgeColor','none');
+            catch
+                warning('Couldn''t set lighting');
+            end
         catch
             exception = lasterror();
             err = 1;
