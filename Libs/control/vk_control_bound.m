@@ -48,7 +48,7 @@
 %   will not be able to improve the control choice for real (non-imaginary)
 %   violations.  In this case, it simply checks for constraint set violations.
 %
-% Requires: vk_options, vk_viable_exited 
+% Requires: vk_options, vk_viable_exited
 % See also: control, vk_control_enforce, vk_viable
 
 %%

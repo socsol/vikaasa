@@ -34,7 +34,7 @@ function handles = vk_gui_set_vartable(hObject, handles)
 
     set(handles.vartable, 'Data', vartable);
 
-    %% Populate addnvartable 
+    %% Populate addnvartable
     addnvartable = cell(project.numaddnvars, 4);
     if (project.numaddnvars > 0)
       addnvartable(:, 1) = project.addnlabels;

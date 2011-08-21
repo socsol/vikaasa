@@ -164,7 +164,7 @@
 %         variables which have "hard" upper bounds.  When a hard upper bound is
 %         violated, simulation is halted.
 %
-%       - `sim_hardlower' (`[]'): Same as sim_hardupper, but for lower bounds.
+%       - `sim_hardlower' (`[]'): Same as `sim_hardupper', but for lower bounds.
 %
 %       - `sim_stopsteady' (0): Used by
 %         vk_sim_simulate_euler/vk_sim_simulate_ode to decide whether

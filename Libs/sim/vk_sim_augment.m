@@ -1,8 +1,8 @@
-%% VK_SIM_AUGMENT Augment the sim_state in the given project
+%% VK_SIM_AUGMENT Augment the simulation structure in the given project
 %
 % SYNOPSIS
 %   Where a project has specified additional variables, this function works
-%   to augment the sim_state information to include those variables as well.
+%   to augment the `sim_state' information to include those variables as well.
 %
 % USAGE
 %   % Augment the kernel, store the result in V, using data from p:
@@ -35,7 +35,7 @@ function sim_state = vk_sim_augment(project, varargin)
     else
         sim_state = project.sim_state;
     end
-    
+
     %% Augment the V and K variables.
     sim_state.V = vk_kernel_augment(project, sim_state.V);
     sim_state.K = vk_kernel_augment_constraints(project, sim_state.K);
