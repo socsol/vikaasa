@@ -1,9 +1,12 @@
-%% VK_FIGURE_PLOT_SURFACE Draw a 3D kernel
+%% VK_PLOT_SURFACE Draw a 3D kernel
 %
 % SYNOPSIS
 %   Draws a 3D representation of a viability kernel.
 %
-% See also: vk_figure_make, vk_figure_make_slice, vk_figure_plot_area
+% Requires: vk_plot_surface_scatter, vk_plot_surface_qhull,
+%   vk_plot_surface_isosurface
+%
+% See also: vk_figure_make, vk_figure_make_slice, vk_plot_area
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -19,7 +22,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_figure_plot_surface(V, colour, method, alpha_val)
+function vk_plot_surface(V, colour, method, alpha_val)
 
     if (isempty(V))
         return;
@@ -35,9 +38,9 @@ function vk_figure_plot_surface(V, colour, method, alpha_val)
         smoothopt = {};
     end
 
-    fallbackfn = @vk_figure_plot_surface_scatter;
-    if (exist(['vk_figure_plot_surface_',method]))
-        plotfn = eval(['@vk_figure_plot_surface_',method]);
+    fallbackfn = @vk_plot_surface_scatter;
+    if (exist(['vk_plot_surface_',method]))
+        plotfn = eval(['@vk_plot_surface_',method]);
     else
         plotfn = fallbackfn;
     end

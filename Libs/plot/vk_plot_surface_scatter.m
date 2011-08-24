@@ -1,4 +1,4 @@
-%% VK_FIGURE_PLOT_SURFACE_SCATTER Plot a 3D scatter plot of a kernel.
+%% VK_PLOT_SURFACE_SCATTER Plot a 3D scatter plot of a kernel.
 %
 % SYNOPSIS
 %   This function plots the points given in a kernel, or kernel slice
@@ -6,9 +6,9 @@
 %
 % USAGE
 %   % For some kernel, V and some colour, c:
-%   p = vk_figure_plot_surface_scatter(V, c);
+%   p = vk_plot_surface_scatter(V, c);
 %
-% See also: vk_figure_plot_surface
+% See also: vk_plot_surface
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -24,6 +24,6 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_figure_plot_surface_scatter(V, colour, varargin)
+function vk_plot_surface_scatter(V, colour, varargin)
     scatter3(V(:, 1), V(:, 2), V(:, 3), 10, colour);
 end

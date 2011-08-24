@@ -19,7 +19,7 @@
 %  - `alpha_val': The transparency to give the kernel (certain drawing methods only)
 %  - `handle': The handle to display the figure in.
 %
-% See also: vk_figure_make, vk_figure_plot_area, vk_figure_plot_surface,
+% See also: vk_figure_make, vk_plot_area, vk_plot_surface,
 %   vk_kernel_slice, vk_kernel_view
 
 %%
@@ -82,15 +82,15 @@ function vk_figure_make_slice(V, slices, K, labels, ...
     xlabel(labels{1});
     ylabel(labels{2});
     if (size(SV, 2) == 2)
-        vk_figure_plot_area(SV, colour, method, alpha_val);
+        vk_plot_area(SV, colour, method, alpha_val);
     else
-        vk_figure_plot_surface(SV, colour, method, alpha_val);
+        vk_plot_surface(SV, colour, method, alpha_val);
         zlabel(labels{3});
         view(3);
     end
 
     if (box)
-        limits = vk_figure_plot_box(K);
+        limits = vk_plot_box(K);
     else
         limits = K;
     end

@@ -1,4 +1,4 @@
-%% VK_FIGURE_PLOT_SURFACE_ISOSURFACE Plot a 3D kernel using isosurface.
+%% VK_PLOT_SURFACE_ISOSURFACE Plot a 3D kernel using isosurface.
 %
 % SYNOPSIS
 %   This function plots a 3D kernel using the `isosurface' function, as well as
@@ -13,7 +13,7 @@
 %   % Specifying alpha level of 0.5:
 %   vk_plot_surface_isosurface(V, c, 'alpha', 0.5);
 %
-% See also: vk_vigure_plot_surface
+% See also: vk_plot_surface
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -29,7 +29,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_figure_plot_surface_isosurface(V, colour, varargin)
+function vk_plot_surface_isosurface(V, colour, varargin)
 
     smooth = 0;
     alpha_val = 1;

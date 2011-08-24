@@ -1,4 +1,4 @@
-%% VK_FIGURE_PLOT_PATH Draw a trajectory into a viability kernel window.
+%% VK_PLOT_PATH Draw a trajectory into a viability kernel window.
 %
 
 %%
@@ -15,7 +15,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_figure_plot_path(T, path, viablepath, showpoints, varargin)
+function vk_plot_path(T, path, viablepath, showpoints, varargin)
 
     if (nargin > 4)
         colour = varargin{1};

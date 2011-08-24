@@ -1,4 +1,4 @@
-%% VK_FIGURE_PLOT_SURFACE_QHULL Plot a 3D kernel using convex hull method.
+%% VK_PLOT_SURFACE_QHULL Plot a 3D kernel using convex hull method.
 %
 % SYNOPSIS
 %   Draws a 3D representation fo a kernel (or kernel slice) using the
@@ -8,18 +8,18 @@
 %
 % USAGE
 %   % For some kernel V and colour, c:
-%   vk_figure_plot_surface_qhull(V, c);
+%   vk_plot_surface_qhull(V, c);
 %
 %   % Create a figure, and then plot a blue kernel in it:
 %   h = figure;
-%   vk_figure_plot_surface_qhull(V, 'b');
+%   vk_plot_surface_qhull(V, 'b');
 %
 %   % Optionally specify an alpha setting of 0.5:
-%   vk_figure_plot_surface_qhull(V, c, 0.5);
+%   vk_plot_surface_qhull(V, c, 0.5);
 %
 %
-% See also: vk_figure_plot_surface
-function vk_figure_plot_surface_qhull(V, colour, varargin)
+% See also: vk_plot_surface
+function vk_plot_surface_qhull(V, colour, varargin)
 
     if (nargin > 2)
         alpha_val = varargin{1};

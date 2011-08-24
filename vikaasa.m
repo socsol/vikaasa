@@ -835,12 +835,12 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
         end
     end
 
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_figure_plot_path(T, path, viablepath, showpoints, ...
+    vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
@@ -970,16 +970,16 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
     end
 
     if (handles.project.drawbox)
-        limits = vk_figure_plot_box(K);
+        limits = vk_plot_box(K);
     else
         limits = K;
     end
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_figure_plot_path(T, path, viablepath, showpoints, ...
+    vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
