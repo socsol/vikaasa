@@ -79,7 +79,6 @@ function status = vk_ode_outputfcn(T, Y, flag, K, f, c, varargin)
               %norm_fn(Ydiff(i, :) / Tdiff(i)));
               if (norm_fn(Ydiff(i, :) / Tdiff(i)) <= small)
                   status = 1; % stop
-                  111
                   return;
               end
           end

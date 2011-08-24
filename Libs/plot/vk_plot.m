@@ -68,7 +68,7 @@ function vk_plot(V, colour, method, varargin)
         fallbackfn(V, colour, alpha_val);
     end
 
-    if (err)
-        rethrow(exception);
-    end
+    %if (err)
+    %    rethrow(exception);
+    %end
 end

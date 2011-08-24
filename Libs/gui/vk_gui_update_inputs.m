@@ -49,7 +49,7 @@ function handles = vk_gui_update_inputs(hObject, handles)
     pos = get(handles.resultstable, 'Position');
     set(handles.resultstable, 'Units', units);
 
-    width = pos(3) / 2 - 3;
+    width = pos(3) / 2 - 10;
     set(handles.resultstable, 'ColumnWidth', {width});
     set(handles.sim_resultstable, 'ColumnWidth', {width});
 
