@@ -47,4 +47,9 @@ function V = vk_kernel_augment(project, varargin)
             V(row, project.numvars+i) = fn(args{:});
         end
     end
+
+    %% Then, for each ignored variable, remove the column:
+    for i = sort(transpose(find(project.addnignore))+project.numvars, 'descend')
+        V = [V(:,1:i-1), V(:,i+1:end)];
+    end
 end

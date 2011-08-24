@@ -86,8 +86,8 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
 
             %Vt = Vt(1:cnt, :);
 
-            %% Plot the kernel-in-time by using vk_figure_plot_area:
-            %vk_figure_plot_area(Vt, plotcolour, plottingmethod, alpha_val);
+            %% Plot the kernel-in-time by using vk_plot_area:
+            %vk_plot_area(Vt, plotcolour, plottingmethod, alpha_val);
         end
 
         %% Plot the rectangular constraint set boundaries in red.
@@ -97,7 +97,7 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
             'Color', 'r', 'LineWidth', 1);
 
         %% Plot the path of this variable
-        vk_figure_plot_path(T, [T; path(i, :)], viablepath, showpoints, line_colour, width);
+        vk_plot_path(T, [T; path(i, :)], viablepath, showpoints, line_colour, width);
         title(labels{i});
         axis tight;
     end

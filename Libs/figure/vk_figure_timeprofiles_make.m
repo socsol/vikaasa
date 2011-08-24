@@ -45,31 +45,32 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
         sim_state = vk_sim_augment(project);
     end
 
-    labels = [project.labels; project.addnlabels];
+    labels = [project.labels; ...
+        project.addnlabels(find(~project.addnignore))];
     K = vk_kernel_augment_constraints(project);
-    discretisation = [project.discretisation; max(project.discretisation)*ones(project.numaddnvars, 1)];
+    discretisation = [project.discretisation; max(project.discretisation)*ones(project.numaddnvars-length(project.addnignore), 1)];
     c = project.c;
 
     %% Work out what is being ignored.
-    ignoreindices = sort(find(project.addnignore), 'descend') + project.numvars;
-
-    if (~isempty(ignoreindices))
-        for i = ignoreindices
-            K = [K(1:(2*i-2)), K((2*i+1):end)];
-            discretisation = [discretisation(1:i-1); discretisation(i+1:end)];
-            sim_state.path = [sim_state.path(1:i-1, :); sim_state.path(i+1:end, :)];
-            labels = [labels(1:i-1); labels(i+1:end)];
-        end
-    end
+    %ignoreindices = sort(find(project.addnignore), 'descend') + project.numvars;
+%
+%    if (~isempty(ignoreindices))
+%        for i = ignoreindices
+%            K = [K(1:(2*i-2)), K((2*i+1):end)];
+%            discretisation = [discretisation(1:i-1); discretisation(i+1:end)];
+%            sim_state.path = [sim_state.path(1:i-1, :); sim_state.path(i+1:end, :)];
+%            labels = [labels(1:i-1); labels(i+1:end)];
+%        end
+%    end
 
     if (isfield(project, 'V'))
         V = vk_kernel_augment(project);
 
-        if (~isempty(ignoreindices))
-            for i = ignoreindices
-                V = [V(:, 1:i-1), V(:, i+1:end)];
-            end
-        end
+        %if (~isempty(ignoreindices))
+        %    for i = ignoreindices
+        %        V = [V(:, 1:i-1), V(:, i+1:end)];
+        %    end
+        %end
     else
         V = [];
     end

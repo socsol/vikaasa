@@ -36,7 +36,11 @@ function SV = vk_kernel_slice(V, slices)
     % Call the helper function for each slice.
     SV = V;
     for i = 1:size(slices, 1)
-        SV = vk_kernel_slice_helper(SV, slices(i,1), slices(i,2), slices(i, 3));
+        if (slices(i,1) <= size(SV,2))
+            SV = vk_kernel_slice_helper(SV, slices(i,1), slices(i,2), slices(i, 3));
+        else
+            warning(['Could not slice through dimension ', num2str(slices(i,1)), ' -- dimension not present']);
+        end
     end
 end
 
@@ -47,21 +51,7 @@ function SV = vk_kernel_slice_helper(V, slice_axis, plane, distance)
       % If NaN, then we don't need to bother filtering.
       NV = V;
   else
-      % Pre-initialise NV for speed.
-      NV = zeros(size(V));
-      counter = 0;
-
-      % Iterate through all the rows of V.  Copy any that have an axis-th
-      % value that is leq than 1/2*distance-away from plane into NV.
-      for row = 1:size(V,1)
-        if (abs(V(row, slice_axis) - plane) < distance/2)
-          counter = counter + 1;
-          NV(counter, :) = V(row, :);
-        end
-      end
-
-      % Remove any unused rows from NV.
-      NV = NV(1:counter, :);
+      NV = V(find(abs(V(:,slice_axis) - plane) < distance/2),:);
   end
 
   % Create SV as all columns of NV except the one that we are slicing

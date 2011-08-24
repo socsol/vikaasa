@@ -1,4 +1,4 @@
-%% VK_FIGURE_PLOT_BOX Draw a box around a kernel
+%% VK_PLOT_BOX Draw a box around a kernel
 %   This function boxes the given figure according to the constraint set.  If
 %   there are slices, then these are considered too.
 %
@@ -17,7 +17,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function limits = vk_figure_plot_box(K, varargin)
+function limits = vk_plot_box(K, varargin)
 
     hold on;
 

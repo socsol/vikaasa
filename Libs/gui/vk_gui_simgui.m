@@ -198,10 +198,8 @@ function handles = vk_gui_simgui_drawstep(i, hObject, handles, handle, varargin)
         V = vk_kernel_slice(V, slices);
     end
 
-    if (length(K) / 2 - size(slices, 1) == 2)
-        vk_figure_plot_area(V, colour, method, alpha_val);
-    elseif (length(K) / 2 - size(slices, 1) == 3)
-        vk_figure_plot_surface(V, colour, method, alpha_val);
+    vk_plot(V, colour, method, alpha_val);
+    if (length(K) / 2 - size(slices, 1) == 3)
         camlight;
         lighting gouraud;
     end
@@ -230,11 +228,11 @@ function handles = vk_gui_simgui_drawstep(i, hObject, handles, handle, varargin)
     end
 
     showpoints = handles.display_opts.showpoints;
-    vk_figure_plot_path(T, path(:, 1:i), viablepath(:, 1:i), showpoints, ...
+    vk_plot_path(T, path(:, 1:i), viablepath(:, 1:i), showpoints, ...
         line_colour, line_width);
 
-    limits = vk_figure_plot_box(K);
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_box(K);
+    limits = vk_plot_path_limits(limits, path);
 
     axis(limits);
     title(figure_name);
@@ -370,8 +368,8 @@ function handles = vk_gui_simgui_setup(hObject, handles)
         end
     end
 
-    limits = vk_figure_plot_box(K);
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_box(K);
+    limits = vk_plot_path_limits(limits, path);
     axis(limits);
     grid on;
 

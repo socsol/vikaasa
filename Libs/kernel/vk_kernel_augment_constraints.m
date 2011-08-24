@@ -54,4 +54,9 @@ function K = vk_kernel_augment_constraints(project, varargin)
         K(2*(project.numvars+i) - 1) = min(vals(:));
         K(2*(project.numvars+i)) = max(vals(:));
     end
+
+    %% Then, for each ignored addnvar, remove the pair:
+    for i = sort(transpose(find(project.addnignore))+project.numvars, 'descend')
+        K = [K(1:2*i - 2), K(2*i+1:end)];
+    end
 end

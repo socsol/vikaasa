@@ -239,7 +239,8 @@ end
 function plot_button_Callback(hObject, eventdata, handles)
     V = vk_kernel_augment(handles.project);
     K = vk_kernel_augment_constraints(handles.project);
-    labels = [handles.project.labels; handles.project.addnlabels];
+    labels = [handles.project.labels; ...
+        handles.project.addnlabels(find(~handles.project.addnignore))];
     colour = handles.project.plotcolour;
     method = handles.project.plottingmethod;
     box = handles.project.drawbox;
@@ -835,12 +836,12 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
         end
     end
 
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_figure_plot_path(T, path, viablepath, showpoints, ...
+    vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
@@ -856,7 +857,8 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
     % Display settings.
     display_opts = struct(...
         'alpha', handles.project.alpha, ...
-        'labels', {[handles.project.labels; handles.project.addnlabels]}, ...
+        'labels', {[handles.project.labels; ...
+            handles.project.addnlabels(find(~handles.project.addnignore))]}, ...
         'colour', handles.project.plotcolour, ...
         'line_colour', handles.project.sim_line_colour, ...
         'line_width', handles.project.sim_line_width, ...
@@ -865,8 +867,6 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
         'slices', vk_kernel_augment_slices(handles.project), ...
         'parent', handles.figure1 ...
     );
-
-    display_opts.labels
 
     if (isfield(handles.project, 'sim_state'))
         vk_gui_simgui(vk_sim_augment(handles.project), display_opts);
@@ -957,7 +957,8 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
 
     slices = vk_kernel_augment_slices(handles.project);
     K = vk_kernel_augment_constraints(handles.project);
-    labels = [handles.project.labels; handles.project.addnlabels];
+    labels = [handles.project.labels; ...
+        handles.project.addnlabels(find(~handles.project.addnignore))];
     if (~isempty(slices))
         slices = sortrows(slices, -1);
         for i = 1:size(slices, 1)
@@ -970,16 +971,16 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
     end
 
     if (handles.project.drawbox)
-        limits = vk_figure_plot_box(K);
+        limits = vk_plot_box(K);
     else
         limits = K;
     end
-    limits = vk_figure_plot_path_limits(limits, path);
+    limits = vk_plot_path_limits(limits, path);
 
     viablepath = sim_state.viablepath;
     showpoints = handles.project.sim_showpoints;
 
-    vk_figure_plot_path(T, path, viablepath, showpoints, ...
+    vk_plot_path(T, path, viablepath, showpoints, ...
         handles.project.sim_line_colour, handles.project.sim_line_width);
 
     vk_figure_data_insert(h, limits, slices);
@@ -1317,7 +1318,7 @@ function deletesim_button_Callback(hObject, eventdata, handles)
   b = questdlg('Are you sure you want to delete the simulation results?', ...
     'Confirm');
 
-  if (b == 'Yes')
+  if (strcmp(b, 'Yes'))
     handles.project = vk_sim_delete_results(handles.project);
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
@@ -1333,7 +1334,7 @@ function deleteresults_button_Callback(hObject, eventdata, handles)
   b = questdlg('Are you sure you want to delete the kernel results?', ...
     'Confirm');
 
-  if (b == 'Yes')
+  if (strcmp(b, 'Yes'))
     handles.project = vk_kernel_delete_results(handles.project);
     handles = vk_gui_update_inputs(hObject, handles);
     guidata(hObject, handles);
