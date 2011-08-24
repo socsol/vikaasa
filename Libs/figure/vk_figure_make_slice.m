@@ -19,8 +19,9 @@
 %  - `alpha_val': The transparency to give the kernel (certain drawing methods only)
 %  - `handle': The handle to display the figure in.
 %
-% See also: vk_figure_make, vk_plot_area, vk_plot_surface,
-%   vk_kernel_slice, vk_kernel_view
+% Requires: vk_plot
+%
+% See also: vk_figure_make, vk_kernel_slice, vk_kernel_view
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -79,12 +80,10 @@ function vk_figure_make_slice(V, slices, K, labels, ...
         K = [K(1:2*slice_axis-2), K(2*slice_axis+1:end)];
     end
 
+    vk_plot(SV, colour, method, alpha_val);
     xlabel(labels{1});
     ylabel(labels{2});
-    if (size(SV, 2) == 2)
-        vk_plot_area(SV, colour, method, alpha_val);
-    else
-        vk_plot_surface(SV, colour, method, alpha_val);
+    if (size(SV, 2) == 3)
         zlabel(labels{3});
         view(3);
     end

@@ -198,10 +198,8 @@ function handles = vk_gui_simgui_drawstep(i, hObject, handles, handle, varargin)
         V = vk_kernel_slice(V, slices);
     end
 
-    if (length(K) / 2 - size(slices, 1) == 2)
-        vk_plot_area(V, colour, method, alpha_val);
-    elseif (length(K) / 2 - size(slices, 1) == 3)
-        vk_plot_surface(V, colour, method, alpha_val);
+    vk_plot(V, colour, method, alpha_val);
+    if (length(K) / 2 - size(slices, 1) == 3)
         camlight;
         lighting gouraud;
     end
