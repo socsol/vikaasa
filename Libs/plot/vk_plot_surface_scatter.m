@@ -25,5 +25,13 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function vk_plot_surface_scatter(V, colour, varargin)
-    scatter3(V(:, 1), V(:, 2), V(:, 3), 10, colour);
+
+    marker = 'o';
+
+    %% We don't care about the alpha value, which will be varargin{1}.
+    if (nargin > 4 && strcmp(varargin{2}, 'marker'))
+        marker = varargin{3};
+    end
+
+    scatter3(V(:, 1), V(:, 2), V(:, 3), 25, colour, marker);
 end
