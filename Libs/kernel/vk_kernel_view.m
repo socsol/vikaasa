@@ -1,9 +1,26 @@
 %% VK_KERNEL_VIEW View the viability kernel contained in the given file.
-%   This function opens a project, or takes a project 'state' structure, and
+%
+% SYNOPSIS
+%   This function opens a project, or takes a project structure, and
 %   displays the kernel contained within it, using the settings contained in
 %   the project.
 %
-% Examples
+% USAGE
+%   % Viewing a kernel from within a project file:
+%   vk_view_kernel('project.mat');
+%
+%
+%   % Getting a handle to the resulting figure:
+%   fig = vk_view_kernel(proj);
+%
+%   % Specifying an existing figure to plot into:
+%   vk_view_kernel('project.mat', fig);
+%   % Or:
+%   p = vk_project_load('project.mat');
+%   vk_view_kernel(p, fig);
+%
+% EXAMPLES
+%   % Loading a project file, changing some settings and plotting the result:
 %   % First, load a project into a structure.
 %   proj = vk_project_load('Projects/vikaasa_default.mat');
 %   % Change some of the settings:
@@ -13,8 +30,20 @@
 %   % Now, display the kernel:
 %   vk_view_kernel(proj);
 %
-% See also: VIKAASA, SCRIPTS, TOOLS
+%   % Loading two different projects, and plotting both kernels into a single
+%   % figure:
+%   p1 = vk_project_load('project1.mat');
+%   p2 = vk_project_load('project2.mat');
+%   fig = vk_kernel_view(p1);
+%   vk_kernel_view(p2, fig);
 %
+%   % The same thing again, but all in a single line:
+%   vk_kernel_view('project2.mat', ...
+%       vk_kernel_view('project1.mat'));
+%
+% Requires: vk_project_load, vk_figure_make, vk_figure_make_slice
+%
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -30,11 +59,18 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_kernel_view(input)
+function fig = vk_kernel_view(input, varargin)
     if (ischar(input))
       project = vk_project_load(input);
     else
       project = input;
+    end
+
+    %% Plot into a pre-existing figure if one is specified.
+    if (nargin > 1)
+        fig = varargin{1};
+    else
+        fig = figure;
     end
 
     V = project.V;
@@ -45,13 +81,12 @@ function vk_kernel_view(input)
     box = project.drawbox;
     alpha_val = project.alpha;
 
-    h = figure;
 
     if (size(project.slices,1) > 0)
         vk_figure_make_slice(V, project.slices, K, labels, colour, ...
-            method, box, alpha_val, h);
+            method, box, alpha_val, fig);
     else
         vk_figure_make(V, K, labels, colour, method, ...
-            box, alpha_val, h);
+            box, alpha_val, fig);
     end
 end
