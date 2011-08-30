@@ -4,7 +4,7 @@
 %   Draws a viability kernel using one of the methods available, or
 %   'scatter' as a fallback.  If V has two dimensions, then an `_area_'
 %   function will be used.  If it has three dimensions, then a `_surface_'
-%   function will be used. 
+%   function will be used.
 %
 % Requires: vk_plot_area_scatter, vk_plot_area_qhull, vk_plot_area_isosurface,
 %   vk_plot_surface_scatter, vk_plot_surface_qhull, vk_plot_surface_isosurface
@@ -46,9 +46,14 @@ function vk_plot(V, colour, method, varargin)
 
     if (length(method) > 6 && strcmp(method(end-6:end), '-smooth'))
         method = method(1:end-7);
-        smoothopt = {'smooth', 1};
+        opts = {'smooth', 1};
+    elseif (length(method) > 2 && any(strcmp(method(end-1:end), ...
+      {'-.', '-o', '-x', '-+', '-*', '-s', '-d', '-v', '-^', '-<', '->', '-p', '-h'})))
+
+        opts = {'marker', method(end)};
+        method = method(1:end-2);
     else
-        smoothopt = {};
+        opts = {};
     end
 
     fallbackfn = eval(['@vk_plot_',type,'_scatter']);
@@ -60,7 +65,7 @@ function vk_plot(V, colour, method, varargin)
 
     err = 0;
     try
-        plotfn(V, colour, alpha_val, smoothopt{:});
+        plotfn(V, colour, alpha_val, opts{:});
     catch
         err = 1;
         exception = lasterror();

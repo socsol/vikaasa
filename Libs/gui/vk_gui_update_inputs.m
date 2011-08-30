@@ -106,7 +106,7 @@ function handles = vk_gui_update_inputs(hObject, handles)
     set(handles.debug_checkbox, 'Value', project.debug);
 
     %% Plotting method drop-down
-    plottingmethods = {'qhull'; 'isosurface'; 'isosurface-smooth'; 'scatter'};
+    plottingmethods = {'qhull'; 'isosurface'; 'isosurface-smooth'; 'scatter'; 'scatter-x'; 'scatter-+'};
     set(handles.plottingmethod, 'String', char(plottingmethods{:}));
 
     for i = 1:size(plottingmethods, 1)
