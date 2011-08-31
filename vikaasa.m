@@ -1398,9 +1398,11 @@ function deleteaddnvar_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     if (project.numaddnvars > 0)
-        index = find(project.slices(:,1) == project.numvars + project.numaddnvars);
-        if (index)
-            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        if (~isempty(project.slices))
+            index = find(project.slices(:,1) == project.numvars + project.numaddnvars);
+            if (index)
+                project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+            end
         end
         project.numaddnvars = project.numaddnvars - 1;
         handles.project = vk_project_sanitise(project);
