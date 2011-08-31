@@ -28,6 +28,11 @@
 function slices = vk_kernel_augment_slices(project)
 
     slices = project.slices;
+
+    if (isempty(slices))
+        return;
+    end
+
     ignore = transpose(find(project.addnignore))+project.numvars;
     if (~isempty(ignore))
         %% If an ignored variable is in the list of slices, remove it.
