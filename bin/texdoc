@@ -93,7 +93,7 @@ EOF
       my $links = join', ', map { "\\vkfunctionref{$_}" } split(/\b\s*,\s*\b/m, $1);
       
       $content = $`. <<EOF . $links . "\n" . $';
-\n\\vkfunctionsection{$header}
+\n\n\\vkfunctionsection{$header}
 EOF
     }
   }
