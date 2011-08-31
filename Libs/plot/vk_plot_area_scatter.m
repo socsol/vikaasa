@@ -24,5 +24,12 @@ function vk_plot_area_scatter(V, colour, varargin)
         marker = varargin{3};
     end
 
-    scatter(V(:,1), V(:,2), 20, colour, marker);
+    % Octave plots bigger points than MATLAB.
+    if (exist('octave_config_info'))
+        size = 10;
+    else
+        size = 25;
+    end
+
+    scatter(V(:,1), V(:,2), size, colour, marker);
 end
