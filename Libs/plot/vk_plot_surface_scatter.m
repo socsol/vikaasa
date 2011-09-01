@@ -8,7 +8,10 @@
 %   % For some kernel, V and some colour, c:
 %   p = vk_plot_surface_scatter(V, c);
 %
-% See also: vk_plot_surface
+%   % With a different marker (1 is for alpha, which is not used here).
+%   p = vk_plot_surface_scatter(V, c, 1, '+');
+%
+% See also: vk_plot, vk_plot_area_scatter
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

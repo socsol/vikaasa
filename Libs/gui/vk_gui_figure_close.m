@@ -1,5 +1,18 @@
 %% VK_GUI_FIGURE_CLOSE Catch close events in the VIKAASA GUI
 %
+% SYNOPSIS
+%   This function is used by the VIKAASA GUI to keep track of close events
+%   being sent to windows.  It is unlikely that you will need to use it
+%   yourself.
+%
+% USAGE
+%   % Close a figure.
+%   vk_gui_figure_close(h, event);
+%
+%   % Close a timeprofile figure.
+%   vk_gui_figure_close(h, event, 'tp');
+%
+% See also: vk_gui_figure_focus, vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

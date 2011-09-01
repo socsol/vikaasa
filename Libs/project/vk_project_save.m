@@ -12,7 +12,9 @@
 % NOTES
 %   If saving is not successful, an error will be thrown.
 %
-% See also: vikaasa, project, vk_project_load
+% Requires:  vk_error
+%
+% See also: project, vikaasa, vk_project_load
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

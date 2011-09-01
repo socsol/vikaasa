@@ -1,5 +1,15 @@
-%% VK_KERNEL_RESULTS Returns the results of a kernel approximation
+%% VK_KERNEL_RESULTS Returns the results of a kernel approximation.
 %
+% SYNOPSIS
+%   This function returns a cell array giving an overview of a kernel
+%   approximation run.  It is the same information that is displayed in the
+%   ``Kernel Results'' panel of the GUI.
+%
+% USAGE
+%   % place the information into a cell.
+%   results = vk_kernel_results(project);
+%
+% Requires: vk_timeformat
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

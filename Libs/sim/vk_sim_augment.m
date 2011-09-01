@@ -11,6 +11,8 @@
 %   % Specifying some other simulation:
 %   sim_state = vk_sim_augment(p, sim_state);
 %
+% Requires:  vk_kernel_augment, vk_kernel_augment_constraints
+%
 % See also: vk_kernel_augment
 
 %%

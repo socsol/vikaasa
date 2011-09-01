@@ -4,6 +4,12 @@
 %   This function reads a start state out of the given project.  If the project
 %   has `sim_use_nearest' checked, then the nearest ``grid'' point (according to
 %   the discretisation) is used instead of the given one.
+%
+% USAGE
+%   % Work out the start state.
+%   start = vk_sim_start(project)
+%
+% See also: vk_sim_make
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

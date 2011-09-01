@@ -1,4 +1,4 @@
-%% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible
+%% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible.
 %
 % SYNOPSIS
 %   This function takes a state-space point and a control choice, and
@@ -48,7 +48,7 @@
 %   will not be able to improve the control choice for real (non-imaginary)
 %   violations.  In this case, it simply checks for constraint set violations.
 %
-% Requires: vk_options, vk_viable_exited
+% Requires: vk_distance_fn, vk_newcontrol, vk_options, vk_viable_exited
 %
 % See also: control, vk_control_enforce, vk_viable
 

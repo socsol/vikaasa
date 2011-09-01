@@ -15,6 +15,8 @@
 %   or a structure created by VK_OPTIONS.
 %   u = NORMMIN1STEP(x, K, f, c, OPTIONS)
 %
+% Requires:  vk_options
+%
 % See also: CONTROLALGS/COSTMIN, CONTROLALGS/COSTSUMMIN, TOOLS/VK_OPTIONS
 
 %%

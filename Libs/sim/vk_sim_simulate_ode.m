@@ -51,8 +51,9 @@
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver', myodesolver);
 %
-% See also: sim, vk_kernel_compute, /vk_kernel_inside, vk_options,
-%   vk_sim_simulate_euler
+% Requires:  vk_control_wrap_fn, vk_kernel_inside, vk_options, vk_sim_simulate_ode_helper, vk_viable_exited
+%
+% See also: sim, vk_kernel_compute, vk_kernel_inside, vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

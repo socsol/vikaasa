@@ -14,7 +14,9 @@
 %   % Optionally, a waitbar can also be specified:
 %   options = vk_options_make(project, f, wb, numcomputations, message)
 %
-% See also: options, project, vk_options
+% Requires:  vk_control_cost_fn, vk_options, vk_sim_simulate_euler, vk_sim_simulate_ode, vk_timeformat
+%
+% See also: options, project
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

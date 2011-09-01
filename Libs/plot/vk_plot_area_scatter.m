@@ -1,5 +1,18 @@
 %% VK_PLOT_AREA_SCATTER Plots a 2D viability kernel as a scatter plot
 %
+% SYNOPSIS
+%   This function plots a 2D kernel as a scatter plot, using the `scatter'
+%   function.
+%
+% USAGE
+%   % Standard:
+%   vk_plot_area_scatter(V, colour);
+%
+%   % Using a different marker (the one is for alpha, which does not affect
+%   % this function).
+%   vk_plot_area_scatter(V, colour, 1, 'marker', 'x');
+%
+% See also: scatter
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

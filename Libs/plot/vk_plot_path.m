@@ -1,5 +1,20 @@
 %% VK_PLOT_PATH Draw a trajectory into a viability kernel window.
 %
+% SYNOPSIS
+%   This function takes information from a simulation and plots it into the
+%   current figure.
+%
+% USAGE
+%   % Standard:
+%   vk_plot_path(T, path, viablepath, showpoints);
+%
+%   % With colour and line width:
+%   vk_plot_path(T, path, viablepath, showpoints, 'k', 2);
+%
+%   `T', `path' and `viablepath' should be as they would be if they were
+%   produced by vk_sim_make.
+%
+% See also: vk_sim_make
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -1,7 +1,16 @@
-%% VK_GUI_SET_VARTABLE Update the vartable to reflect the project
+%% VK_GUI_SET_VARTABLE Update the `vartable' to reflect the project
 %
-% See also: VIKAASA
+% SYNOPSIS
+%   The `vartable' is the table of variables in VIKAASA that contains the main
+%   dynamic variables.   This function inserts information into that table (and
+%   into the addnvartable too) from a given project.  You don't need to use it
+%   yourself.
 %
+% USAGE
+%   % The project should be in 'handles.project'.
+%   handles = vk_gui_set_vartable(hObject, handles);
+%
+% See also: vikaasa, gui
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

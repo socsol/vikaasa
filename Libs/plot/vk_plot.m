@@ -6,8 +6,7 @@
 %   function will be used.  If it has three dimensions, then a `_surface_'
 %   function will be used.
 %
-% Requires: vk_plot_area_scatter, vk_plot_area_qhull, vk_plot_area_isosurface,
-%   vk_plot_surface_scatter, vk_plot_surface_qhull, vk_plot_surface_isosurface
+% Requires:  vk_plot_
 %
 % See also: vk_figure_make, vk_figure_make_slice
 

@@ -9,7 +9,7 @@
 %   % Use lsode like you would use ode45:
 %   [T, Y] = vk_lsode_wrapper(odefun, [0, time_horizon], x0);
 %
-% See also: vk_options
+% See also: lsode, vk_options
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

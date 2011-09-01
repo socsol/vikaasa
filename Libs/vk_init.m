@@ -1,5 +1,19 @@
-%% VK_INIT Initialise the VIKAASA environment
+%% VK_INIT Initialise the VIKAASA environment.
 %
+% SYNOPSIS
+%   This script initialises the variables `vikaasa_version', and
+%   `vikaasa_copyright', which should be populated with the contents of the
+%   VERSION and NOTICE files, respectively; and adds the directories containing
+%   the VIKAASA library functions and control algorithms to the path.  It is
+%   used by the `vikaasa' or `vikaasa_cli' commands.
+%
+% USAGE
+%   % Run the script
+%   vk_init
+%   % Afterwards, this should display the version of vikaasa:
+%   vikaasa_version
+%
+% See also: vikaasa, vikaasa_cli
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -17,10 +31,10 @@
 %  limitations under the License.
 
 %% Info
-vk_version = fileread('../VERSION');
-vk_copyright = fileread('../NOTICE');
-if (size(vk_copyright, 2) == 1)
-    vk_copyright = transpose(vk_copyright);
+vikaasa_version = fileread('../VERSION');
+vikaasa_copyright = fileread('../NOTICE');
+if (size(vikaasa_copyright, 2) == 1)
+    vikaasa_copyright = transpose(vikaasa_copyright);
 end
 
 %% Paths

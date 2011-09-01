@@ -1,18 +1,21 @@
 %% VIKAASA The VIKAASA GUI.
+%
+% SYNOPSIS
 %   VIKAASA stands for VIability Kernel Approximation, Analysis and
 %   Simulation Application.
 %
 %   The VIKAASA graphical user interface (GUI) provides a front-end to the
 %   VIKAASA library for computation and analysis of viability kernels with
-%   two to four variables.
+%   two or more variables and a scalar control.
 %
+% USAGE
 %   Running VIKAASA opens the VIKAASA GUI, or raises the GUI window if VIKAASA
 %   is already open (only one instance of the VIKAASA GUI can be open at a
 %   time).
 %
-%   See the VIKAASA manual for more detailed information on using the GUI.
+% Requires:  vk_diff_make_fn, vk_figure_data_insert, vk_figure_data_retrieve, vk_figure_make, vk_figure_make_slice, vk_figure_timeprofiles_make, vk_gui_figure_close, vk_gui_figure_focus, vk_gui_make_waitbar, vk_gui_project_load, vk_gui_simgui, vk_gui_update_inputs, vk_init, vk_kernel_augment, vk_kernel_augment_constraints, vk_kernel_augment_slices, vk_kernel_compute, vk_kernel_delete_results, vk_kernel_make_slices, vk_kernel_results, vk_options_make, vk_plot_box, vk_plot_path, vk_plot_path_limits, vk_project_new, vk_project_sanitise, vk_project_save, vk_sim_augment, vk_sim_delete_results, vk_sim_make
 %
-% See also: vikaasa_cli, gui, project
+% See also: gui, project, vikaasa_cli
 
 %%
 %    Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -62,9 +65,9 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     %% Initialise the VIKAASA environment.
     handles.path = pwd;
     run Libs/vk_init.m
-    handles.version = vk_version;
-    handles.copyright = vk_copyright;
-    fprintf('%s\n\n', vk_copyright);
+    handles.version = vikaasa_version;
+    handles.copyright = vikaasa_copyright;
+    fprintf('%s\n\n', vikaasa_copyright);
 
     filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     fprintf('Loading file: %s\n', filename);

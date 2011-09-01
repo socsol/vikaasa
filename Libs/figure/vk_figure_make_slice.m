@@ -19,9 +19,9 @@
 %  - `alpha_val': The transparency to give the kernel (certain drawing methods only)
 %  - `handle': The handle to display the figure in.
 %
-% Requires: vk_plot
+% Requires:  vk_error, vk_figure_data_insert, vk_kernel_slice, vk_plot, vk_plot_box
 %
-% See also: vk_figure_make, vk_kernel_slice, vk_kernel_view
+% See also: vk_figure_make, vk_kernel_view
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

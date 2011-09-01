@@ -10,15 +10,17 @@
 %
 % EXAMPLES
 %   % Standard usage:
-%   isviable = VK_VIABLE(x, K, f, c);
+%   isviable = vk_viable(x, K, f, c);
 %
-%   % With an OPTIONS structure created by VK_OPTIONS:
-%   isviable = VK_VIABLE(x, K, f, c, OPTIONS);
+%   % With an options structure created by vk_options:
+%   isviable = vk_viable(x, K, f, c, options);
 %
 %   % Returning additional information:
-%   [isviable, paths] = VK_VIABLE(x, K, f, c, OPTIONS);
+%   [isviable, paths] = vk_viable(x, K, f, c, options);
 %
-% See also: CONTROLALGS, VIABLE, KERNEL/VK_KERNEL_COMPUTE, OPTIONS/VK_OPTIONS
+% Requires:  vk_control_wrap_fn, vk_options, vk_viable_exited
+%
+% See also: ControlAlgs, vk_kernel_compute, vk_options, viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

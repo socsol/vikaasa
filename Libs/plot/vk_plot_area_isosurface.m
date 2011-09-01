@@ -1,5 +1,23 @@
 %% VK_PLOT_AREA_ISOSURFACE Plots a 2D viability kernel using the `isosurface' function.
 %
+% SYNOPSIS
+%   This function uses the `isosurface' method to plot a flat 2D kernel.  This
+%   is done by building a fake 3D kernel, and then only displaying the first
+%   two dimensions of it (i.e., by lying it on its side).  It requires the
+%   `isocaps' method to work properly, which at the time of writing was not
+%   available in Octave.
+%
+% USAGE
+%   % Plot into the current figure.
+%   vk_plot_area_isosurface(V, colour);
+%
+%   % Plotting with 50% transparency
+%   vk_plot_area_isosurface(V, colour, 0.5);
+%
+%   % Specify a ``smooth'' isosurface:
+%   vk_plot_area_isosurface(V, colour, 0.5, 'smooth', 1);
+%
+% See also: isosurface, isocaps, alpha
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

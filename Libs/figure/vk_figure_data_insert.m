@@ -1,5 +1,32 @@
 %% VK_FIGURE_DATA_INSERT Add data into a figure handle.
 %
+% SYNOPSIS
+%   This function is used by VIKAASA to remember the current limits and slices
+%   in a given figure.  The limits give either the maximum and minimum values
+%   in each dimension, or the values of the rectangular constraint set.  In
+%   this way, trajectories can be added to a figure at a later time, and the
+%   axes of the figure readjusted without clipping any other information in the
+%   figure.  This function inserts the data into the figure; it can then be
+%   retrieved with vk_figure_data_retrieve.
+%
+% USAGE
+%   % For some figure, h:
+%   vk_figure_data_insert(h, limits, slices)
+%
+%   - `limits' is a row vector of length 4 (for a two-dimensional plot) or 6
+%     (for a three-dimensional plot).  It is the same format used to represent
+%     the rectangular constraint set, `K'.
+%
+%   - `slices' is a data structure of the type compatible with vk_kernel_slice.
+%
+% EXAMPLES
+%   % Create a figure, and then insert information for a two-dimensional
+%   % constraint set and no slices:
+%   h = figure;
+%   K = [0, 1, 5, 500];
+%   vk_figure_data_insert(h, K, []);
+%
+% See also: vk_kernel_slice, vk_figure_data_retrieve
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

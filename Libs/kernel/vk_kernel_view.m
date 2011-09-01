@@ -9,7 +9,6 @@
 %   % Viewing a kernel from within a project file:
 %   vk_view_kernel('project.mat');
 %
-%
 %   % Getting a handle to the resulting figure:
 %   fig = vk_view_kernel(proj);
 %
@@ -41,7 +40,7 @@
 %   vk_kernel_view('project2.mat', ...
 %       vk_kernel_view('project1.mat'));
 %
-% Requires: vk_project_load, vk_figure_make, vk_figure_make_slice
+% Requires:  vk_figure_make, vk_figure_make_slice, vk_kernel_augment, vk_kernel_augment_constraints, vk_kernel_augment_slices, vk_project_load
 %
 % See also: vikaasa
 

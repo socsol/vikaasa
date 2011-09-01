@@ -1,8 +1,23 @@
 %% VK_CELLFUN_PARFOR An implementation of CELLFUN that uses PARFOR
-%   This is a MATLAB equivalent of parcellfun for GNU Octave.
 %
-% See also: CELLFUN, PARCELLFUN, PARFOR
+% SYNOPSIS
+%   This s a MATLAB equivalent of parcellfun for GNU Octave. It is used by
+%   vk_kernel_compute to approximate viability kernels in parallel.  You should
+%   not need to use it individually.
 %
+%   This function automatically starts and stops workers in order to perform
+%   computation, so you shouldn't do this yourself.
+%
+% USAGE
+%   % Run with two processors -- call fn(x, y, z) on each combination of
+%   % elements from x, y, z, and give their return values in the matrix, v.
+%   v = vk_cellfun_parfor(2, fn, x, y, z);
+%
+%   % If fn2 returns a non-scalar, then use the "UniformOutput" option.  In this
+%   % case, v will be a cell.
+%   v = vk_cellfun_parfor(2, fn2, x, y, z, 'UniformOutput', false);
+%
+% See also: cellfun, parcellfun, parfor
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

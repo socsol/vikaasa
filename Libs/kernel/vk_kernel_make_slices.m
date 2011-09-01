@@ -1,6 +1,15 @@
-%% VK_KERNEL_MAKE_SLICES Construct a slice array from a cell array
-%   The cell array conforms to the format displayed by the VIKAASA gui.
+%% VK_KERNEL_MAKE_SLICES Construct a slice array from a cell array.
 %
+% SYNOPSIS
+%   The cell array conforms to the format displayed by the VIKAASA GUI.  From
+%   the command-line it is not really necessary to use this function, as you
+%   can just make the slice array by hand.
+%
+% USAGE
+%   % For some $n \times 3$ cell array,
+%   slices = vk_kernel_make_slices(data, K, discretisation);
+%
+% See also: vk_kernel_slice
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

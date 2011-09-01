@@ -78,8 +78,9 @@
 %   causes the simulation to terminate as soon as a steady state is
 %   encountered, instead of waiting.
 %
-% See also: ControlAlgs, VControlAlgs, vk_kernel_compute, vk_kernel_inside,
-%   vk_options, vk_sim_simulate_ode
+% Requires:  vk_control_wrap_fn, vk_kernel_inside, vk_options, vk_viable_exited
+%
+% See also: ControlAlgs, VControlAlgs, vk_kernel_compute, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

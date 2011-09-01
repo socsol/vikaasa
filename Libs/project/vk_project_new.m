@@ -1,6 +1,19 @@
 %% VK_PROJECT_NEW Creates a new project structure.
+%
+% SYNOPSIS
 %   This function returns a newly initialised project structure.
 %
+% USAGE
+%   % Initialising a project, and storing it in p.
+%   p = vk_project_new;
+%
+%   % Initialising a project, and setting fields at the same time:
+%   p = vk_project_new( ...
+%     'numvars, 3, ...
+%     'symbols', {{'x'; 'y'; 'z'}}
+%   );
+%
+% See also: vk_project_load, vk_project_sanitise
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

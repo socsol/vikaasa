@@ -1,8 +1,23 @@
-%% VK_DIFF_FN Returns the vector of derivatives for a state-space and control
+%% VK_DIFF_FN Returns the vector of derivatives for a state-space and control.
 %
 % SYNOPSIS
-%   This function returns a column vector of derivatives.  You don't need
-%   to use this function directly.  Instead, call vk_make_diff_fn
+%   This function returns a column vector of length $n$ of derivatives.  You
+%   don't need to use this function directly.  Instead, call vk_make_diff_fn.
+%
+% USAGE
+%   % Get derivatives:
+%   xdot = vk_diff_fn(f, x, u)
+%
+%   - `f' is a function that takes $n+1$ inputs -- i.e., the set of state
+%     variables, plus the scalar control.
+%   - `x' is a column vector of length $n$, giving the state-space
+%     representation of the system.
+%   - `u' is a scalar control.
+%
+% EXAMPLES
+%   % Make a function (or use vk_make_diff_fn for this):
+%   f = @(a,b,c,d) a*b + c*d;
+%   fn = @(x,u) vk_diff_fn(f,x,u);
 %
 % See also: vk_make_diff_fn
 

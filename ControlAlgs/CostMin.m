@@ -6,6 +6,7 @@
 %   of forward-looking steps, but becomes exponentially slower for each
 %   one.
 %
+% NOTES
 %   - The cost function is given in `options.cost_fn'.
 %   - The number of forward-looking steps is given by `options.steps'.
 %   - If `options.use_controldefault' is set to 1, then the algorithm will
@@ -19,9 +20,11 @@
 %   See `ControlAlgs' for informaton on the required parameters, and the
 %   return value.
 %
-%   % With additional options structure passed in.  `options' is either a list
+%   % With additional options structure passed in.  'options' is either a list
 %   % of name,value pairs, or a structure created by vk_options.
 %   u = CostMin(x, K, f, c, options)
+%
+% Requires:  vk_costmin_recursive, vk_options
 %
 % See also: ControlAlgs, options
 

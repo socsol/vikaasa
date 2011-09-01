@@ -1,15 +1,21 @@
 %% VK_KERNEL_SLICE Slice a viability kernel according to a slices array
+%
+% SYNOPSIS
 %   Slices a viability kernel through any number of axes.
 %
-%   SV = VK_KERNEL_SLICE(V, slices)
+% USAGE
+%   % Store the resulting sliced kernel in SV.
+%   SV = vk_kernel_slice(V, slices);
 %
-%  - V: the viability kernel
-%  - slices: n x 3 array of [dimension, point, distance]
-%    * dimension (> 0): the index of the dimensions to eliminate.
-%    * point: the position to do the slice at. NaN means all points
-%    * distance (> 0): the "width of the blade" -- i.e., the space to
-%      either side of the point that will be considered within the range.
+%  `V' is the viability kernel; `slices' is a $n \times 3$ array of
+%  `[dimension, point, distance]' rows.
 %
+%  - `dimension' ($> 0$): the index of the dimensions to eliminate.
+%  - `point': the position to do the slice at. NaN means all points
+%  - `distance' ($> 0$): the "width of the blade" -- i.e., the space to
+%    either side of the point that will be considered within the range.
+%
+% See also: vk_kernel_make_slices
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

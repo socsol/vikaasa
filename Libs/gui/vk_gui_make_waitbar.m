@@ -1,7 +1,15 @@
 %% VK_GUI_MAKE_WAITBAR Constructs a waitbar
 %
-% See also: WAITBAR
+% SYNOPSIS
+%   This function constructs a progress bar.  Used by the VIKAASA GUI to
+%   display the progress of viability kernel computations, and of simulations;
+%   and to capture cancel events.
 %
+% USAGE
+%   % Create a handle to a waitbar called 'wb'
+%   wb = vk_gui_make_waitbar('Please wait');
+%
+% See also: waitbar
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

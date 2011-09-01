@@ -217,9 +217,9 @@
 %       'min_fn', @(f, min, max) fminbnd(f, min, max, ...
 %           struct('TolX', options.controltolerance)));
 %
-% See also: vikaasa, cellfun, CostMin, CostSumMin, fminbnd, fzero, norm, ode45,
-%   vk_compute,vk_control_bound, vk_kernel_inside, vk_fminbnd,
-%   vk_sim_simulate_euler, vk_sim_simulate_ode, vk_viable
+% Requires:  vk_cellfun_parfor, vk_control_bound, vk_control_enforce, vk_lsode_wrapper, vk_ode_outputfcn, vk_sim_simulate_ode, vk_viable
+%
+% See also: CostMin, CostSumMin, cellfun, fminbnd, fzero, norm, ode45, vikaasa, vk_compute, vk_fminbnd, vk_kernel_inside, vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

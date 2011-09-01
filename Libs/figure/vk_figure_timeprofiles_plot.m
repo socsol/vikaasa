@@ -13,7 +13,7 @@
 %
 %   All values are as in the projects.
 %
-% Requires: vk_kernel_distances, vk_kernel_slice
+% Requires:  vk_kernel_distances, vk_kernel_slice, vk_plot_path
 %
 % See also: project, vk_figure_timeprofiles_plot_make, vk_project_new
 

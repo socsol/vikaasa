@@ -1,5 +1,18 @@
-%% VK_GUI_FIGURE_FOCUS Catch focus events in the VIKAASA GUI
+%% VK_GUI_FIGURE_FOCUS Catch focus events in the VIKAASA GUI.
 %
+% SYNOPSIS
+%   This function is used by the VIKAASA GUI to keep track of focus events
+%   being sent to windows.  It is unlikely that you will need to use it
+%   yourself.
+%
+% USAGE
+%   % Adjust internal VIKAASA GUI settings when a window is focussed.
+%   vk_gui_figure_focus(h, event);
+%
+%   % The same, for a time profile.
+%   vk_gui_figure_focus(h, event, 'tp');
+%
+% See also: vk_gui_figure_close, vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

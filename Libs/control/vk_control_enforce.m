@@ -1,5 +1,15 @@
-%% VK_CONTROL_ENFORCE Simple function that makes sure that u is in [-c,c]
+%% VK_CONTROL_ENFORCE Simple function that makes sure that u is in $[-c,c]$
 %
+% SYNOPSIS
+%   This function is used by VIKAASA to filter control choices that are outside
+%   of the permitted $[-c, c]$ range.  This is done by clipping control choices
+%   outside of this range to the nearest value.
+%
+% USAGE
+%   % Make sure $u \in [-c, c]$.
+%   u = vk_control_enforce(u, c)
+%
+% See also: vk_control_bound
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -2,6 +2,8 @@
 %   This algorithm is similar to SatisficeMaxMin, except that it uses CostMin
 %   to determine what control to use when at the kernel edge.
 %
+% Requires:  vk_kernel_inside, vk_options
+%
 % See also: TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE, VCONTROLALGS/SATISFICEMAXMIN
 
 %%
