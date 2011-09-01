@@ -6,6 +6,8 @@
 %   slice through the kernel.  The slice will be updated as the simulation
 %   proceeds to reflect the appropriate slice.
 %
+% Requires: vk_figure_data_insert, vk_gui_simgui_, vk_gui_simgui_drawstep, vk_gui_simgui_setup, vk_kernel_slice, vk_plot, vk_plot_box, vk_plot_path, vk_plot_path_limits
+%
 % See also: vikaasa
 
 %%

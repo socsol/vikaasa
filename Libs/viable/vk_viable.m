@@ -18,9 +18,9 @@
 %   % Returning additional information:
 %   [isviable, paths] = vk_viable(x, K, f, c, options);
 %
-% Requires:  vk_control_wrap_fn, vk_options, vk_viable_exited
+% Requires: vk_control_wrap_fn, vk_options, vk_viable_exited
 %
-% See also: ControlAlgs, vk_kernel_compute, vk_options, viable
+% See also: ControlAlgs, viable, vk_kernel_compute
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

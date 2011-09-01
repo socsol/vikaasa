@@ -15,9 +15,7 @@
 %   `options' is either a structure created by vk_options, or otherwise a
 %   series of 'name', value pairs.
 %
-% Requires:  vk_options, vk_viable_exited
-%
-% See also: vk_options
+% Requires: vk_options, vk_viable_exited
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

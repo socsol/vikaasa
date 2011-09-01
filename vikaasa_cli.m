@@ -1,8 +1,8 @@
 %% VIKAASA_CLI Initialise the VIKAASA enviroment for use from the commandline.
 %
-% Requires:
+% Requires: vk_help, vk_init
 %
-% See also:
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

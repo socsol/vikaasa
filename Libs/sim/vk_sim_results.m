@@ -9,6 +9,8 @@
 % USAGE
 %   results = vk_sim_results(project);
 %
+% Requires: vk_timeformat
+%
 % See also: vk_kernel_results
 
 %%

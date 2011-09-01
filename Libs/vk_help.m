@@ -21,4 +21,4 @@ if (size(vikaasa_readme, 2) == 1)
     vikaasa_readme = transpose(vikaasa_readme);
 end
 
-disp(vk_readme);
+disp(vikaasa_readme);

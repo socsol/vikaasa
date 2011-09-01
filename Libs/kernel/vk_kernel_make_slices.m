@@ -9,6 +9,8 @@
 %   % For some $n \times 3$ cell array,
 %   slices = vk_kernel_make_slices(data, K, discretisation);
 %
+% Requires: vk_kernel_distances
+%
 % See also: vk_kernel_slice
 
 %%

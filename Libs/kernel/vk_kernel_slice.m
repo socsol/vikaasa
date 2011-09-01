@@ -15,6 +15,8 @@
 %  - `distance' ($> 0$): the "width of the blade" -- i.e., the space to
 %    either side of the point that will be considered within the range.
 %
+% Requires: vk_kernel_slice_helper
+%
 % See also: vk_kernel_make_slices
 
 %%

@@ -26,9 +26,9 @@
 %   % Save the result.
 %   vk_project_save(project, 'Projects/newproject.mat');
 %
-% Requires:  vk_diff_make_fn, vk_kernel_compute, vk_options, vk_options_make, vk_project_load
+% Requires: vk_diff_make_fn, vk_kernel_compute, vk_options, vk_options_make, vk_project_load
 %
-% See also: kernel, project, vikaasa_cli, vk_kernel_compute
+% See also: kernel, project, vikaasa_cli
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

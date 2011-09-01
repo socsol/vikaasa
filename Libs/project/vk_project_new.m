@@ -13,7 +13,9 @@
 %     'symbols', {{'x'; 'y'; 'z'}}
 %   );
 %
-% See also: vk_project_load, vk_project_sanitise
+% Requires: vk_project_sanitise
+%
+% See also: vk_project_load
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

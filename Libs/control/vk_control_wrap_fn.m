@@ -16,7 +16,7 @@
 %   % Call that function on some x, and u:
 %   fn(x, u)
 %
-% Requires: vk_options, vk_control_bound, vk_control_enforce
+% Requires: vk_options
 %
 % See also: vk_control_make_fn
 

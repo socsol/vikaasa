@@ -11,7 +11,7 @@
 %   % Plot the simulation in an existing figure.
 %   vk_sim_view(project, h);
 %
-% Requires: vk_plot_path
+% Requires: vk_figure_data_insert, vk_figure_data_retrieve, vk_kernel_augment_constraints, vk_kernel_augment_slices, vk_plot_box, vk_plot_path, vk_plot_path_limits, vk_sim_augment
 %
 % See also: vk_figure_make, vk_figure_make_slice
 

@@ -12,7 +12,9 @@
 % USAGE
 %   p = vk_project_load('filename.mat');
 %
-% See also: vk_project_save, vk_project_sanitise
+% Requires: vk_error, vk_kernel_convert, vk_project_sanitise
+%
+% See also: vk_project_save
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

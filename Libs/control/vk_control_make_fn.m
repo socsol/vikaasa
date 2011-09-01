@@ -11,6 +11,8 @@
 %   % containing an info structure, return a handle to a function:
 %   control_fn = vk_control_make_fn(fn_name, varargin);
 %
+% Requires: vk_error, vk_make_control_fn
+%
 % See also: ControlAlgs, VControlAlgs
 
 %%
