@@ -10,8 +10,6 @@
 %   diff_fn = vk_diff_make_fn(project)
 %
 % Requires: vk_diff_fn
-%
-% See also: diff
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

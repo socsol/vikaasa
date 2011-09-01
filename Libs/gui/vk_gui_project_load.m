@@ -5,8 +5,6 @@
 %   additional support in the VIKAASA GUI.
 %
 % Requires:  vk_gui_update_inputs, vk_project_load
-%
-% See also: gui
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

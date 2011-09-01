@@ -25,7 +25,7 @@
 %   % Construct a cost function for use in vk_control_cost_fn:
 %   cost_fn = @(x,y,z,xdot,ydot,zdot) x^2 + y^2 + z^2 + norm([xdot, ydot, zdot]);
 %
-% See also: control, vk_control_eval_fn
+% See also: vk_control_eval_fn
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

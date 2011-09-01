@@ -68,7 +68,7 @@
 %  - `plottingmethod' (``qhull''): a string giving the current plotting method.
 %    See vk_plot for more information on admissible plotting methods.
 %  - `progressbar' (1): whether to display a progress bar while performing
-%    computations or not. 
+%    computations or not.
 %  - `sim_controlalg' (``ZeroControl''): a string representing the name of a
 %    function to use for simulation.  Should be a functon residing in either the
 %    ``ControlAlgs'' or the ``VControlAlgs'' folders.
@@ -100,7 +100,7 @@
 %    will be considered ``near-steady''.  See vk_viable.
 %  - `symbols' (empty cell array of length `numvars'): column array of cells,
 %    each containing a string representing the symbol to be used in equations to
-%    represent that variable. 
+%    represent that variable.
 %  - `use_controldefault' (0): whether or not to use a default control with
 %    forward-looking cost-minimising algorithms.
 %  - `use_custom_cost_fn' (0): whether to use a custom cost function with
@@ -110,7 +110,7 @@
 %  - `use_parallel' (0): whether or not to use parallel processors when
 %    computing viability kernels.
 %
-% See also: vikaasa, gui, project
+% See also: vikaasa, vk_project_new
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

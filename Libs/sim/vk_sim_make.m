@@ -39,7 +39,7 @@
 %
 % Requires:  vk_control_make_fn, vk_diff_make_fn, vk_kernel_distances, vk_options, vk_options_make, vk_sim_start
 %
-% See also: project, sim, vikaasa, vk_sim_simulate_euler, vk_sim_simulate_ode
+% See also: vikaasa, vk_sim_simulate_euler, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

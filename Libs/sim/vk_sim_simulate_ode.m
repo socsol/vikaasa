@@ -53,7 +53,7 @@
 %
 % Requires: vk_control_wrap_fn, vk_kernel_inside, vk_options, vk_sim_simulate_ode_helper, vk_viable_exited
 %
-% See also: sim, vk_kernel_compute, vk_sim_simulate_euler
+% See also: vk_kernel_compute, vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

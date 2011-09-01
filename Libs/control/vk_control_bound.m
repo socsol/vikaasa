@@ -50,7 +50,7 @@
 %
 % Requires: vk_distance_fn, vk_newcontrol, vk_options, vk_viable_exited
 %
-% See also: control, vk_control_enforce, vk_viable
+% See also: vk_control_enforce, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

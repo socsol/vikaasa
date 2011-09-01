@@ -14,7 +14,7 @@
 %
 % Requires:  vk_error
 %
-% See also: project, vikaasa, vk_project_load
+% See also: vikaasa, vk_project_load
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

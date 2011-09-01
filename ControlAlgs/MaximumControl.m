@@ -10,7 +10,7 @@
 %
 %   % With options
 %   u = MaximumControl(x, K, f, c, options);
-%  
+%
 % See also: MinimumControl, ZeroControl, vk_viable
 
 %%

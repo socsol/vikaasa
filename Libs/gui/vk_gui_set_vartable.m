@@ -10,7 +10,7 @@
 %   % The project should be in 'handles.project'.
 %   handles = vk_gui_set_vartable(hObject, handles);
 %
-% See also: vikaasa, gui
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

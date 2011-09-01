@@ -20,7 +20,7 @@
 %
 % Requires: vk_control_wrap_fn, vk_options, vk_viable_exited
 %
-% See also: ControlAlgs, viable, vk_kernel_compute
+% See also: ControlAlgs, vk_kernel_compute
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

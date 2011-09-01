@@ -28,7 +28,7 @@
 %
 % Requires: vk_diff_make_fn, vk_kernel_compute, vk_options, vk_options_make, vk_project_load
 %
-% See also: kernel, project, vikaasa_cli
+% See also: vikaasa_cli
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

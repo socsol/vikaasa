@@ -32,7 +32,7 @@
 function h = vk_sim_view(project, varargin)
 
     newfig = 0;
-    if (nargin > 1) 
+    if (nargin > 1)
         newfig = 1;
         h = varargin{1};
     else

@@ -16,8 +16,6 @@
 %   V = vk_convert({xax, yax, zax}, dispgrid);
 %
 % Requires:  vk_convert_recursive
-%
-% See also: kernel
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

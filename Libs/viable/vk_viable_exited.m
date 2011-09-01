@@ -43,7 +43,7 @@
 %
 % Requires:  vk_options
 %
-% See also: viable, vk_control_bound, vk_viable
+% See also: vk_control_bound, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

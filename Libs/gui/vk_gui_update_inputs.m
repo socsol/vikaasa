@@ -11,7 +11,7 @@
 %
 % Requires:  vk_gui_set_vartable, vk_kernel_results, vk_sim_results
 %
-% See also: gui, vikaasa
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
