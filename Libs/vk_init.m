@@ -32,6 +32,9 @@
 
 %% Info
 vikaasa_version = fileread('../VERSION');
+if (size(vikaasa_version, 2) == 1)
+    vikaasa_version = transpose(vikaasa_version);
+end
 vikaasa_copyright = fileread('../NOTICE');
 if (size(vikaasa_copyright, 2) == 1)
     vikaasa_copyright = transpose(vikaasa_copyright);
