@@ -1,0 +1,4147 @@
+%!PS-Adobe-3.0
+%%Creator: graphviz version 2.28.0 (20110626.0926)
+%%Title: dependencies
+%%Pages: (atend)
+%%BoundingBox: (atend)
+%%EndComments
+save
+%%BeginProlog
+/DotDict 200 dict def
+DotDict begin
+
+/setupLatin1 {
+mark
+/EncodingVector 256 array def
+ EncodingVector 0
+
+ISOLatin1Encoding 0 255 getinterval putinterval
+EncodingVector 45 /hyphen put
+
+% Set up ISO Latin 1 character encoding
+/starnetISO {
+        dup dup findfont dup length dict begin
+        { 1 index /FID ne { def }{ pop pop } ifelse
+        } forall
+        /Encoding EncodingVector def
+        currentdict end definefont
+} def
+/Times-Roman starnetISO def
+/Times-Italic starnetISO def
+/Times-Bold starnetISO def
+/Times-BoldItalic starnetISO def
+/Helvetica starnetISO def
+/Helvetica-Oblique starnetISO def
+/Helvetica-Bold starnetISO def
+/Helvetica-BoldOblique starnetISO def
+/Courier starnetISO def
+/Courier-Oblique starnetISO def
+/Courier-Bold starnetISO def
+/Courier-BoldOblique starnetISO def
+cleartomark
+} bind def
+
+%%BeginResource: procset graphviz 0 0
+/coord-font-family /Times-Roman def
+/default-font-family /Times-Roman def
+/coordfont coord-font-family findfont 8 scalefont def
+
+/InvScaleFactor 1.0 def
+/set_scale {
+       dup 1 exch div /InvScaleFactor exch def
+       scale
+} bind def
+
+% styles
+/solid { [] 0 setdash } bind def
+/dashed { [9 InvScaleFactor mul dup ] 0 setdash } bind def
+/dotted { [1 InvScaleFactor mul 6 InvScaleFactor mul] 0 setdash } bind def
+/invis {/fill {newpath} def /stroke {newpath} def /show {pop newpath} def} bind def
+/bold { 2 setlinewidth } bind def
+/filled { } bind def
+/unfilled { } bind def
+/rounded { } bind def
+/diagonals { } bind def
+
+% hooks for setting color 
+/nodecolor { sethsbcolor } bind def
+/edgecolor { sethsbcolor } bind def
+/graphcolor { sethsbcolor } bind def
+/nopcolor {pop pop pop} bind def
+
+/beginpage {	% i j npages
+	/npages exch def
+	/j exch def
+	/i exch def
+	/str 10 string def
+	npages 1 gt {
+		gsave
+			coordfont setfont
+			0 0 moveto
+			(\() show i str cvs show (,) show j str cvs show (\)) show
+		grestore
+	} if
+} bind def
+
+/set_font {
+	findfont exch
+	scalefont setfont
+} def
+
+% draw text fitted to its expected width
+/alignedtext {			% width text
+	/text exch def
+	/width exch def
+	gsave
+		width 0 gt {
+			[] 0 setdash
+			text stringwidth pop width exch sub text length div 0 text ashow
+		} if
+	grestore
+} def
+
+/boxprim {				% xcorner ycorner xsize ysize
+		4 2 roll
+		moveto
+		2 copy
+		exch 0 rlineto
+		0 exch rlineto
+		pop neg 0 rlineto
+		closepath
+} bind def
+
+/ellipse_path {
+	/ry exch def
+	/rx exch def
+	/y exch def
+	/x exch def
+	matrix currentmatrix
+	newpath
+	x y translate
+	rx ry scale
+	0 0 1 0 360 arc
+	setmatrix
+} bind def
+
+/endpage { showpage } bind def
+/showpage { } def
+
+/layercolorseq
+	[	% layer color sequence - darkest to lightest
+		[0 0 0]
+		[.2 .8 .8]
+		[.4 .8 .8]
+		[.6 .8 .8]
+		[.8 .8 .8]
+	]
+def
+
+/layerlen layercolorseq length def
+
+/setlayer {/maxlayer exch def /curlayer exch def
+	layercolorseq curlayer 1 sub layerlen mod get
+	aload pop sethsbcolor
+	/nodecolor {nopcolor} def
+	/edgecolor {nopcolor} def
+	/graphcolor {nopcolor} def
+} bind def
+
+/onlayer { curlayer ne {invis} if } def
+
+/onlayers {
+	/myupper exch def
+	/mylower exch def
+	curlayer mylower lt
+	curlayer myupper gt
+	or
+	{invis} if
+} def
+
+/curlayer 0 def
+
+%%EndResource
+%%EndProlog
+%%BeginSetup
+14 default-font-family set_font
+1 setmiterlimit
+% /arrowlength 10 def
+% /arrowwidth 5 def
+
+% make sure pdfmark is harmless for PS-interpreters other than Distiller
+/pdfmark where {pop} {userdict /pdfmark /cleartomark load put} ifelse
+% make '<<' and '>>' safe on PS Level 1 devices
+/languagelevel where {pop languagelevel}{1} ifelse
+2 lt {
+    userdict (<<) cvn ([) cvn load put
+    userdict (>>) cvn ([) cvn load put
+} if
+
+%%EndSetup
+setupLatin1
+%%Page: 1 1
+%%PageBoundingBox: 36 36 5440 584
+%%PageOrientation: Portrait
+0 0 1 beginpage
+gsave
+36 36 5404 548 boxprim clip newpath
+1 1 set_scale 0 rotate 40 41 translate
+% vk_control_bound
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 368.25 324 moveto
+247.75 324 lineto
+247.75 288 lineto
+368.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+255.5 302.3 moveto 105 (vk_control_bound) alignedtext
+grestore
+% vk_distance_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+66 234 65.94 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+23 230.3 moveto 86 (vk_distance_fn) alignedtext
+grestore
+% vk_control_bound->vk_distance_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 249.11 287.97 moveto
+209.55 276.52 157.85 261.57 119.47 250.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 120.1 247.01 moveto
+109.52 247.59 lineto
+118.15 253.73 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 120.1 247.01 moveto
+109.52 247.59 lineto
+118.15 253.73 lineto
+closepath stroke
+grestore
+% vk_newcontrol
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+215 234 64.49 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+173 230.3 moveto 84 (vk_newcontrol) alignedtext
+grestore
+% vk_control_bound->vk_newcontrol
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 285.01 287.7 moveto
+272.83 278.53 257.74 267.17 244.68 257.34 curveto
+stroke
+0 0 0 edgecolor
+newpath 246.54 254.36 moveto
+236.45 251.14 lineto
+242.33 259.95 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 246.54 254.36 moveto
+236.45 251.14 lineto
+242.33 259.95 lineto
+closepath stroke
+grestore
+% vk_options
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 963 252 moveto
+883 252 lineto
+883 216 lineto
+963 216 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+891 230.3 moveto 64 (vk_options) alignedtext
+grestore
+% vk_control_bound->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 368.31 297.64 moveto
+489.48 283.46 760.18 252.67 872.63 240.3 curveto
+stroke
+0 0 0 edgecolor
+newpath 873.13 243.77 moveto
+882.68 239.2 lineto
+872.36 236.81 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 873.13 243.77 moveto
+882.68 239.2 lineto
+872.36 236.81 lineto
+closepath stroke
+grestore
+% vk_viable_exited
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 439 108 moveto
+329 108 lineto
+329 72 lineto
+439 72 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+337 86.3 moveto 94 (vk_viable_exited) alignedtext
+grestore
+% vk_control_bound->vk_viable_exited
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 307.19 288 moveto
+306.44 257.47 308.07 192.07 332 144 curveto
+337.38 133.2 345.77 123.21 354.26 114.89 curveto
+stroke
+0 0 0 edgecolor
+newpath 356.71 117.39 moveto
+361.67 108.02 lineto
+351.95 112.25 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 356.71 117.39 moveto
+361.67 108.02 lineto
+351.95 112.25 lineto
+closepath stroke
+grestore
+% vk_options->vk_control_bound
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 882.68 240.01 moveto
+779.99 252.13 508.1 283.11 378.51 297.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 377.86 294.02 moveto
+368.3 298.6 lineto
+378.63 300.98 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 377.86 294.02 moveto
+368.3 298.6 lineto
+378.63 300.98 lineto
+closepath stroke
+grestore
+% vk_control_enforce
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 539.25 180 moveto
+412.75 180 lineto
+412.75 144 lineto
+539.25 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+420.5 158.3 moveto 111 (vk_control_enforce) alignedtext
+grestore
+% vk_options->vk_control_enforce
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 882.96 228.5 moveto
+816.06 220.72 677.15 203.5 549.58 180.01 curveto
+stroke
+0 0 0 edgecolor
+newpath 550.1 176.55 moveto
+539.63 178.17 lineto
+548.82 183.43 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 550.1 176.55 moveto
+539.63 178.17 lineto
+548.82 183.43 lineto
+closepath stroke
+grestore
+% vk_cellfun_parfor
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 673.5 180 moveto
+558.5 180 lineto
+558.5 144 lineto
+673.5 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+566 158.3 moveto 100 (vk_cellfun_parfor) alignedtext
+grestore
+% vk_options->vk_cellfun_parfor
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 882.75 224.42 moveto
+835.19 214.2 753.7 196.44 684 180 curveto
+683.9 179.98 683.79 179.95 683.69 179.93 curveto
+stroke
+0 0 0 edgecolor
+newpath 684.39 176.49 moveto
+673.85 177.57 lineto
+682.76 183.3 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 684.39 176.49 moveto
+673.85 177.57 lineto
+682.76 183.3 lineto
+closepath stroke
+grestore
+% vk_lsode_wrapper
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 813.25 180 moveto
+692.75 180 lineto
+692.75 144 lineto
+813.25 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+700.5 158.3 moveto 105 (vk_lsode_wrapper) alignedtext
+grestore
+% vk_options->vk_lsode_wrapper
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 882.71 216.41 moveto
+859.12 206.7 829.1 194.33 803.88 183.95 curveto
+stroke
+0 0 0 edgecolor
+newpath 805.06 180.65 moveto
+794.48 180.08 lineto
+802.39 187.12 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 805.06 180.65 moveto
+794.48 180.08 lineto
+802.39 187.12 lineto
+closepath stroke
+grestore
+% vk_ode_outputfcn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 951.5 180 moveto
+832.5 180 lineto
+832.5 144 lineto
+951.5 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+840 158.3 moveto 104 (vk_ode_outputfcn) alignedtext
+grestore
+% vk_options->vk_ode_outputfcn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 909.42 215.7 moveto
+905.12 207.81 900.69 198.3 897.18 189.55 curveto
+stroke
+0 0 0 edgecolor
+newpath 900.44 188.26 moveto
+893.68 180.1 lineto
+893.88 190.7 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 900.44 188.26 moveto
+893.68 180.1 lineto
+893.88 190.7 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1234 180 moveto
+1096 180 lineto
+1096 144 lineto
+1234 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1104 158.3 moveto 122 (vk_sim_simulate_ode) alignedtext
+grestore
+% vk_options->vk_sim_simulate_ode
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 963.11 219.83 moveto
+997.69 209.4 1048.42 194.65 1090.41 182.8 curveto
+stroke
+0 0 0 edgecolor
+newpath 1091.38 186.16 moveto
+1100.05 180.08 lineto
+1089.48 179.42 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1091.38 186.16 moveto
+1100.05 180.08 lineto
+1089.48 179.42 lineto
+closepath stroke
+grestore
+% vk_viable
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1040 180 moveto
+970 180 lineto
+970 144 lineto
+1040 144 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+978 158.3 moveto 54 (vk_viable) alignedtext
+grestore
+% vk_options->vk_viable
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 937.35 215.7 moveto
+946.77 206.88 959.31 196.03 971.09 186.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 973.44 189.08 moveto
+979.07 180.1 lineto
+969.07 183.61 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 973.44 189.08 moveto
+979.07 180.1 lineto
+969.07 183.61 lineto
+closepath stroke
+grestore
+% vk_viable_exited->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 382.22 108.31 moveto
+381.19 128.7 383 162.07 403 180 curveto
+437.55 210.98 748.84 226.29 872.6 231.19 curveto
+stroke
+0 0 0 edgecolor
+newpath 872.8 234.7 moveto
+882.93 231.59 lineto
+873.07 227.71 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 872.8 234.7 moveto
+882.93 231.59 lineto
+873.07 227.71 lineto
+closepath stroke
+grestore
+% vk_control_cost_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1148 324 moveto
+1020 324 lineto
+1020 288 lineto
+1148 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1028 302.3 moveto 112 (vk_control_cost_fn) alignedtext
+grestore
+% vk_control_make_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 996.25 396 moveto
+863.75 396 lineto
+863.75 360 lineto
+996.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+871.5 374.3 moveto 117 (vk_control_make_fn) alignedtext
+grestore
+% vk_error
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2533.25 324 moveto
+2468.75 324 lineto
+2468.75 288 lineto
+2533.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2476.5 302.3 moveto 49 (vk_error) alignedtext
+grestore
+% vk_control_make_fn->vk_error
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 996.45 365.69 moveto
+1012.01 363.43 1028.55 361.34 1044 360 curveto
+1357.14 332.77 2150 386.75 2458 324 curveto
+2458.22 323.96 2458.43 323.91 2458.65 323.86 curveto
+stroke
+0 0 0 edgecolor
+newpath 2459.75 327.19 moveto
+2468.49 321.22 lineto
+2457.93 320.43 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2459.75 327.19 moveto
+2468.49 321.22 lineto
+2457.93 320.43 lineto
+closepath stroke
+grestore
+% vk_make_control_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+840 306 86.16 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+781.5 302.3 moveto 117 (vk_make_control_fn) alignedtext
+grestore
+% vk_control_make_fn->vk_make_control_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 907.75 359.7 moveto
+896.14 350.66 881.78 339.5 869.27 329.77 curveto
+stroke
+0 0 0 edgecolor
+newpath 871.41 327 moveto
+861.37 323.62 lineto
+867.12 332.52 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 871.41 327 moveto
+861.37 323.62 lineto
+867.12 332.52 lineto
+closepath stroke
+grestore
+% vk_control_wrap_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1070.25 108 moveto
+939.75 108 lineto
+939.75 72 lineto
+1070.25 72 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+947.5 86.3 moveto 115 (vk_control_wrap_fn) alignedtext
+grestore
+% vk_control_wrap_fn->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1024.02 108.1 moveto
+1042.18 126.55 1064.64 156.45 1049 180 curveto
+1032.1 205.44 1000.35 218.7 972.95 225.59 curveto
+stroke
+0 0 0 edgecolor
+newpath 972.05 222.2 moveto
+963.09 227.85 lineto
+973.62 229.03 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 972.05 222.2 moveto
+963.09 227.85 lineto
+973.62 229.03 lineto
+closepath stroke
+grestore
+% vk_diff_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1480 324 moveto
+1404 324 lineto
+1404 288 lineto
+1480 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1412 302.3 moveto 60 (vk_diff_fn) alignedtext
+grestore
+% vk_diff_make_fn
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1300.25 396 moveto
+1187.75 396 lineto
+1187.75 360 lineto
+1300.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1195.5 374.3 moveto 97 (vk_diff_make_fn) alignedtext
+grestore
+% vk_diff_make_fn->vk_diff_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1292.18 359.97 moveto
+1323.17 349.01 1363.27 334.83 1394.19 323.9 curveto
+stroke
+0 0 0 edgecolor
+newpath 1395.62 327.11 moveto
+1403.88 320.48 lineto
+1393.28 320.51 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1395.62 327.11 moveto
+1403.88 320.48 lineto
+1393.28 320.51 lineto
+closepath stroke
+grestore
+% vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2993.25 324 moveto
+2856.75 324 lineto
+2856.75 288 lineto
+2993.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2864.5 302.3 moveto 121 (vk_figure_data_insert) alignedtext
+grestore
+% vk_figure_data_retrieve
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2215 396 moveto
+2067 396 lineto
+2067 360 lineto
+2215 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2075 374.3 moveto 132 (vk_figure_data_retrieve) alignedtext
+grestore
+% vk_figure_make
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2954.5 396 moveto
+2849.5 396 lineto
+2849.5 360 lineto
+2954.5 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2857 374.3 moveto 90 (vk_figure_make) alignedtext
+grestore
+% vk_figure_make->vk_error
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2849.36 362 moveto
+2846.2 361.28 2843.07 360.6 2840 360 curveto
+2709.53 334.35 2671.75 357.23 2543 324 curveto
+2542.9 323.97 2542.8 323.95 2542.7 323.92 curveto
+stroke
+0 0 0 edgecolor
+newpath 2543.86 320.62 moveto
+2533.27 321.05 lineto
+2541.82 327.31 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2543.86 320.62 moveto
+2533.27 321.05 lineto
+2541.82 327.31 lineto
+closepath stroke
+grestore
+% vk_figure_make->vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2907.69 359.7 moveto
+2910.25 351.9 2913.33 342.51 2916.18 333.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 2919.58 334.7 moveto
+2919.38 324.1 lineto
+2912.93 332.51 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2919.58 334.7 moveto
+2919.38 324.1 lineto
+2912.93 332.51 lineto
+closepath stroke
+grestore
+% vk_plot
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2731.25 324 moveto
+2672.75 324 lineto
+2672.75 288 lineto
+2731.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2680.5 302.3 moveto 43 (vk_plot) alignedtext
+grestore
+% vk_figure_make->vk_plot
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2849.36 361.03 moveto
+2817.7 351.09 2776.74 337.64 2741 324 curveto
+2740.9 323.96 2740.8 323.92 2740.7 323.89 curveto
+stroke
+0 0 0 edgecolor
+newpath 2741.85 320.58 moveto
+2731.27 320.11 lineto
+2739.25 327.07 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2741.85 320.58 moveto
+2731.27 320.11 lineto
+2739.25 327.07 lineto
+closepath stroke
+grestore
+% vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2838.25 324 moveto
+2749.75 324 lineto
+2749.75 288 lineto
+2838.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2757.5 302.3 moveto 73 (vk_plot_box) alignedtext
+grestore
+% vk_figure_make->vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2875.58 359.88 moveto
+2861.59 350.81 2844.22 339.55 2829.11 329.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 2830.82 326.69 moveto
+2820.52 324.19 lineto
+2827.01 332.57 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2830.82 326.69 moveto
+2820.52 324.19 lineto
+2827.01 332.57 lineto
+closepath stroke
+grestore
+% vk_plot_
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+2752 234 43.32 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2726.5 230.3 moveto 51 (vk_plot_) alignedtext
+grestore
+% vk_plot->vk_plot_
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2714.36 287.7 moveto
+2720.32 279.35 2727.58 269.18 2734.13 260.02 curveto
+stroke
+0 0 0 edgecolor
+newpath 2737.16 261.79 moveto
+2740.13 251.62 lineto
+2731.47 257.73 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2737.16 261.79 moveto
+2740.13 251.62 lineto
+2731.47 257.73 lineto
+closepath stroke
+grestore
+% vk_figure_make_slice
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2831 396 moveto
+2693 396 lineto
+2693 360 lineto
+2831 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2701 374.3 moveto 122 (vk_figure_make_slice) alignedtext
+grestore
+% vk_figure_make_slice->vk_error
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2692.94 361.45 moveto
+2639.68 349.24 2570.61 332.87 2543 324 curveto
+2542.9 323.97 2542.8 323.94 2542.7 323.9 curveto
+stroke
+0 0 0 edgecolor
+newpath 2543.98 320.64 moveto
+2533.39 320.66 lineto
+2541.68 327.25 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2543.98 320.64 moveto
+2533.39 320.66 lineto
+2541.68 327.25 lineto
+closepath stroke
+grestore
+% vk_figure_make_slice->vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2801.87 359.88 moveto
+2824.16 350.31 2852.12 338.3 2875.76 328.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 2877.45 331.23 moveto
+2885.26 324.07 lineto
+2874.69 324.8 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2877.45 331.23 moveto
+2885.26 324.07 lineto
+2874.69 324.8 lineto
+closepath stroke
+grestore
+% vk_figure_make_slice->vk_plot
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2747.17 359.7 moveto
+2739.98 351.3 2731.2 341.07 2723.31 331.86 curveto
+stroke
+0 0 0 edgecolor
+newpath 2725.83 329.42 moveto
+2716.66 324.1 lineto
+2720.51 333.97 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2725.83 329.42 moveto
+2716.66 324.1 lineto
+2720.51 333.97 lineto
+closepath stroke
+grestore
+% vk_figure_make_slice->vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2769.91 359.7 moveto
+2773.55 351.73 2777.95 342.1 2781.99 333.26 curveto
+stroke
+0 0 0 edgecolor
+newpath 2785.21 334.65 moveto
+2786.18 324.1 lineto
+2778.84 331.74 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2785.21 334.65 moveto
+2786.18 324.1 lineto
+2778.84 331.74 lineto
+closepath stroke
+grestore
+% vk_kernel_slice
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2654.25 324 moveto
+2551.75 324 lineto
+2551.75 288 lineto
+2654.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2559.5 302.3 moveto 87 (vk_kernel_slice) alignedtext
+grestore
+% vk_figure_make_slice->vk_kernel_slice
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2723.1 359.88 moveto
+2701.37 350.31 2674.1 338.3 2651.04 328.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 2652.33 324.89 moveto
+2641.77 324.07 lineto
+2649.51 331.3 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2652.33 324.89 moveto
+2641.77 324.07 lineto
+2649.51 331.3 lineto
+closepath stroke
+grestore
+% vk_kernel_slice_helper
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+2597 234 93.39 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2533 230.3 moveto 128 (vk_kernel_slice_helper) alignedtext
+grestore
+% vk_kernel_slice->vk_kernel_slice_helper
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2601.52 287.7 moveto
+2600.86 279.98 2600.06 270.71 2599.32 262.11 curveto
+stroke
+0 0 0 edgecolor
+newpath 2602.81 261.77 moveto
+2598.47 252.1 lineto
+2595.83 262.37 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2602.81 261.77 moveto
+2598.47 252.1 lineto
+2595.83 262.37 lineto
+closepath stroke
+grestore
+% vk_figure_timeprofiles_make
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1546.25 468 moveto
+1367.75 468 lineto
+1367.75 432 lineto
+1546.25 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1375.5 446.3 moveto 163 (vk_figure_timeprofiles_make) alignedtext
+grestore
+% vk_figure_timeprofiles_plot
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2048.25 396 moveto
+1877.75 396 lineto
+1877.75 360 lineto
+2048.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1885.5 374.3 moveto 155 (vk_figure_timeprofiles_plot) alignedtext
+grestore
+% vk_figure_timeprofiles_make->vk_figure_timeprofiles_plot
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1546.3 436.65 moveto
+1636.4 424.18 1775.06 405 1867.36 392.23 curveto
+stroke
+0 0 0 edgecolor
+newpath 1868.12 395.66 moveto
+1877.55 390.82 lineto
+1867.16 388.73 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1868.12 395.66 moveto
+1877.55 390.82 lineto
+1867.16 388.73 lineto
+closepath stroke
+grestore
+% vk_kernel_augment
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2130.25 324 moveto
+2005.75 324 lineto
+2005.75 288 lineto
+2130.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2013.5 302.3 moveto 109 (vk_kernel_augment) alignedtext
+grestore
+% vk_figure_timeprofiles_make->vk_kernel_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1507.49 431.93 moveto
+1537.15 421.76 1575.32 408.46 1609 396 curveto
+1650.18 380.77 1658.43 370.74 1701 360 curveto
+1825.94 328.47 1864.12 346.29 1995.6 323.92 curveto
+stroke
+0 0 0 edgecolor
+newpath 1996.4 327.34 moveto
+2005.65 322.17 lineto
+1995.19 320.44 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1996.4 327.34 moveto
+2005.65 322.17 lineto
+1995.19 320.44 lineto
+closepath stroke
+grestore
+% vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1987.25 324 moveto
+1794.75 324 lineto
+1794.75 288 lineto
+1987.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1802.5 302.3 moveto 177 (vk_kernel_augment_constraints) alignedtext
+grestore
+% vk_figure_timeprofiles_make->vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1485.11 431.94 moveto
+1519.19 411.96 1578.93 379.15 1634 360 curveto
+1661.91 350.29 1727.55 336.81 1785.5 325.88 curveto
+stroke
+0 0 0 edgecolor
+newpath 1786.28 329.29 moveto
+1795.47 324 lineto
+1784.99 322.41 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1786.28 329.29 moveto
+1795.47 324 lineto
+1784.99 322.41 lineto
+closepath stroke
+grestore
+% vk_sim_augment
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1820.25 396 moveto
+1709.75 396 lineto
+1709.75 360 lineto
+1820.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1717.5 374.3 moveto 95 (vk_sim_augment) alignedtext
+grestore
+% vk_figure_timeprofiles_make->vk_sim_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1531.95 431.97 moveto
+1583.26 420.3 1650.63 404.99 1699.73 393.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 1700.64 397.22 moveto
+1709.61 391.59 lineto
+1699.08 390.39 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1700.64 397.22 moveto
+1709.61 391.59 lineto
+1699.08 390.39 lineto
+closepath stroke
+grestore
+% vk_figure_timeprofiles_plot->vk_kernel_slice
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2048.39 361.29 moveto
+2051.63 360.83 2054.84 360.4 2058 360 curveto
+2268.77 333.38 2327.74 360.29 2541.61 323.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 2542.32 327.26 moveto
+2551.58 322.1 lineto
+2541.13 320.36 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2542.32 327.26 moveto
+2551.58 322.1 lineto
+2541.13 320.36 lineto
+closepath stroke
+grestore
+% vk_kernel_distances
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 736 324 moveto
+606 324 lineto
+606 288 lineto
+736 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+614 302.3 moveto 114 (vk_kernel_distances) alignedtext
+grestore
+% vk_figure_timeprofiles_plot->vk_kernel_distances
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1877.7 364.97 moveto
+1861.55 363.04 1844.78 361.26 1829 360 curveto
+1351.77 321.89 1224.74 385.37 746.18 323.99 curveto
+stroke
+0 0 0 edgecolor
+newpath 746.61 320.52 moveto
+736.25 322.71 lineto
+745.71 327.46 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 746.61 320.52 moveto
+736.25 322.71 lineto
+745.71 327.46 lineto
+closepath stroke
+grestore
+% vk_plot_path
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3102.25 324 moveto
+3011.75 324 lineto
+3011.75 288 lineto
+3102.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3019.5 302.3 moveto 75 (vk_plot_path) alignedtext
+grestore
+% vk_figure_timeprofiles_plot->vk_plot_path
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2048.37 361.15 moveto
+2051.62 360.73 2054.83 360.34 2058 360 curveto
+2472.17 315.26 2586.34 393.36 3001.74 323.71 curveto
+stroke
+0 0 0 edgecolor
+newpath 3002.33 327.16 moveto
+3011.6 322.03 lineto
+3001.16 320.26 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3002.33 327.16 moveto
+3011.6 322.03 lineto
+3001.16 320.26 lineto
+closepath stroke
+grestore
+% vk_sim_augment->vk_kernel_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1820.38 363.45 moveto
+1825.32 362.27 1830.25 361.11 1835 360 curveto
+1903.34 344.06 1922.88 340.7 1995.46 324.11 curveto
+stroke
+0 0 0 edgecolor
+newpath 1996.61 327.44 moveto
+2005.57 321.79 lineto
+1995.04 320.61 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1996.61 327.44 moveto
+2005.57 321.79 lineto
+1995.04 320.61 lineto
+closepath stroke
+grestore
+% vk_sim_augment->vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1795.82 359.88 moveto
+1812.45 350.64 1833.16 339.13 1851.02 329.21 curveto
+stroke
+0 0 0 edgecolor
+newpath 1853.02 332.11 moveto
+1860.06 324.19 lineto
+1849.62 325.99 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1853.02 332.11 moveto
+1860.06 324.19 lineto
+1849.62 325.99 lineto
+closepath stroke
+grestore
+% vk_gui_figure_close
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1733 468 moveto
+1603 468 lineto
+1603 432 lineto
+1733 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1611 446.3 moveto 114 (vk_gui_figure_close) alignedtext
+grestore
+% vk_gui_figure_focus
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1921 468 moveto
+1789 468 lineto
+1789 432 lineto
+1921 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1797 446.3 moveto 116 (vk_gui_figure_focus) alignedtext
+grestore
+% vk_gui_make_waitbar
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2078.25 468 moveto
+1939.75 468 lineto
+1939.75 432 lineto
+2078.25 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1947.5 446.3 moveto 123 (vk_gui_make_waitbar) alignedtext
+grestore
+% vk_gui_project_load
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3069 468 moveto
+2937 468 lineto
+2937 432 lineto
+3069 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2945 446.3 moveto 116 (vk_gui_project_load) alignedtext
+grestore
+% vk_gui_update_inputs
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3851 396 moveto
+3711 396 lineto
+3711 360 lineto
+3851 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3719 374.3 moveto 124 (vk_gui_update_inputs) alignedtext
+grestore
+% vk_gui_project_load->vk_gui_update_inputs
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3069.33 443.03 moveto
+3211.76 430.22 3546.39 400.11 3700.6 386.23 curveto
+stroke
+0 0 0 edgecolor
+newpath 3701.29 389.69 moveto
+3710.93 385.3 lineto
+3700.66 382.71 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3701.29 389.69 moveto
+3710.93 385.3 lineto
+3700.66 382.71 lineto
+closepath stroke
+grestore
+% vk_project_load
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2675 396 moveto
+2567 396 lineto
+2567 360 lineto
+2675 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2575 374.3 moveto 92 (vk_project_load) alignedtext
+grestore
+% vk_gui_project_load->vk_project_load
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2936.71 438.78 moveto
+2862.32 427.18 2745.19 408.48 2685.35 396.14 curveto
+stroke
+0 0 0 edgecolor
+newpath 2685.72 392.65 moveto
+2675.21 393.99 lineto
+2684.27 399.49 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2685.72 392.65 moveto
+2675.21 393.99 lineto
+2684.27 399.49 lineto
+closepath stroke
+grestore
+% vk_gui_set_vartable
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4084 324 moveto
+3956 324 lineto
+3956 288 lineto
+4084 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3964 302.3 moveto 112 (vk_gui_set_vartable) alignedtext
+grestore
+% vk_gui_update_inputs->vk_gui_set_vartable
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3839.16 359.97 moveto
+3873.13 350.01 3916.18 337.41 3951.76 326.99 curveto
+stroke
+0 0 0 edgecolor
+newpath 3952.97 330.28 moveto
+3961.58 324.11 lineto
+3951 323.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3952.97 330.28 moveto
+3961.58 324.11 lineto
+3951 323.56 lineto
+closepath stroke
+grestore
+% vk_kernel_results
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4360 324 moveto
+4246 324 lineto
+4246 288 lineto
+4360 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4254 302.3 moveto 98 (vk_kernel_results) alignedtext
+grestore
+% vk_gui_update_inputs->vk_kernel_results
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3851.19 371.73 moveto
+3938.83 364.5 4093.43 349.62 4235.52 323.93 curveto
+stroke
+0 0 0 edgecolor
+newpath 4236.52 327.31 moveto
+4245.73 322.06 lineto
+4235.26 320.42 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4236.52 327.31 moveto
+4245.73 322.06 lineto
+4235.26 320.42 lineto
+closepath stroke
+grestore
+% vk_sim_results
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3937.25 324 moveto
+3836.75 324 lineto
+3836.75 288 lineto
+3937.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3844.5 302.3 moveto 85 (vk_sim_results) alignedtext
+grestore
+% vk_gui_update_inputs->vk_sim_results
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3806.93 359.88 moveto
+3820.66 350.81 3837.71 339.55 3852.54 329.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 3854.55 332.62 moveto
+3860.97 324.19 lineto
+3850.7 326.78 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3854.55 332.62 moveto
+3860.97 324.19 lineto
+3850.7 326.78 lineto
+closepath stroke
+grestore
+% vk_project_load->vk_error
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2591.64 359.88 moveto
+2575.95 350.72 2556.44 339.34 2539.55 329.48 curveto
+stroke
+0 0 0 edgecolor
+newpath 2540.87 326.21 moveto
+2530.47 324.19 lineto
+2537.34 332.25 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2540.87 326.21 moveto
+2530.47 324.19 lineto
+2537.34 332.25 lineto
+closepath stroke
+grestore
+% vk_kernel_convert
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2449.5 324 moveto
+2330.5 324 lineto
+2330.5 288 lineto
+2449.5 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2338 302.3 moveto 104 (vk_kernel_convert) alignedtext
+grestore
+% vk_project_load->vk_kernel_convert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2566.84 360.59 moveto
+2533.69 350.54 2491.03 337.62 2455.92 326.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 2456.82 323.59 moveto
+2446.23 324.04 lineto
+2454.79 330.29 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2456.82 323.59 moveto
+2446.23 324.04 lineto
+2454.79 330.29 lineto
+closepath stroke
+grestore
+% vk_project_sanitise
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4227.25 324 moveto
+4102.75 324 lineto
+4102.75 288 lineto
+4227.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4110.5 302.3 moveto 109 (vk_project_sanitise) alignedtext
+grestore
+% vk_project_load->vk_project_sanitise
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2675.12 361.52 moveto
+2678.11 360.94 2681.09 360.42 2684 360 curveto
+3300.56 270.25 3469.94 402.96 4092.58 323.84 curveto
+stroke
+0 0 0 edgecolor
+newpath 4093.23 327.28 moveto
+4102.7 322.54 lineto
+4092.34 320.34 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4093.23 327.28 moveto
+4102.7 322.54 lineto
+4092.34 320.34 lineto
+closepath stroke
+grestore
+% vk_gui_simgui
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3260.5 396 moveto
+3163.5 396 lineto
+3163.5 360 lineto
+3260.5 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3171 374.3 moveto 82 (vk_gui_simgui) alignedtext
+grestore
+% vk_gui_simgui->vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3163.2 363.67 moveto
+3158.41 362.41 3153.61 361.17 3149 360 curveto
+3100.66 347.76 3046.23 334.86 3003.12 324.85 curveto
+stroke
+0 0 0 edgecolor
+newpath 3003.8 321.42 moveto
+2993.26 322.57 lineto
+3002.22 328.24 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3003.8 321.42 moveto
+2993.26 322.57 lineto
+3002.22 328.24 lineto
+closepath stroke
+grestore
+% vk_gui_simgui->vk_plot
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3163.33 373.38 moveto
+3063.27 365.63 2836.58 346.53 2741.35 323.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 2742.04 320.03 moveto
+2731.48 320.94 lineto
+2740.3 326.81 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2742.04 320.03 moveto
+2731.48 320.94 lineto
+2740.3 326.81 lineto
+closepath stroke
+grestore
+% vk_gui_simgui->vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3163.35 370.9 moveto
+3082.36 360.59 2922.3 339.51 2848.21 323.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 2848.86 320.32 moveto
+2838.34 321.58 lineto
+2847.35 327.16 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2848.86 320.32 moveto
+2838.34 321.58 lineto
+2847.35 327.16 lineto
+closepath stroke
+grestore
+% vk_gui_simgui->vk_kernel_slice
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3163.1 373.38 moveto
+3050.87 364.89 2776.55 343.11 2664.45 323.82 curveto
+stroke
+0 0 0 edgecolor
+newpath 2664.9 320.34 moveto
+2654.44 322.02 lineto
+2663.66 327.23 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2664.9 320.34 moveto
+2654.44 322.02 lineto
+2663.66 327.23 lineto
+closepath stroke
+grestore
+% vk_gui_simgui->vk_plot_path
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3174.08 359.88 moveto
+3152.99 350.35 3126.54 338.41 3104.13 328.28 curveto
+stroke
+0 0 0 edgecolor
+newpath 3105.35 324.99 moveto
+3094.79 324.07 lineto
+3102.47 331.37 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3105.35 324.99 moveto
+3094.79 324.07 lineto
+3102.47 331.37 lineto
+closepath stroke
+grestore
+% vk_gui_simgui_
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+3189 306 68.37 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3144.5 302.3 moveto 89 (vk_gui_simgui_) alignedtext
+grestore
+% vk_gui_simgui->vk_gui_simgui_
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3206.31 359.7 moveto
+3203.75 351.9 3200.67 342.51 3197.82 333.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 3201.07 332.51 moveto
+3194.62 324.1 lineto
+3194.42 334.7 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3201.07 332.51 moveto
+3194.62 324.1 lineto
+3194.42 334.7 lineto
+closepath stroke
+grestore
+% vk_gui_simgui_drawstep
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+3377 306 101.09 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3307 302.3 moveto 140 (vk_gui_simgui_drawstep) alignedtext
+grestore
+% vk_gui_simgui->vk_gui_simgui_drawstep
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3252.36 359.88 moveto
+3275.95 349.87 3305.81 337.2 3330.39 326.77 curveto
+stroke
+0 0 0 edgecolor
+newpath 3332.04 329.88 moveto
+3339.87 322.75 lineto
+3329.3 323.43 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3332.04 329.88 moveto
+3339.87 322.75 lineto
+3329.3 323.43 lineto
+closepath stroke
+grestore
+% vk_gui_simgui_setup
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+3584 306 87.61 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3524.5 302.3 moveto 119 (vk_gui_simgui_setup) alignedtext
+grestore
+% vk_gui_simgui->vk_gui_simgui_setup
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3260.73 363.36 moveto
+3265.53 362.16 3270.35 361.02 3275 360 curveto
+3368.35 339.53 3392.82 340.25 3487 324 curveto
+3494.38 322.73 3502.07 321.39 3509.76 320.05 curveto
+stroke
+0 0 0 edgecolor
+newpath 3510.58 323.46 moveto
+3519.83 318.3 lineto
+3509.38 316.57 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3510.58 323.46 moveto
+3519.83 318.3 lineto
+3509.38 316.57 lineto
+closepath stroke
+grestore
+% vk_plot_path_limits
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3818 324 moveto
+3690 324 lineto
+3690 288 lineto
+3818 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3698 302.3 moveto 112 (vk_plot_path_limits) alignedtext
+grestore
+% vk_gui_simgui->vk_plot_path_limits
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3260.65 362.97 moveto
+3265.47 361.85 3270.32 360.83 3275 360 curveto
+3452.91 328.34 3501.52 352.3 3680 324 curveto
+3680.1 323.98 3680.2 323.97 3680.31 323.95 curveto
+stroke
+0 0 0 edgecolor
+newpath 3680.67 327.44 moveto
+3689.93 322.28 lineto
+3679.48 320.54 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3680.67 327.44 moveto
+3689.93 322.28 lineto
+3679.48 320.54 lineto
+closepath stroke
+grestore
+% vk_timeformat
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 3935.5 252 moveto
+3838.5 252 lineto
+3838.5 216 lineto
+3935.5 216 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3846 230.3 moveto 82 (vk_timeformat) alignedtext
+grestore
+% vk_kernel_results->vk_timeformat
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 4245.7 290.07 moveto
+4242.43 289.34 4239.18 288.64 4236 288 curveto
+4134.73 267.51 4015.48 251.02 3945.85 242.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 3945.89 238.63 moveto
+3935.53 240.85 lineto
+3945.01 245.57 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3945.89 238.63 moveto
+3935.53 240.85 lineto
+3945.01 245.57 lineto
+closepath stroke
+grestore
+% vk_sim_results->vk_timeformat
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3887 287.7 moveto
+3887 279.98 3887 270.71 3887 262.11 curveto
+stroke
+0 0 0 edgecolor
+newpath 3890.5 262.1 moveto
+3887 252.1 lineto
+3883.5 262.1 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3890.5 262.1 moveto
+3887 252.1 lineto
+3883.5 262.1 lineto
+closepath stroke
+grestore
+% vk_kernel_augment_slices
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2472.25 396 moveto
+2309.75 396 lineto
+2309.75 360 lineto
+2472.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2317.5 374.3 moveto 147 (vk_kernel_augment_slices) alignedtext
+grestore
+% vk_kernel_compute
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1445.25 396 moveto
+1318.75 396 lineto
+1318.75 360 lineto
+1445.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1326.5 374.3 moveto 111 (vk_kernel_compute) alignedtext
+grestore
+% vk_kernel_compute->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1444.25 359.95 moveto
+1461.75 351.98 1478.78 340.47 1489 324 curveto
+1497.44 310.41 1499.77 299.83 1489 288 curveto
+1454.63 250.26 1106.12 238.9 973.69 235.94 curveto
+stroke
+0 0 0 edgecolor
+newpath 973.49 232.43 moveto
+963.42 235.71 lineto
+973.34 239.43 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 973.49 232.43 moveto
+963.42 235.71 lineto
+973.34 239.43 lineto
+closepath stroke
+grestore
+% vk_kernel_compute_recursive
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+1656 306 120.36 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1571.5 302.3 moveto 169 (vk_kernel_compute_recursive) alignedtext
+grestore
+% vk_kernel_compute->vk_kernel_compute_recursive
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1445.55 360.76 moveto
+1488.23 349.86 1544.41 335.51 1587.99 324.37 curveto
+stroke
+0 0 0 edgecolor
+newpath 1589.11 327.7 moveto
+1597.93 321.83 lineto
+1587.38 320.92 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1589.11 327.7 moveto
+1597.93 321.83 lineto
+1587.38 320.92 lineto
+closepath stroke
+grestore
+% vk_convert_recursive
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+2390 234 89.06 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2329.5 230.3 moveto 121 (vk_convert_recursive) alignedtext
+grestore
+% vk_kernel_convert->vk_convert_recursive
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2390 287.7 moveto
+2390 279.98 2390 270.71 2390 262.11 curveto
+stroke
+0 0 0 edgecolor
+newpath 2393.5 262.1 moveto
+2390 252.1 lineto
+2386.5 262.1 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2393.5 262.1 moveto
+2390 252.1 lineto
+2386.5 262.1 lineto
+closepath stroke
+grestore
+% vk_kernel_delete_results
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2251 468 moveto
+2097 468 lineto
+2097 432 lineto
+2251 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2105 446.3 moveto 138 (vk_kernel_delete_results) alignedtext
+grestore
+% vk_kernel_inside
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1449 108 moveto
+1339 108 lineto
+1339 72 lineto
+1449 72 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1347 86.3 moveto 94 (vk_kernel_inside) alignedtext
+grestore
+% vk_kernel_inside_rec
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+1306 18 87.61 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1246.5 14.3 moveto 119 (vk_kernel_inside_rec) alignedtext
+grestore
+% vk_kernel_inside->vk_kernel_inside_rec
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1372.25 71.7 moveto
+1361 62.75 1347.12 51.71 1334.97 42.05 curveto
+stroke
+0 0 0 edgecolor
+newpath 1336.9 39.11 moveto
+1326.9 35.62 lineto
+1332.54 44.59 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1336.9 39.11 moveto
+1326.9 35.62 lineto
+1332.54 44.59 lineto
+closepath stroke
+grestore
+% vk_kernel_neighbours
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1552 36 moveto
+1412 36 lineto
+1412 0 lineto
+1552 0 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1420 14.3 moveto 124 (vk_kernel_neighbours) alignedtext
+grestore
+% vk_kernel_inside->vk_kernel_neighbours
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1415.75 71.7 moveto
+1426.84 62.88 1440.47 52.03 1452.49 42.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 1454.85 45.07 moveto
+1460.5 36.1 lineto
+1450.49 39.59 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1454.85 45.07 moveto
+1460.5 36.1 lineto
+1450.49 39.59 lineto
+closepath stroke
+grestore
+% vk_kernel_make_slices
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 845 396 moveto
+699 396 lineto
+699 360 lineto
+845 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+707 374.3 moveto 130 (vk_kernel_make_slices) alignedtext
+grestore
+% vk_kernel_make_slices->vk_kernel_distances
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 747.29 359.88 moveto
+734.33 350.89 718.27 339.76 704.23 330.03 curveto
+stroke
+0 0 0 edgecolor
+newpath 706.02 327.01 moveto
+695.8 324.19 lineto
+702.03 332.76 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 706.02 327.01 moveto
+695.8 324.19 lineto
+702.03 332.76 lineto
+closepath stroke
+grestore
+% vk_kernel_middle
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4308.5 540 moveto
+4193.5 540 lineto
+4193.5 504 lineto
+4308.5 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4201 518.3 moveto 100 (vk_kernel_middle) alignedtext
+grestore
+% vk_kernel_run
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1235 468 moveto
+1139 468 lineto
+1139 432 lineto
+1235 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1147 446.3 moveto 80 (vk_kernel_run) alignedtext
+grestore
+% vk_kernel_run->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1138.7 436.51 moveto
+1109.86 427.77 1073.28 414.35 1044 396 curveto
+1039.11 392.93 972.46 328.63 969 324 curveto
+954.44 304.51 942.06 279.75 933.82 261.3 curveto
+stroke
+0 0 0 edgecolor
+newpath 936.99 259.8 moveto
+929.8 252.03 lineto
+930.57 262.59 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 936.99 259.8 moveto
+929.8 252.03 lineto
+930.57 262.59 lineto
+closepath stroke
+grestore
+% vk_kernel_run->vk_diff_make_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1201.09 431.7 moveto
+1207.92 423.3 1216.26 413.07 1223.76 403.86 curveto
+stroke
+0 0 0 edgecolor
+newpath 1226.47 406.07 moveto
+1230.07 396.1 lineto
+1221.04 401.65 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1226.47 406.07 moveto
+1230.07 396.1 lineto
+1221.04 401.65 lineto
+closepath stroke
+grestore
+% vk_kernel_run->vk_project_load
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1235.21 443.34 moveto
+1269.43 439.53 1316.47 434.73 1358 432 curveto
+1856.29 399.28 1983.09 434.14 2481 396 curveto
+2505.89 394.09 2533.15 391.01 2556.95 387.99 curveto
+stroke
+0 0 0 edgecolor
+newpath 2557.46 391.45 moveto
+2566.93 386.7 lineto
+2556.56 384.51 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2557.46 391.45 moveto
+2566.93 386.7 lineto
+2556.56 384.51 lineto
+closepath stroke
+grestore
+% vk_kernel_run->vk_kernel_compute
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1234.7 431.88 moveto
+1261.95 422.09 1296.3 409.77 1324.97 399.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 1326.22 402.74 moveto
+1334.45 396.07 lineto
+1323.86 396.15 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1326.22 402.74 moveto
+1334.45 396.07 lineto
+1323.86 396.15 lineto
+closepath stroke
+grestore
+% vk_options_make
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1168.5 396 moveto
+1053.5 396 lineto
+1053.5 360 lineto
+1168.5 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1061 374.3 moveto 100 (vk_options_make) alignedtext
+grestore
+% vk_kernel_run->vk_options_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1168.21 431.7 moveto
+1158.83 423.05 1147.32 412.45 1137.09 403.03 curveto
+stroke
+0 0 0 edgecolor
+newpath 1139.3 400.3 moveto
+1129.57 396.1 lineto
+1134.55 405.45 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1139.3 400.3 moveto
+1129.57 396.1 lineto
+1134.55 405.45 lineto
+closepath stroke
+grestore
+% vk_options_make->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1072.34 359.93 moveto
+1053.08 350.59 1029.92 338.07 1011 324 curveto
+985.67 305.17 960.75 279.06 943.94 259.99 curveto
+stroke
+0 0 0 edgecolor
+newpath 946.45 257.54 moveto
+937.25 252.29 lineto
+941.16 262.13 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 946.45 257.54 moveto
+937.25 252.29 lineto
+941.16 262.13 lineto
+closepath stroke
+grestore
+% vk_options_make->vk_control_cost_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1104.33 359.7 moveto
+1101.29 351.81 1097.62 342.3 1094.24 333.55 curveto
+stroke
+0 0 0 edgecolor
+newpath 1097.46 332.17 moveto
+1090.6 324.1 lineto
+1090.93 334.69 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1097.46 332.17 moveto
+1090.6 324.1 lineto
+1090.93 334.69 lineto
+closepath stroke
+grestore
+% vk_options_make->vk_timeformat
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1168.7 362.19 moveto
+1171.85 361.43 1174.96 360.7 1178 360 curveto
+1254.96 342.28 1280.91 358.39 1352 324 curveto
+1374.44 313.15 1371.67 296.76 1395 288 curveto
+1424.43 276.95 3454.98 242.27 3828.35 235.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 3828.46 239.48 moveto
+3838.4 235.81 lineto
+3828.35 232.48 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3828.46 239.48 moveto
+3838.4 235.81 lineto
+3828.35 232.48 lineto
+closepath stroke
+grestore
+% vk_options_make->vk_sim_simulate_ode
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1168.55 362.38 moveto
+1229.7 346.82 1317.7 324.38 1318 324 curveto
+1359.63 270.37 1271.61 214.35 1212.6 184.59 curveto
+stroke
+0 0 0 edgecolor
+newpath 1213.91 181.34 moveto
+1203.4 180.05 lineto
+1210.81 187.62 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1213.91 181.34 moveto
+1203.4 180.05 lineto
+1210.81 187.62 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_euler
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1309.25 324 moveto
+1166.75 324 lineto
+1166.75 288 lineto
+1309.25 288 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1174.5 302.3 moveto 127 (vk_sim_simulate_euler) alignedtext
+grestore
+% vk_options_make->vk_sim_simulate_euler
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1142.07 359.88 moveto
+1158.83 350.64 1179.71 339.13 1197.7 329.21 curveto
+stroke
+0 0 0 edgecolor
+newpath 1199.74 332.08 moveto
+1206.81 324.19 lineto
+1196.37 325.95 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1199.74 332.08 moveto
+1206.81 324.19 lineto
+1196.37 325.95 lineto
+closepath stroke
+grestore
+% vk_kernel_view
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2735 468 moveto
+2631 468 lineto
+2631 432 lineto
+2735 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2639 446.3 moveto 88 (vk_kernel_view) alignedtext
+grestore
+% vk_kernel_view->vk_figure_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2735.18 432.32 moveto
+2766.61 422.27 2806.83 409.42 2839.89 398.85 curveto
+stroke
+0 0 0 edgecolor
+newpath 2841 402.17 moveto
+2849.46 395.79 lineto
+2838.87 395.5 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2841 402.17 moveto
+2849.46 395.79 lineto
+2838.87 395.5 lineto
+closepath stroke
+grestore
+% vk_kernel_view->vk_figure_make_slice
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2702.53 431.7 moveto
+2712.38 422.97 2724.49 412.24 2735.2 402.75 curveto
+stroke
+0 0 0 edgecolor
+newpath 2737.53 405.36 moveto
+2742.7 396.1 lineto
+2732.89 400.12 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2737.53 405.36 moveto
+2742.7 396.1 lineto
+2732.89 400.12 lineto
+closepath stroke
+grestore
+% vk_kernel_view->vk_kernel_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2641.74 431.95 moveto
+2617.3 421.74 2585.77 408.38 2558 396 curveto
+2523.49 380.62 2517.28 370.53 2481 360 curveto
+2364.87 326.29 2224.17 314.01 2140.59 309.54 curveto
+stroke
+0 0 0 edgecolor
+newpath 2140.61 306.04 moveto
+2130.44 309.02 lineto
+2140.25 313.03 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2140.61 306.04 moveto
+2130.44 309.02 lineto
+2140.25 313.03 lineto
+closepath stroke
+grestore
+% vk_kernel_view->vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2630.89 433.89 moveto
+2627.89 433.2 2624.91 432.57 2622 432 curveto
+2481.07 404.64 2439.19 434.92 2301 396 curveto
+2264.64 385.76 2260.12 371.07 2224 360 curveto
+2129.38 331.01 2099.72 339.5 1997.59 324.05 curveto
+stroke
+0 0 0 edgecolor
+newpath 1997.9 320.56 moveto
+1987.48 322.48 lineto
+1996.82 327.47 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1997.9 320.56 moveto
+1987.48 322.48 lineto
+1996.82 327.47 lineto
+closepath stroke
+grestore
+% vk_kernel_view->vk_project_load
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2667.67 431.7 moveto
+2660.24 423.3 2651.18 413.07 2643.02 403.86 curveto
+stroke
+0 0 0 edgecolor
+newpath 2645.4 401.27 moveto
+2636.15 396.1 lineto
+2640.16 405.91 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2645.4 401.27 moveto
+2636.15 396.1 lineto
+2640.16 405.91 lineto
+closepath stroke
+grestore
+% vk_kernel_view->vk_kernel_augment_slices
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2630.8 434.28 moveto
+2627.83 433.5 2624.88 432.73 2622 432 curveto
+2575.01 420.07 2522.34 407.89 2479.18 398.23 curveto
+stroke
+0 0 0 edgecolor
+newpath 2479.79 394.78 moveto
+2469.27 396.01 lineto
+2478.27 401.61 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2479.79 394.78 moveto
+2469.27 396.01 lineto
+2478.27 401.61 lineto
+closepath stroke
+grestore
+% vk_ode_outputfcn->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 905.47 180.1 moveto
+909.77 187.96 914.21 197.46 917.73 206.23 curveto
+stroke
+0 0 0 edgecolor
+newpath 914.48 207.55 moveto
+921.25 215.7 lineto
+921.04 205.1 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 914.48 207.55 moveto
+921.25 215.7 lineto
+921.04 205.1 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1111.78 180.1 moveto
+1070.34 192.46 1013.34 208.9 972.79 220.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 971.82 216.79 moveto
+963.12 222.82 lineto
+973.69 223.53 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 971.82 216.79 moveto
+963.12 222.82 lineto
+973.69 223.53 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode->vk_viable_exited
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1095.78 150.09 moveto
+1080.41 147.88 1064.17 145.71 1049 144 curveto
+829.82 119.23 568.71 101.98 449.36 94.77 curveto
+stroke
+0 0 0 edgecolor
+newpath 449.49 91.27 moveto
+439.29 94.17 lineto
+449.07 98.26 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 449.49 91.27 moveto
+439.29 94.17 lineto
+449.07 98.26 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode->vk_control_wrap_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1125.86 143.88 moveto
+1103.99 134.31 1076.54 122.3 1053.34 112.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 1054.58 108.87 moveto
+1044.01 108.07 lineto
+1051.77 115.28 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1054.58 108.87 moveto
+1044.01 108.07 lineto
+1051.77 115.28 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode->vk_kernel_inside
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1220.73 143.97 moveto
+1253.38 133.98 1294.79 121.33 1328.93 110.89 curveto
+stroke
+0 0 0 edgecolor
+newpath 1330.28 114.14 moveto
+1338.82 107.87 lineto
+1328.23 107.44 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1330.28 114.14 moveto
+1338.82 107.87 lineto
+1328.23 107.44 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_ode_helper
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+1205 90 116.01 18 ellipse_path stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1123.5 86.3 moveto 163 (vk_sim_simulate_ode_helper) alignedtext
+grestore
+% vk_sim_simulate_ode->vk_sim_simulate_ode_helper
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1174.89 143.7 moveto
+1179.49 135.64 1185.06 125.89 1190.15 116.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 1193.3 118.52 moveto
+1195.23 108.1 lineto
+1187.23 115.05 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1193.3 118.52 moveto
+1195.23 108.1 lineto
+1187.23 115.05 lineto
+closepath stroke
+grestore
+% vk_viable->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 990.86 180.1 moveto
+981.49 188.89 968.96 199.73 957.18 209.31 curveto
+stroke
+0 0 0 edgecolor
+newpath 954.81 206.72 moveto
+949.19 215.7 lineto
+959.18 212.19 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 954.81 206.72 moveto
+949.19 215.7 lineto
+959.18 212.19 lineto
+closepath stroke
+grestore
+% vk_viable->vk_viable_exited
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 969.9 146.72 moveto
+966.59 145.68 963.26 144.75 960 144 curveto
+778.22 102.11 556.97 93.11 449.24 91.32 curveto
+stroke
+0 0 0 edgecolor
+newpath 449.23 87.82 moveto
+439.18 91.17 lineto
+449.12 94.82 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 449.23 87.82 moveto
+439.18 91.17 lineto
+449.12 94.82 lineto
+closepath stroke
+grestore
+% vk_viable->vk_control_wrap_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1005 143.7 moveto
+1005 135.98 1005 126.71 1005 118.11 curveto
+stroke
+0 0 0 edgecolor
+newpath 1008.5 118.1 moveto
+1005 108.1 lineto
+1001.5 118.1 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1008.5 118.1 moveto
+1005 108.1 lineto
+1001.5 118.1 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_euler->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1166.52 289.12 moveto
+1107.64 276.03 1025.62 257.81 973.42 246.2 curveto
+stroke
+0 0 0 edgecolor
+newpath 973.91 242.73 moveto
+963.39 243.98 lineto
+972.39 249.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 973.91 242.73 moveto
+963.39 243.98 lineto
+972.39 249.56 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_euler->vk_viable_exited
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1166.51 289.67 moveto
+1163.3 289.08 1160.12 288.52 1157 288 curveto
+985.31 259.11 494.87 311.71 381 180 curveto
+366.52 163.25 369.18 137.37 374.34 117.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 377.77 118.59 moveto
+377.28 108 lineto
+371.06 116.58 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 377.77 118.59 moveto
+377.28 108 lineto
+371.06 116.58 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_euler->vk_control_wrap_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1245.09 287.69 moveto
+1257 255.49 1276.62 185.86 1243 144 curveto
+1198.45 88.53 1156.02 121.24 1080.34 107.84 curveto
+stroke
+0 0 0 edgecolor
+newpath 1080.93 104.39 moveto
+1070.44 105.86 lineto
+1079.56 111.25 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1080.93 104.39 moveto
+1070.44 105.86 lineto
+1079.56 111.25 lineto
+closepath stroke
+grestore
+% vk_sim_simulate_euler->vk_kernel_inside
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1250.5 287.85 moveto
+1277.89 250.28 1343.28 160.58 1375.47 116.43 curveto
+stroke
+0 0 0 edgecolor
+newpath 1378.38 118.38 moveto
+1381.44 108.23 lineto
+1372.72 114.25 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1378.38 118.38 moveto
+1381.44 108.23 lineto
+1372.72 114.25 lineto
+closepath stroke
+grestore
+% vk_plot_area_isosurface
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4481 540 moveto
+4327 540 lineto
+4327 504 lineto
+4481 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4335 518.3 moveto 138 (vk_plot_area_isosurface) alignedtext
+grestore
+% vk_plot_area_qhull
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4622.5 540 moveto
+4499.5 540 lineto
+4499.5 504 lineto
+4622.5 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4507 518.3 moveto 108 (vk_plot_area_qhull) alignedtext
+grestore
+% vk_plot_area_scatter
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4775 540 moveto
+4641 540 lineto
+4641 504 lineto
+4775 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4649 518.3 moveto 118 (vk_plot_area_scatter) alignedtext
+grestore
+% vk_plot_surface_isosurface
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4965 540 moveto
+4793 540 lineto
+4793 504 lineto
+4965 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4801 518.3 moveto 156 (vk_plot_surface_isosurface) alignedtext
+grestore
+% vk_plot_surface_qhull
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 5125 540 moveto
+4983 540 lineto
+4983 504 lineto
+5125 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4991 518.3 moveto 126 (vk_plot_surface_qhull) alignedtext
+grestore
+% vk_plot_surface_scatter
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 5295 540 moveto
+5143 540 lineto
+5143 504 lineto
+5295 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+5151 518.3 moveto 136 (vk_plot_surface_scatter) alignedtext
+grestore
+% vk_project_new
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4014.25 468 moveto
+3907.75 468 lineto
+3907.75 432 lineto
+4014.25 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+3915.5 446.3 moveto 91 (vk_project_new) alignedtext
+grestore
+% vk_project_new->vk_project_sanitise
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 3970.12 431.99 moveto
+3981.52 412.21 4002.74 379.76 4029 360 curveto
+4047.87 345.8 4071.03 334.91 4092.85 326.81 curveto
+stroke
+0 0 0 edgecolor
+newpath 4094.19 330.05 moveto
+4102.44 323.4 lineto
+4091.84 323.46 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4094.19 330.05 moveto
+4102.44 323.4 lineto
+4091.84 323.46 lineto
+closepath stroke
+grestore
+% vk_project_save
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2416.25 468 moveto
+2307.75 468 lineto
+2307.75 432 lineto
+2416.25 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2315.5 446.3 moveto 93 (vk_project_save) alignedtext
+grestore
+% vk_project_save->vk_error
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2332.96 431.84 moveto
+2320.68 422.87 2307.69 410.68 2301 396 curveto
+2294.36 381.44 2291.03 372.51 2301 360 curveto
+2345.61 304.01 2389.63 345.22 2458 324 curveto
+2458.21 323.93 2458.42 323.87 2458.63 323.8 curveto
+stroke
+0 0 0 edgecolor
+newpath 2459.97 327.04 moveto
+2468.31 320.51 lineto
+2457.72 320.42 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2459.97 327.04 moveto
+2468.31 320.51 lineto
+2457.72 320.42 lineto
+closepath stroke
+grestore
+% vk_sim_delete_results
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2613 468 moveto
+2473 468 lineto
+2473 432 lineto
+2613 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2481 446.3 moveto 124 (vk_sim_delete_results) alignedtext
+grestore
+% vk_sim_make
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 994 468 moveto
+900 468 lineto
+900 432 lineto
+994 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+908 446.3 moveto 78 (vk_sim_make) alignedtext
+grestore
+% vk_sim_make->vk_options
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 899.9 446.23 moveto
+798.77 439.8 568.12 422.37 545 396 curveto
+509.16 355.13 587.29 294 597 288 curveto
+642.23 260.07 792.97 244.79 872.64 238.49 curveto
+stroke
+0 0 0 edgecolor
+newpath 873.23 241.96 moveto
+882.93 237.7 lineto
+872.69 234.98 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 873.23 241.96 moveto
+882.93 237.7 lineto
+872.69 234.98 lineto
+closepath stroke
+grestore
+% vk_sim_make->vk_control_make_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 942.8 431.7 moveto
+940.9 423.9 938.62 414.51 936.52 405.83 curveto
+stroke
+0 0 0 edgecolor
+newpath 939.92 405 moveto
+934.15 396.1 lineto
+933.11 406.65 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 939.92 405 moveto
+934.15 396.1 lineto
+933.11 406.65 lineto
+closepath stroke
+grestore
+% vk_sim_make->vk_diff_make_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 994.2 438.44 moveto
+1040.75 427.96 1113.87 411.28 1177 396 curveto
+1177.33 395.92 1177.66 395.84 1177.99 395.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 1178.85 399.15 moveto
+1187.73 393.37 lineto
+1177.18 392.36 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1178.85 399.15 moveto
+1187.73 393.37 lineto
+1177.18 392.36 lineto
+closepath stroke
+grestore
+% vk_sim_make->vk_kernel_distances
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 899.91 445.37 moveto
+834.01 439.32 719.05 424.85 690 396 curveto
+674.01 380.12 669.94 354.32 669.47 334.58 curveto
+stroke
+0 0 0 edgecolor
+newpath 672.97 334.35 moveto
+669.53 324.33 lineto
+665.97 334.31 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 672.97 334.35 moveto
+669.53 324.33 lineto
+665.97 334.31 lineto
+closepath stroke
+grestore
+% vk_sim_make->vk_options_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 987.12 431.88 moveto
+1009.64 422.26 1037.92 410.19 1061.77 400.01 curveto
+stroke
+0 0 0 edgecolor
+newpath 1063.19 403.21 moveto
+1071.01 396.07 lineto
+1060.44 396.77 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1063.19 403.21 moveto
+1071.01 396.07 lineto
+1060.44 396.77 lineto
+closepath stroke
+grestore
+% vk_sim_start
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 642.25 396 moveto
+553.75 396 lineto
+553.75 360 lineto
+642.25 360 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+561.5 374.3 moveto 73 (vk_sim_start) alignedtext
+grestore
+% vk_sim_make->vk_sim_start
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 899.99 441.89 moveto
+842.38 432.84 741.95 415.95 657 396 curveto
+655.36 395.61 653.7 395.21 652.02 394.8 curveto
+stroke
+0 0 0 edgecolor
+newpath 652.89 391.41 moveto
+642.33 392.29 lineto
+651.14 398.18 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 652.89 391.41 moveto
+642.33 392.29 lineto
+651.14 398.18 lineto
+closepath stroke
+grestore
+% vk_sim_timeprofiles_from
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 1284 540 moveto
+1120 540 lineto
+1120 504 lineto
+1284 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+1128 518.3 moveto 148 (vk_sim_timeprofiles_from) alignedtext
+grestore
+% vk_sim_timeprofiles_from->vk_figure_timeprofiles_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1264.05 503.97 moveto
+1300.46 493.97 1346.63 481.3 1384.68 470.85 curveto
+stroke
+0 0 0 edgecolor
+newpath 1385.95 474.13 moveto
+1394.67 468.11 lineto
+1384.1 467.38 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1385.95 474.13 moveto
+1394.67 468.11 lineto
+1384.1 467.38 lineto
+closepath stroke
+grestore
+% vk_sim_timeprofiles_from->vk_sim_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 1139.95 503.97 moveto
+1098.41 492.56 1044.15 477.67 1003.76 466.58 curveto
+stroke
+0 0 0 edgecolor
+newpath 1004.63 463.19 moveto
+994.06 463.92 lineto
+1002.78 469.94 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1004.63 463.19 moveto
+994.06 463.92 lineto
+1002.78 469.94 lineto
+closepath stroke
+grestore
+% vk_sim_view
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2881 468 moveto
+2791 468 lineto
+2791 432 lineto
+2881 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2799 446.3 moveto 74 (vk_sim_view) alignedtext
+grestore
+% vk_sim_view->vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2881.14 438.38 moveto
+2918.86 428.48 2968.3 412.77 2980 396 curveto
+2989.15 382.88 2986.26 374.72 2980 360 curveto
+2975.27 348.86 2966.92 338.93 2958.13 330.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 2960.23 327.95 moveto
+2950.38 324.05 lineto
+2955.65 333.24 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2960.23 327.95 moveto
+2950.38 324.05 lineto
+2955.65 333.24 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_figure_data_retrieve
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2790.76 439.69 moveto
+2775.91 436.89 2759.3 434.03 2744 432 curveto
+2548.18 406.02 2497.68 414.44 2301 396 curveto
+2276.31 393.69 2249.51 390.93 2225.02 388.32 curveto
+stroke
+0 0 0 edgecolor
+newpath 2225.36 384.84 moveto
+2215.04 387.25 lineto
+2224.61 391.8 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2225.36 384.84 moveto
+2215.04 387.25 lineto
+2224.61 391.8 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2881.05 442.95 moveto
+2909.76 436.5 2944.85 423.24 2963 396 curveto
+2971.87 382.68 2972.47 372.89 2963 360 curveto
+2933.02 319.2 2902.62 337.7 2848.19 323.77 curveto
+stroke
+0 0 0 edgecolor
+newpath 2849.07 320.39 moveto
+2838.49 321.01 lineto
+2847.15 327.12 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2849.07 320.39 moveto
+2838.49 321.01 lineto
+2847.15 327.12 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2790.9 440.55 moveto
+2713.6 426.05 2563.54 397.79 2558 396 curveto
+2522.06 384.37 2517.55 369.56 2481 360 curveto
+2275.47 306.25 2213.12 347.8 1997.48 323.97 curveto
+stroke
+0 0 0 edgecolor
+newpath 1997.76 320.48 moveto
+1987.43 322.82 lineto
+1996.97 327.43 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1997.76 320.48 moveto
+1987.43 322.82 lineto
+1996.97 327.43 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_sim_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2790.8 439.33 moveto
+2775.96 436.51 2759.33 433.72 2744 432 curveto
+2357.22 388.53 2256.21 435.47 1869 396 curveto
+1856.51 394.73 1843.23 392.91 1830.5 390.94 curveto
+stroke
+0 0 0 edgecolor
+newpath 1830.85 387.45 moveto
+1820.43 389.33 lineto
+1829.75 394.37 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1830.85 387.45 moveto
+1820.43 389.33 lineto
+1829.75 394.37 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_plot_path
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2881.03 442.13 moveto
+2915.26 435.12 2962.09 421.51 2996 396 curveto
+3017.74 379.65 3034.45 353.2 3044.83 333.38 curveto
+stroke
+0 0 0 edgecolor
+newpath 3048.06 334.76 moveto
+3049.42 324.26 lineto
+3041.8 331.62 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3048.06 334.76 moveto
+3049.42 324.26 lineto
+3041.8 331.62 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_plot_path_limits
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2881.27 439.91 moveto
+2896.12 437.13 2912.73 434.21 2928 432 curveto
+3078.82 410.14 3118.25 418.35 3269 396 curveto
+3353.15 383.52 3373.22 374.78 3457 360 curveto
+3555.87 342.56 3581.47 343.25 3680 324 curveto
+3680.1 323.98 3680.2 323.96 3680.3 323.94 curveto
+stroke
+0 0 0 edgecolor
+newpath 3680.77 327.42 moveto
+3689.88 322 lineto
+3679.38 320.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3680.77 327.42 moveto
+3689.88 322 lineto
+3679.38 320.56 lineto
+closepath stroke
+grestore
+% vk_sim_view->vk_kernel_augment_slices
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2790.66 440.31 moveto
+2775.81 437.55 2759.22 434.55 2744 432 curveto
+2655.45 417.18 2554.07 402.16 2482.74 391.91 curveto
+stroke
+0 0 0 edgecolor
+newpath 2482.84 388.39 moveto
+2472.44 390.43 lineto
+2481.84 395.32 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2482.84 388.39 moveto
+2472.44 390.43 lineto
+2481.84 395.32 lineto
+closepath stroke
+grestore
+% vk_fminbnd
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 5396.5 540 moveto
+5313.5 540 lineto
+5313.5 504 lineto
+5396.5 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+5321 518.3 moveto 68 (vk_fminbnd) alignedtext
+grestore
+% vk_help
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4204.25 468 moveto
+4143.75 468 lineto
+4143.75 432 lineto
+4204.25 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4151.5 446.3 moveto 45 (vk_help) alignedtext
+grestore
+% vk_init
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4125 468 moveto
+4071 468 lineto
+4071 432 lineto
+4125 432 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4079 446.3 moveto 38 (vk_init) alignedtext
+grestore
+% vikaasa
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 2431.25 540 moveto
+2374.75 540 lineto
+2374.75 504 lineto
+2431.25 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+2382.5 518.3 moveto 41 (vikaasa) alignedtext
+grestore
+% vikaasa->vk_diff_make_fn
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.58 521.02 moveto
+2212.68 520.92 1410.72 517.92 1314 468 curveto
+1287.79 454.47 1268.26 426.24 1256.58 405.17 curveto
+stroke
+0 0 0 edgecolor
+newpath 1259.54 403.28 moveto
+1251.77 396.08 lineto
+1253.35 406.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1259.54 403.28 moveto
+1251.77 396.08 lineto
+1253.35 406.56 lineto
+closepath stroke
+grestore
+% vikaasa->vk_figure_data_insert
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.66 521.06 moveto
+2557.26 521.04 3054.84 517.8 3101 468 curveto
+3138.6 427.44 3059.4 369.79 3047 360 curveto
+3030.1 346.65 3009.33 336 2989.75 327.84 curveto
+stroke
+0 0 0 edgecolor
+newpath 2990.83 324.51 moveto
+2980.25 324.04 lineto
+2988.23 331.01 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2990.83 324.51 moveto
+2980.25 324.04 lineto
+2988.23 331.01 lineto
+closepath stroke
+grestore
+% vikaasa->vk_figure_data_retrieve
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.72 520.79 moveto
+2258.34 519.63 1820.71 512.32 1780 468 curveto
+1711.34 393.26 1711.75 452.15 2056.8 395.95 curveto
+stroke
+0 0 0 edgecolor
+newpath 2057.55 399.38 moveto
+2066.85 394.3 lineto
+2056.41 392.47 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2057.55 399.38 moveto
+2066.85 394.3 lineto
+2056.41 392.47 lineto
+closepath stroke
+grestore
+% vikaasa->vk_figure_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.51 519.91 moveto
+2530.77 515.86 2857 500.17 2890 468 curveto
+2906.09 452.32 2907.87 426.09 2906.35 406.16 curveto
+stroke
+0 0 0 edgecolor
+newpath 2909.82 405.69 moveto
+2905.27 396.12 lineto
+2902.86 406.44 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2909.82 405.69 moveto
+2905.27 396.12 lineto
+2902.86 406.44 lineto
+closepath stroke
+grestore
+% vikaasa->vk_plot_box
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.54 520.98 moveto
+2554.34 520.62 3033.51 516.12 3078 468 curveto
+3157.8 381.69 2973.5 359.11 2848.13 323.92 curveto
+stroke
+0 0 0 edgecolor
+newpath 2849.03 320.54 moveto
+2838.46 321.15 lineto
+2847.1 327.27 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2849.03 320.54 moveto
+2838.46 321.15 lineto
+2847.1 327.27 lineto
+closepath stroke
+grestore
+% vikaasa->vk_figure_make_slice
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.3 520.62 moveto
+2504.83 519.01 2699.28 510.74 2744 468 curveto
+2760.42 452.31 2764.06 426.08 2764.1 406.15 curveto
+stroke
+0 0 0 edgecolor
+newpath 2767.6 406.02 moveto
+2763.83 396.12 lineto
+2760.6 406.21 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2767.6 406.02 moveto
+2763.83 396.12 lineto
+2760.6 406.21 lineto
+closepath stroke
+grestore
+% vikaasa->vk_figure_timeprofiles_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.56 520.23 moveto
+2267.56 517.13 1879.02 503.91 1561 468 curveto
+1559.49 467.83 1557.98 467.65 1556.45 467.47 curveto
+stroke
+0 0 0 edgecolor
+newpath 1556.63 463.97 moveto
+1546.27 466.18 lineto
+1555.75 470.91 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1556.63 463.97 moveto
+1546.27 466.18 lineto
+1555.75 470.91 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.45 509.02 moveto
+2352.86 499.36 2322.95 484.68 2299 468 curveto
+2279.64 454.52 2281.55 441.59 2260 432 curveto
+2180.28 396.53 1927.8 460.47 1869 396 curveto
+1858.22 384.18 1859.25 372.69 1869 360 curveto
+1873.08 354.69 1940.49 337.46 1995.73 324.07 curveto
+stroke
+0 0 0 edgecolor
+newpath 1996.64 327.45 moveto
+2005.54 321.7 lineto
+1994.99 320.64 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1996.64 327.45 moveto
+2005.54 321.7 lineto
+1994.99 320.64 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_augment_constraints
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.5 520.65 moveto
+2210.59 518.5 1394.02 505.89 1358 468 curveto
+1346.98 456.4 1348.88 445.14 1358 432 curveto
+1358.41 431.41 1550.31 360.18 1551 360 curveto
+1649.74 334.28 1679.28 339.95 1784.45 324.05 curveto
+stroke
+0 0 0 edgecolor
+newpath 1785.17 327.48 moveto
+1794.52 322.5 lineto
+1784.11 320.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1785.17 327.48 moveto
+1794.52 322.5 lineto
+1784.11 320.56 lineto
+closepath stroke
+grestore
+% vikaasa->vk_sim_augment
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.51 521.38 moveto
+2237.24 522.91 1648.36 526.04 1594 468 curveto
+1556.54 428 1636.95 402.76 1699.78 389.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 1700.57 393.17 moveto
+1709.69 387.78 lineto
+1699.2 386.31 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1700.57 393.17 moveto
+1709.69 387.78 lineto
+1699.2 386.31 lineto
+closepath stroke
+grestore
+% vikaasa->vk_plot_path
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.41 521.33 moveto
+2554.23 522.42 3039.67 523.1 3180 468 curveto
+3237.9 445.27 3307.76 408.65 3269 360 curveto
+3226.31 306.41 3184.85 339.44 3112.48 323.78 curveto
+stroke
+0 0 0 edgecolor
+newpath 3113.09 320.32 moveto
+3102.54 321.36 lineto
+3111.43 327.13 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3113.09 320.32 moveto
+3102.54 321.36 lineto
+3111.43 327.13 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_figure_close
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.72 520.04 moveto
+2283.4 516.67 1988.34 503.56 1747 468 curveto
+1745.89 467.84 1744.77 467.67 1743.65 467.49 curveto
+stroke
+0 0 0 edgecolor
+newpath 1743.85 463.97 moveto
+1733.4 465.77 lineto
+1742.68 470.88 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1743.85 463.97 moveto
+1733.4 465.77 lineto
+1742.68 470.88 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_figure_focus
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.66 518.89 moveto
+2302.45 513.3 2105.61 496.62 1931.11 467.9 curveto
+stroke
+0 0 0 edgecolor
+newpath 1931.67 464.45 moveto
+1921.24 466.26 lineto
+1930.53 471.35 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1931.67 464.45 moveto
+1921.24 466.26 lineto
+1930.53 471.35 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_make_waitbar
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.69 516.68 moveto
+2321.05 508.39 2200.71 489.35 2088.47 468.04 curveto
+stroke
+0 0 0 edgecolor
+newpath 2088.8 464.54 moveto
+2078.33 466.1 lineto
+2087.49 471.42 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2088.8 464.54 moveto
+2078.33 466.1 lineto
+2087.49 471.42 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_project_load
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.32 519.19 moveto
+2509.79 513.95 2736.53 497.23 2923 468 curveto
+2924.26 467.8 2925.54 467.6 2926.82 467.39 curveto
+stroke
+0 0 0 edgecolor
+newpath 2927.5 470.82 moveto
+2936.75 465.65 lineto
+2926.3 463.92 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2927.5 470.82 moveto
+2936.75 465.65 lineto
+2926.3 463.92 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_update_inputs
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.42 520.54 moveto
+2580.52 518 3273.71 504.38 3485 468 curveto
+3571.66 453.08 3668.67 420.79 3727.26 399.48 curveto
+stroke
+0 0 0 edgecolor
+newpath 3728.5 402.76 moveto
+3736.68 396.03 lineto
+3726.09 396.19 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3728.5 402.76 moveto
+3736.68 396.03 lineto
+3726.09 396.19 lineto
+closepath stroke
+grestore
+% vikaasa->vk_gui_simgui
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.65 520.4 moveto
+2560.84 517.53 3085.57 503.72 3149 468 curveto
+3173.49 454.21 3190.77 426.47 3200.96 405.61 curveto
+stroke
+0 0 0 edgecolor
+newpath 3204.24 406.84 moveto
+3205.27 396.3 lineto
+3197.89 403.9 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3204.24 406.84 moveto
+3205.27 396.3 lineto
+3197.89 403.9 lineto
+closepath stroke
+grestore
+% vikaasa->vk_plot_path_limits
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.46 520.06 moveto
+2557.97 515.75 3070.04 496.84 3228 468 curveto
+3405.39 435.61 3607.25 363.42 3700.99 327.75 curveto
+stroke
+0 0 0 edgecolor
+newpath 3702.44 330.95 moveto
+3710.53 324.11 lineto
+3699.94 324.41 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3702.44 330.95 moveto
+3710.53 324.11 lineto
+3699.94 324.41 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_results
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.36 520.63 moveto
+2641.18 517.86 3946.39 499.41 4023 468 curveto
+4044.83 459.05 4042.69 445.55 4062 432 curveto
+4123.8 388.63 4202.61 350.6 4252.95 328.2 curveto
+stroke
+0 0 0 edgecolor
+newpath 4254.59 331.31 moveto
+4262.32 324.07 lineto
+4251.76 324.9 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4254.59 331.31 moveto
+4262.32 324.07 lineto
+4251.76 324.9 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_augment_slices
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2412.65 503.82 moveto
+2421.52 485.81 2432.25 456.74 2425 432 curveto
+2422.2 422.45 2417.09 412.98 2411.67 404.76 curveto
+stroke
+0 0 0 edgecolor
+newpath 2414.38 402.52 moveto
+2405.75 396.37 lineto
+2408.65 406.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2414.38 402.52 moveto
+2405.75 396.37 lineto
+2408.65 406.56 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_compute
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.69 520.7 moveto
+2208.19 518.78 1362.27 507.14 1325 468 curveto
+1306.29 448.35 1328.21 421.72 1350.06 402.71 curveto
+stroke
+0 0 0 edgecolor
+newpath 1352.58 405.17 moveto
+1358.03 396.09 lineto
+1348.1 399.79 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1352.58 405.17 moveto
+1358.03 396.09 lineto
+1348.1 399.79 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_delete_results
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.46 512.28 moveto
+2340.84 502 2283.91 484.6 2239.3 470.96 curveto
+stroke
+0 0 0 edgecolor
+newpath 2240.27 467.6 moveto
+2229.69 468.02 lineto
+2238.23 474.29 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2240.27 467.6 moveto
+2229.69 468.02 lineto
+2238.23 474.29 lineto
+closepath stroke
+grestore
+% vikaasa->vk_kernel_make_slices
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.6 520.95 moveto
+2208.64 520.5 1362.88 515.86 1108 468 curveto
+1059.51 458.9 1050.44 445.53 1003 432 curveto
+975.44 424.14 909.45 409.13 855.03 397.09 curveto
+stroke
+0 0 0 edgecolor
+newpath 855.54 393.62 moveto
+845.02 394.88 lineto
+854.03 400.45 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 855.54 393.62 moveto
+845.02 394.88 lineto
+854.03 400.45 lineto
+closepath stroke
+grestore
+% vikaasa->vk_options_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.62 520.8 moveto
+2191.2 519.35 1179.18 509.51 1130 468 curveto
+1112.5 453.23 1108.73 426.65 1108.74 406.37 curveto
+stroke
+0 0 0 edgecolor
+newpath 1112.25 406.26 moveto
+1109.06 396.16 lineto
+1105.25 406.04 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1112.25 406.26 moveto
+1109.06 396.16 lineto
+1105.25 406.04 lineto
+closepath stroke
+grestore
+% vikaasa->vk_project_sanitise
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.49 520.46 moveto
+2587.39 517.41 3338.56 501.18 3568 468 curveto
+3700.29 448.87 3730.93 430.73 3860 396 curveto
+3943.05 373.66 4038.06 345.52 4099.67 326.93 curveto
+stroke
+0 0 0 edgecolor
+newpath 4100.7 330.27 moveto
+4109.26 324.03 lineto
+4098.68 323.57 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4100.7 330.27 moveto
+4109.26 324.03 lineto
+4098.68 323.57 lineto
+closepath stroke
+grestore
+% vikaasa->vk_project_new
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.41 520.8 moveto
+2611.42 519.42 3595.37 510.02 3893 468 curveto
+3894.47 467.79 3895.95 467.57 3897.44 467.32 curveto
+stroke
+0 0 0 edgecolor
+newpath 3898.18 470.75 moveto
+3907.38 465.51 lineto
+3896.92 463.86 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 3898.18 470.75 moveto
+3907.38 465.51 lineto
+3896.92 463.86 lineto
+closepath stroke
+grestore
+% vikaasa->vk_project_save
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2392.87 503.7 moveto
+2388.15 495.64 2382.44 485.89 2377.22 476.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 2380.09 474.96 moveto
+2372.02 468.1 lineto
+2374.05 478.5 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2380.09 474.96 moveto
+2372.02 468.1 lineto
+2374.05 478.5 lineto
+closepath stroke
+grestore
+% vikaasa->vk_sim_delete_results
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.33 506.83 moveto
+2450.91 497.05 2477.32 483.84 2499.54 472.73 curveto
+stroke
+0 0 0 edgecolor
+newpath 2501.4 475.72 moveto
+2508.77 468.11 lineto
+2498.26 469.45 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 2501.4 475.72 moveto
+2508.77 468.11 lineto
+2498.26 469.45 lineto
+closepath stroke
+grestore
+% vikaasa->vk_sim_make
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2374.63 521.35 moveto
+2231.57 522.79 1575.06 525.79 1042 468 curveto
+1029.77 466.67 1016.74 464.71 1004.37 462.58 curveto
+stroke
+0 0 0 edgecolor
+newpath 1004.63 459.07 moveto
+994.17 460.77 lineto
+1003.4 465.97 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 1004.63 459.07 moveto
+994.17 460.77 lineto
+1003.4 465.97 lineto
+closepath stroke
+grestore
+% vikaasa->vk_init
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 2431.56 520.7 moveto
+2637.5 518.49 3892.1 503.59 4057 468 curveto
+4058.27 467.73 4059.55 467.41 4060.84 467.07 curveto
+stroke
+0 0 0 edgecolor
+newpath 4062.2 470.31 moveto
+4070.65 463.92 lineto
+4060.06 463.64 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4062.2 470.31 moveto
+4070.65 463.92 lineto
+4060.06 463.64 lineto
+closepath stroke
+grestore
+% vikaasa_cli
+gsave
+1 setlinewidth
+0 0 0 nodecolor
+newpath 4174.25 540 moveto
+4097.75 540 lineto
+4097.75 504 lineto
+4174.25 504 lineto
+closepath stroke
+0 0 0 nodecolor
+14 /Times-Roman set_font
+4105.5 518.3 moveto 61 (vikaasa_cli) alignedtext
+grestore
+% vikaasa_cli->vk_help
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 4145.39 503.7 moveto
+4149.76 495.64 4155.06 485.89 4159.9 476.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 4163.02 478.56 moveto
+4164.71 468.1 lineto
+4156.87 475.22 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4163.02 478.56 moveto
+4164.71 468.1 lineto
+4156.87 475.22 lineto
+closepath stroke
+grestore
+% vikaasa_cli->vk_init
+gsave
+1 setlinewidth
+0 0 0 edgecolor
+newpath 4126.61 503.7 moveto
+4122.24 495.64 4116.94 485.89 4112.1 476.98 curveto
+stroke
+0 0 0 edgecolor
+newpath 4115.13 475.22 moveto
+4107.29 468.1 lineto
+4108.98 478.56 lineto
+closepath fill
+1 setlinewidth
+solid
+0 0 0 edgecolor
+newpath 4115.13 475.22 moveto
+4107.29 468.1 lineto
+4108.98 478.56 lineto
+closepath stroke
+grestore
+endpage
+showpage
+grestore
+%%PageTrailer
+%%EndPage: 1
+%%Trailer
+%%Pages: 1
+%%BoundingBox: 36 36 5440 584
+end
+restore
+%%EOF
