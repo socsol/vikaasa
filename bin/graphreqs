@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+# Open standard input
+open my $input, '<-';
+
+my $outfile = $ARGV[0];
+open my $file, ">$outfile";
+
+print $file <<EOF;
+digraph dependencies {
+EOF
+
+# Read lines from the standard input.  Each line should be of a 'filename:
+# comma separated list' format.
+while (<$input>) {
+  chomp;
+  my ($filename, $reqs) = split /:/, $_;
+  my $thisfile = ($filename =~ /\b([^\/]+)\.m$/ && $1) || '!!!';
+  my @reqs = grep !/^\s*$/, (split /\b,\s*\b/, $reqs);
+
+  print $file "  $thisfile [shape=box];\n";
+  for my $req (@reqs) {
+    print $file "  $thisfile -> $req\n";
+  }
+}
+
+print $file '}';
+close $file;
