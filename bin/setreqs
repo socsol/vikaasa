@@ -10,7 +10,7 @@ open my $input, '<-';
 # comma separated list' format.
 while (<$input>) {
   chomp;
-  my ($filename, $reqs) = split /:/, $_;
+  my ($filename, $reqs) = split /:\s/, $_;
   my @reqs = grep !/^\s*$/, (split /\b,\s*\b/, $reqs);
 
   open my $file, '+<', $filename;
