@@ -42,6 +42,7 @@
 %   ccsf = all(exited_on(:,1) == 0);
 %
 % Requires: vk_options
+%
 % See also: viable, vk_viable, vk_control_bound
 
 %%

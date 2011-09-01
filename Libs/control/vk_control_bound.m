@@ -49,6 +49,7 @@
 %   violations.  In this case, it simply checks for constraint set violations.
 %
 % Requires: vk_options, vk_viable_exited
+%
 % See also: control, vk_control_enforce, vk_viable
 
 %%
