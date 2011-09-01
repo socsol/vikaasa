@@ -1,10 +1,21 @@
 %% SATISFICECOSTMIN Satisficing control algorithm that uses CostMin at the edge
-%   This algorithm is similar to SatisficeMaxMin, except that it uses CostMin
+%
+% SYNOPSIS
+%   This algorithm is similar to `SatisficeMaxMin', except that it uses `CostMin'
 %   to determine what control to use when at the kernel edge.
+%
+% USAGE
+%   % Standard usage.
+%   u = SatisficeCostMin(info, x, K, f, c);
+%
+%   % With options
+%   u = SatisficeCostMin(info, x, K, f, c, options);
+%
+%   `info' is a structure, as described in `SatisficeMaxMin'.
 %
 % Requires:  vk_kernel_inside, vk_options
 %
-% See also: TOOLS/VK_SIMULATE_EULER, TOOLS/VK_SIMULATE_ODE, TOOLS/VK_VIABLE, VCONTROLALGS/SATISFICEMAXMIN
+% See also: vk_sim_simulate_euler, vk_sim_simulate_ode, vk_viable, SatisficeMaxMin
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

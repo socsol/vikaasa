@@ -1,4 +1,6 @@
 %% NORMMIN1STEP Fast 1-step norm-minimising control function
+%
+% SYNOPSIS
 %   This function returns the control that minimises the norm of the
 %   system velocity in one step.
 %
@@ -8,12 +10,13 @@
 %   optimise for the control-in-one-step.  This is fast, but it may not
 %   make sense in a non-linear dynamic system.
 %
-%   Standard use with required arguments:
-%   u = NORMMIN1STEP(x, K, f, c)
+% USAGE
+%   % Standard use with required arguments:
+%   u = NormMin1Step(x, K, f, c)
 %
-%   With options passed in. OPTIONS is either a list of 'name', value pairs,
-%   or a structure created by VK_OPTIONS.
-%   u = NORMMIN1STEP(x, K, f, c, OPTIONS)
+%   % With options passed in. options is either a list of name, value pairs,
+%   % or a structure created by vk_options.
+%   u = NormMin1Step(x, K, f, c, options);
 %
 % Requires:  vk_options
 %
