@@ -6,8 +6,8 @@
 %   or MATLAB(R)).  If the file already exists, it will be overwritten.
 %
 % USAGE
-%   % Save the `project' structure into `filename':
-%   vk_project_save(project, filename)
+%   % Save the project structure into a file
+%   vk_project_save(project, 'project.mat');
 %
 % NOTES
 %   If saving is not successful, an error will be thrown.

@@ -29,7 +29,7 @@
 %       - `K' is the constraint set, a row vector twice as long as the number
 %         of variables,
 %
-%   % Passing in an `options' structure, constructed by vk_options:
+%   % Passing in an options structure, constructed by vk_options:
 %   V = vk_kernel_compute(K, f, c, options)
 %
 %   % Using the default options, except for some specified here:

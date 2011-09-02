@@ -131,7 +131,7 @@
 %         Rather than changing this function, it may be best to change
 %         `ode_solver_name'.
 %
-%       - `ode_solver_name' (`ode45'): This string specifies the the name of
+%       - `ode_solver_name' (`ode45'): This string specifies the name of
 %         the function used by `ode_solver' (see above), without altering that
 %         function's use of `MaxStep', etc.  Unless you are doing something
 %         fancy, this is probably what you want to use.

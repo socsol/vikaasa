@@ -10,7 +10,7 @@
 %   using vk_figure_data_insert.
 %
 % USAGE
-%   % For some figure, `h', get the limits of the figure and the slices.
+%   % For some figure, h, get the limits of the figure and the slices.
 %   [limits, slices] = vk_figure_data_retrieve(h);
 %
 %   - `limits' is a row vector of length 4 (for a two-dimensional plot) or 6
