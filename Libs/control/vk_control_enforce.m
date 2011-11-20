@@ -25,9 +25,12 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function u = vk_control_enforce(u, c)
-    if (abs(u) > c)
-        u = sign(u)*c;
+function uenf = vk_control_enforce(u, c)
+    uenf = u
+    for i = 1:length(u)
+        if (abs(u(i)) > c(i))
+            uenf(i) = sign(u(i))*c(i);
+        end
     end
 end
 

@@ -52,6 +52,7 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
 
     labels = [project.labels; ...
         project.addnlabels(find(~project.addnignore))];
+    controllabels = project.controllabels;
     K = vk_kernel_augment_constraints(project);
     discretisation = [project.discretisation; max(project.discretisation)*ones(project.numaddnvars-length(project.addnignore), 1)];
     c = project.c;
@@ -89,7 +90,8 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
     plottingmethod = project.plottingmethod;
     alpha_val = project.alpha;
 
-    handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, ...
+    handle = vk_figure_timeprofiles_plot(labels, controllabels, ...
+        K, discretisation, c, V, ...
         plotcolour, sim_line_colour, width, showpoints, showkernel, plottingmethod, ...
         alpha_val, sim_timeprofile_cols, sim_state, handle);
 end

@@ -3,7 +3,8 @@
 % SYNOPSIS
 %   This function takes a state-space point and a control choice, and
 %   checks to see if that control choice will cause the system to exit the
-%   constraint set in zero, one or two steps.
+%   constraint set in zero, one or two steps.  It only works for systems where
+%   there is only one control.
 %
 %   Zero steps means that the point is already outside the constraint set.
 %
@@ -83,7 +84,8 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
 
     %% If we are not interested in bounding, then return for zero steps
-    if (~controlbounded)
+    %   Bounding only works when there is only one control.
+    if (~controlbounded || length(c) > 1)
         exited_on = vk_viable_exited(x, K, f, c, options);
         crashed = any(any(~isnan(exited_on)));
         return;

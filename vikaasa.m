@@ -1165,7 +1165,7 @@ function sim_view_coords_button_Callback(hObject, eventdata, handles)
 
     if (size(handles.project.sim_state.controlpath, 2) == size(simulation, 2) - 1)
         simulation = [simulation; ...
-            cellstr('Control'), num2cell(handles.project.sim_state.controlpath)];
+            cellstr(handles.project.controllabels), num2cell(handles.project.sim_state.controlpath)];
     end
 
     assignin('base', 'simulation', simulation);
@@ -1232,12 +1232,14 @@ function deletevar_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     if (project.numvars > 2)
-        index = find(project.slices(:,1) == project.numvars);
-        if (index)
-            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        if (size(project.slices, 1) > 0)
+          index = find(project.slices(:,1) == project.numvars);
+          if (index)
+              project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+          end
         end
-        project.numvars = project.numvars - 1;
 
+        project.numvars = project.numvars - 1;
         handles.project = vk_project_sanitise(project);
 
         handles = vk_gui_update_inputs(hObject, handles);
@@ -1440,5 +1442,51 @@ function addnvartable_CellEditCallback(hObject, eventdata, handles)
     handles.project.addnignore = changes.addnignore;
 
     handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+
+% --- Executes on button press in addcontrol_button.
+function addcontrol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to addcontrol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.controlsymbols = [handles.project.controlsymbols; {'newu'}];
+    handles.project.controllabels = [handles.project.controllabels; {'New Control'}];
+    handles.project.c = [handles.project.c; 0];
+    handles.project.numcontrols = handles.project.numcontrols + 1;
+    handles.project = vk_project_sanitise(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% --- Executes on button press in deletecontrol_button.
+function deletecontrol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to deletecontrol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.numcontrols = handles.project.numcontrols - 1;
+    handles.project = vk_project_sanitise(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% --- Executes when entered data in editable cell(s) in controlvartable.
+function controlvartable_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to controlvartable (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+    vardata = get(hObject, 'Data');
+
+    handles.project.controllabels = vardata(:, 1);
+    handles.project.controlsymbols = vardata(:, 2);
+    handles.project.c = cell2mat(vardata(:, 3));
+
+    handles.project = vk_project_sanitise(handles.project);
     guidata(hObject, handles);
 end

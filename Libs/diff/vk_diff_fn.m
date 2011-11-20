@@ -9,10 +9,10 @@
 %   xdot = vk_diff_fn(f, x, u)
 %
 %   - `f' is a function that takes $n+1$ inputs -- i.e., the set of state
-%     variables, plus the scalar control.
+%     variables, plus the vector of controls.
 %   - `x' is a column vector of length $n$, giving the state-space
 %     representation of the system.
-%   - `u' is a scalar control.
+%   - `u' is a column vector of control choices.
 %
 % EXAMPLES
 %   % Make a function (or use vk_make_diff_fn for this):
@@ -36,6 +36,6 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function xdot = vk_diff_fn(f, x, u)
-    args = num2cell(x);
-    xdot = f(args{:}, u);
+    args = [num2cell(x); num2cell(u)];
+    xdot = f(args{:});
 end

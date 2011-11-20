@@ -119,6 +119,9 @@
 %         argument, which is a (column) vector of velocities, and should return
 %         a single numeric result.
 %
+%       - `numcontrols': Gives the number of control variables.  This is
+%         calculated automatically from the length of `c'.
+%
 %       - `numvars': Gives the number of variables in the viability problem.
 %         This is usually calculated as half the length of the constraint set,
 %         `K'.  You shouldn't change this unless you know what you are doing.
@@ -264,6 +267,7 @@ function options = vk_options(K, f, c, varargin)
                 'debug', false, ...
                 'discretisation', 10*ones(length(K)/2, 1), ...
                 'maxloops', 46000, ...
+                'numcontrols', length(c), ...
                 'numvars', length(K)/2, ...
                 'ode_solver_name', 'ode45', ...
                 'parallel_processors', 2, ...
@@ -320,7 +324,13 @@ function options = vk_options(K, f, c, varargin)
         %options.min_fn = @(f, minimum, maximum) ...
         %    vk_fminbnd(f, minimum, maximum, controltolerance);
 
-        options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
+        if (length(c) > 1 && exist('fmincon') == 2)
+            x0 = zeros(size(c));
+            A = [eye(length(c)); -eye(length(c))];
+            options.min_fn = @(f, lb, ub) fmincon(f, x0, A,  [ub; -lb]);
+        else
+            options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
+        end
     end
 
     % The zero function is probably just a wrapper around fzero, but with

@@ -52,4 +52,13 @@ function handles = vk_gui_set_vartable(hObject, handles)
       addnvartable(:, 4) = num2cell(logical(project.addnignore));
     end
     set(handles.addnvartable, 'Data', addnvartable);
+
+    %% Populate the controlvartable
+    controlvartable = cell(project.numcontrols, 3);
+    if (project.numcontrols > 0)
+      controlvartable(:, 1) = project.controllabels;
+      controlvartable(:, 2) = project.controlsymbols;
+      controlvartable(:, 3) = num2cell(project.c);
+    end
+    set(handles.controlvartable, 'Data', controlvartable);
 end

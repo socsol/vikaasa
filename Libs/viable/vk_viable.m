@@ -69,7 +69,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
         path = zeros(numvars, maxloops);
 
         % This is just a column.
-        control_path = zeros(maxloops,1);
+        control_path = zeros(maxloops,options.numcontrols);
     else
         recordpath = false;
     end
@@ -84,7 +84,6 @@ function varargout = vk_viable(x, K, f, c, varargin)
             viable = false;
             maxloops = 0;
             path(:, 1) = x;
-            control_path(1) = 0;
         end
     end
 
@@ -102,7 +101,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
 
         %% Record the new control.
         if (recordpath)
-            control_path(l) = u;
+            control_path(:,l) = u;
         end
 
         %% Check stopping criteria

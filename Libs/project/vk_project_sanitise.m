@@ -32,13 +32,15 @@
 %    residing in the ``ControlAlgs'' folder.
 %  - `controldefault' (0): the value of the ``default control'' to use if
 %    `use_controldefault' is set to 1.
-%  - `c' (0.005): The absolute maximum size of the scalar control.
+%  - `c' (`[]'): A column vector giving the absolute maximum size of each
+%    control.
 %  - `controlbounded' (0): whether or not to use the control-bounding
 %    functionality (see vk_control_bound).
 %  - `controlenforce' (0): wheter or not to enforce the `c' setting (see
 %    vk_control_enforce).
-%  - `controlsymbol' (`u'): a string giving the symbol to use to represent the
-%    choice of control.
+%  - `controllabels' (`{}'): a cell array of labels, describing each control.
+%  - `controlsymbols' (`{}'): a cell array of symbols to use to represent the
+%    choice of controls.
 %  - `controltolerance' (1e-3): the tolerance to use with numerical
 %    cost-minimising control algorithms (see vk_options).
 %  - `custom_cost_fn' (empty string): a string representing the right-hand side
@@ -156,11 +158,14 @@ function project = vk_project_sanitise(project)
 
     numvars = project.numvars;
 
-    %% Check that 'discretisation' is not length one.  If it is, repeat it.
-    if (isfield(project, 'discretisation') ...
-      && numvars > 1 ...
-      && length(project.discretisation) == 1)
-        project.discretisation = project.discretisation*ones(numvars, 1);
+    if (isfield(project, 'discretisation'))
+        if (numvars > 1 && length(project.discretisation) == 1)
+            %% If 'discretisation' is length one, repeat it.
+            project.discretisation = project.discretisation*ones(numvars, 1);
+        elseif (size(project.discretisation, 1) == 1) 
+            %% If there is only one row, it may need to be transposed.
+            project.discretisation = transpose(project.discretisation);
+        end
     end
 
     %% Check that 'symbols', 'labels' and 'diff_eqns' are cell arrays.
@@ -220,6 +225,40 @@ function project = vk_project_sanitise(project)
         end
     end
 
+    %% set numcontrols.
+    %   If numcontrols is already set, check that other fields conform to it.
+    if (~isfield(project, 'numcontrols'))
+        if (isfield(project, 'c'))
+            project.numcontrols = length(project.c);
+        else
+            project.numcontrols = 0;
+        end
+
+        %% If a 'controlsymbol' variable exists, then we need to update the project to allow for multiple controls.
+        if (isfield(project, 'controlsymbol'))
+            project.controlsymbols = {project.controlsymbol};
+            project.controllabels = {'Control 1'};
+            rmfield(project, 'controlsymbol');
+        end
+    else
+        controlfields = {'controllabels', 'controlsymbols', 'c'};
+        for i = 1:length(controlfields)
+            if (isfield(project, controlfields{i}))
+                v = project.(controlfields{i});
+                usevars = min(length(v), project.numcontrols);
+                padvars = max(0, project.numcontrols - length(v));
+                if (iscell(v))
+                    project.(controlfields{i}) = [v(1:usevars); cell(padvars, 1)];
+                else
+                    project.(controlfields{i}) = [v(1:usevars); zeros(padvars, 1)];
+                end
+            end
+        end
+    end
+
+    numcontrols = project.numcontrols;
+
+    %% Define the project defaults
     project_default = struct(...
         'alpha', 0.9, ...
         'addnlabels', {cell(project.numaddnvars, 1)}, ...
@@ -229,10 +268,11 @@ function project = vk_project_sanitise(project)
         'autosave', 0, ...
         'controlalg', 'ZeroControl', ...
         'controldefault', 0, ...
-        'c', 0.005, ...
+        'c', 0.005*ones(numcontrols, 1), ...
         'controlbounded', 0, ...
         'controlenforce', 0, ...
-        'controlsymbol', 'u', ...
+        'controllabels', {cell(numcontrols, 1)}, ...
+        'controlsymbols', {cell(numcontrols, 1)}, ...
         'controltolerance', 1e-3, ...
         'custom_cost_fn', '', ...
         'custom_constraint_set_fn', '', ...
