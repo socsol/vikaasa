@@ -318,7 +318,7 @@ function options = vk_options(K, f, c, varargin)
     % the function.
     min_fn_opts = struct( ...
         'TolX', options.controltolerance, ...
-        'FunValCheck', true, ...
+        'FunValCheck', 'on', ...
         'abstol', options.controltolerance);
     if (~isfield(options, 'min_fn'))
         %options.min_fn = @(f, minimum, maximum) ...
@@ -326,8 +326,9 @@ function options = vk_options(K, f, c, varargin)
 
         if (length(c) > 1 && exist('fmincon') == 2)
             x0 = zeros(size(c));
-            A = [eye(length(c)); -eye(length(c))];
-            options.min_fn = @(f, lb, ub) fmincon(f, x0, A,  [ub; -lb]);
+            min_fn_opts.Algorithm = 'active-set';
+            min_fn_opts.Display = 'off';
+            options.min_fn = @(f, lb, ub) fmincon(f, x0, [], [], [], [], lb, ub, [], min_fn_opts);
         else
             options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
         end
