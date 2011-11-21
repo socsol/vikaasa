@@ -1,5 +1,18 @@
-%% VK_ERROR Display an error using either ERRORDLG or ERROR
+%% VK_ERROR Display an error using either `errordlg' or `error'.
 %
+% SYNOPSIS
+%   This function is used by VIKAASA to display error messages differently,
+%   depending on the capabilities of the platform.
+%
+%   It will attempt to display an error window, using `errordlg', and then also
+%   throw a real error.  This means that unless this function is called inside
+%   of a `try .. catch' block, it will halt computation.
+%
+% USAGE
+%   % Throw an error.
+%   vk_error('An error occurred');
+%
+% See also: error, errordlg
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

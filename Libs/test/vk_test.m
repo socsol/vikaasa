@@ -1,6 +1,16 @@
 %% VK_TEST Test the viability kernel code
 %   This blah blah
 %
+% Requires:  vk_compute, vk_make_figure_slice, vk_plot_surface, vk_slice
+%
+% Requires:  vk_compute, vk_make_figure_slice, vk_plot_surface, vk_slice
+%
+% Requires:  vk_compute, vk_make_figure_slice, vk_plot_surface, vk_slice
+%
+% Requires:  vk_compute, vk_make_figure_slice, vk_plot_surface, vk_slice
+%
+% Requires:  vk_compute, vk_make_figure_slice, vk_plot_surface, vk_slice
+%
 % See also: VK_TEST7
 
 fprintf('\n\nTesting Viability Code\n');

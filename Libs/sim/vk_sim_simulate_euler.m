@@ -22,8 +22,8 @@
 %     the norm (as specified by the `norm_fn' option in vk_options)
 %     velocity of the system at each point in time.
 %
-%   - `controlpath': A row-vector, of same length as `T', giving the control
-%     choice at each point in time.
+%   - `controlpath': $m\times |T|$ matrix. Each column represents a vector of
+%     control choises.
 %
 %   - `viablepath': $5 \times |T|$ matrix.  Each column represents four
 %     information flags (1 or 0) for that point in time:
@@ -78,8 +78,9 @@
 %   causes the simulation to terminate as soon as a steady state is
 %   encountered, instead of waiting.
 %
-% See also: ControlAlgs, VControlAlgs, vk_kernel_compute, vk_kernel_inside,
-%   vk_options, vk_sim_simulate_ode
+% Requires:  vk_control_wrap_fn, vk_kernel_inside, vk_options, vk_viable_exited
+%
+% See also: ControlAlgs, VControlAlgs, vk_kernel_compute, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -125,9 +126,9 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
     iterations = length(T);
 
     % Time goes along the column axis.
-    path = zeros(length(K)/2, iterations);
+    path = zeros(options.numvars, iterations);
     normpath = zeros(1, iterations);
-    controlpath = zeros(1, iterations);
+    controlpath = zeros(options.numcontrols, iterations);
     viablepath = zeros(5, iterations);
 
 
@@ -147,7 +148,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
 
         %% Record pah and control choice
         path(:, i) = x;
-        controlpath(i) = u;
+        controlpath(:, i) = u;
 
 
         %% Record viability, etc. at this point
@@ -194,7 +195,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_euler(..
         T = T(1:i);
         path = path(:, 1:i);
         normpath = normpath(1:i);
-        controlpath = controlpath(1:i);
+        controlpath = controlpath(:, 1:i);
         viablepath = viablepath(:, 1:i);
     end
 end

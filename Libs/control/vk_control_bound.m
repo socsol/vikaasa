@@ -1,9 +1,10 @@
-%% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible
+%% VK_CONTROL_BOUND Bound a control choice to prevent the system from crashing, where possible.
 %
 % SYNOPSIS
 %   This function takes a state-space point and a control choice, and
 %   checks to see if that control choice will cause the system to exit the
-%   constraint set in zero, one or two steps.
+%   constraint set in zero, one or two steps.  It only works for systems where
+%   there is only one control.
 %
 %   Zero steps means that the point is already outside the constraint set.
 %
@@ -48,8 +49,9 @@
 %   will not be able to improve the control choice for real (non-imaginary)
 %   violations.  In this case, it simply checks for constraint set violations.
 %
-% Requires: vk_options, vk_viable_exited
-% See also: control, vk_control_enforce, vk_viable
+% Requires: vk_distance_fn, vk_newcontrol, vk_options, vk_viable_exited
+%
+% See also: vk_control_enforce, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -82,7 +84,8 @@ function [u, crashed, exited_on] = vk_control_bound(x, u, K, f, c, varargin)
 
 
     %% If we are not interested in bounding, then return for zero steps
-    if (~controlbounded)
+    %   Bounding only works when there is only one control.
+    if (~controlbounded || length(c) > 1)
         exited_on = vk_viable_exited(x, K, f, c, options);
         crashed = any(any(~isnan(exited_on)));
         return;

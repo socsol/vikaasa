@@ -1,5 +1,18 @@
 %% VK_TIMEFORMAT Helper function that formats seconds into something human readable.
 %
+% SYNOPSIS
+%   Given some number of seconds, this function returns a string containing a
+%   number, and a unit (one of 'seconds', 'minutes', 'hours' or 'days').  The
+%   unit will be accurate to one decimal place.  The decision concerning which
+%   units to use is made by choosing the smallest possible, such that the unit
+%   is greater than one.
+%
+% USAGE
+%   % Displays '60 seconds'
+%   vk_timeformat(60)
+%
+%   % Displays '1 minutes'
+%   vk_timeformat(61)
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

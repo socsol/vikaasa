@@ -1,5 +1,17 @@
-%% VK_SIM_RESULTS Returns the results a simulation in a cell array
+%% VK_SIM_RESULTS Returns the results a simulation in a cell array.
 %
+% SYNOPSIS
+%   This function returns a cell array giving informaton about the simulation
+%   information stored in the `sim_state' field of the given project.  It is
+%   the same information that is displayed in the ``Simulation Results'' panel
+%   of the GUI.
+%
+% USAGE
+%   results = vk_sim_results(project);
+%
+% Requires: vk_timeformat
+%
+% See also: vk_kernel_results
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

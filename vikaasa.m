@@ -1,18 +1,21 @@
 %% VIKAASA The VIKAASA GUI.
+%
+% SYNOPSIS
 %   VIKAASA stands for VIability Kernel Approximation, Analysis and
 %   Simulation Application.
 %
 %   The VIKAASA graphical user interface (GUI) provides a front-end to the
 %   VIKAASA library for computation and analysis of viability kernels with
-%   two to four variables.
+%   two or more variables and a scalar control.
 %
+% USAGE
 %   Running VIKAASA opens the VIKAASA GUI, or raises the GUI window if VIKAASA
 %   is already open (only one instance of the VIKAASA GUI can be open at a
 %   time).
 %
-%   See the VIKAASA manual for more detailed information on using the GUI.
+% Requires:  vk_diff_make_fn, vk_figure_data_insert, vk_figure_data_retrieve, vk_figure_make, vk_figure_make_slice, vk_figure_timeprofiles_make, vk_gui_figure_close, vk_gui_figure_focus, vk_gui_make_waitbar, vk_gui_project_load, vk_gui_simgui, vk_gui_update_inputs, vk_init, vk_kernel_augment, vk_kernel_augment_constraints, vk_kernel_augment_slices, vk_kernel_compute, vk_kernel_delete_results, vk_kernel_make_slices, vk_kernel_results, vk_options_make, vk_plot_box, vk_plot_path, vk_plot_path_limits, vk_project_new, vk_project_sanitise, vk_project_save, vk_sim_augment, vk_sim_delete_results, vk_sim_make
 %
-% See also: vikaasa_cli, gui, project
+% See also: gui, project, vikaasa_cli
 
 %%
 %    Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -62,9 +65,9 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
     %% Initialise the VIKAASA environment.
     handles.path = pwd;
     run Libs/vk_init.m
-    handles.version = vk_version;
-    handles.copyright = vk_copyright;
-    fprintf('%s\n\n', vk_copyright);
+    handles.version = vikaasa_version;
+    handles.copyright = vikaasa_copyright;
+    fprintf('%s\n\n', vikaasa_copyright);
 
     filename = fullfile(handles.path, 'Projects', 'vikaasa_default.mat');
     fprintf('Loading file: %s\n', filename);
@@ -1162,7 +1165,7 @@ function sim_view_coords_button_Callback(hObject, eventdata, handles)
 
     if (size(handles.project.sim_state.controlpath, 2) == size(simulation, 2) - 1)
         simulation = [simulation; ...
-            cellstr('Control'), num2cell(handles.project.sim_state.controlpath)];
+            cellstr(handles.project.controllabels), num2cell(handles.project.sim_state.controlpath)];
     end
 
     assignin('base', 'simulation', simulation);
@@ -1229,12 +1232,14 @@ function deletevar_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     if (project.numvars > 2)
-        index = find(project.slices(:,1) == project.numvars);
-        if (index)
-            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        if (size(project.slices, 1) > 0)
+          index = find(project.slices(:,1) == project.numvars);
+          if (index)
+              project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+          end
         end
-        project.numvars = project.numvars - 1;
 
+        project.numvars = project.numvars - 1;
         handles.project = vk_project_sanitise(project);
 
         handles = vk_gui_update_inputs(hObject, handles);
@@ -1398,9 +1403,11 @@ function deleteaddnvar_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     if (project.numaddnvars > 0)
-        index = find(project.slices(:,1) == project.numvars + project.numaddnvars);
-        if (index)
-            project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+        if (~isempty(project.slices))
+            index = find(project.slices(:,1) == project.numvars + project.numaddnvars);
+            if (index)
+                project.slices = [project.slices(1:index-1,:); project.slices(index+1:end,:)];
+            end
         end
         project.numaddnvars = project.numaddnvars - 1;
         handles.project = vk_project_sanitise(project);
@@ -1435,5 +1442,51 @@ function addnvartable_CellEditCallback(hObject, eventdata, handles)
     handles.project.addnignore = changes.addnignore;
 
     handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+
+% --- Executes on button press in addcontrol_button.
+function addcontrol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to addcontrol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.controlsymbols = [handles.project.controlsymbols; {'newu'}];
+    handles.project.controllabels = [handles.project.controllabels; {'New Control'}];
+    handles.project.c = [handles.project.c; 0];
+    handles.project.numcontrols = handles.project.numcontrols + 1;
+    handles.project = vk_project_sanitise(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% --- Executes on button press in deletecontrol_button.
+function deletecontrol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to deletecontrol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    handles.project.numcontrols = handles.project.numcontrols - 1;
+    handles.project = vk_project_sanitise(handles.project);
+    handles = vk_gui_update_inputs(hObject, handles);
+    guidata(hObject, handles);
+end
+
+% --- Executes when entered data in editable cell(s) in controlvartable.
+function controlvartable_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to controlvartable (see GCBO)
+% eventdata  structure with the following fields (see UITABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+    vardata = get(hObject, 'Data');
+
+    handles.project.controllabels = vardata(:, 1);
+    handles.project.controlsymbols = vardata(:, 2);
+    handles.project.c = cell2mat(vardata(:, 3));
+
+    handles.project = vk_project_sanitise(handles.project);
     guidata(hObject, handles);
 end

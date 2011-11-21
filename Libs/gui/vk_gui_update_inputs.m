@@ -1,7 +1,17 @@
 %% VK_GUI_UPDATE_INPUTS Set the GUI inputs to the values recorded in the system state
 %
-% See also: VIKAASA, GUI
+% SYNOPSIS
+%   This function is used by the VIKAASA gui to update all of the inputs in the
+%   main window to reflect the values stored in a given project.
 %
+% USAGE
+%   % 'handles' needs to contain the inputs for the main window, as well as the
+%   % project at project.handles.
+%   handles = vk_gui_update_inputs(hObject, handles);
+%
+% Requires:  vk_gui_set_vartable, vk_kernel_results, vk_sim_results
+%
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -24,9 +34,9 @@ function handles = vk_gui_update_inputs(hObject, handles)
     handles = vk_gui_set_vartable(hObject, handles);
 
     %% Fill these inputs in with string values from project
-    set(handles.controlsymbol, 'String', project.controlsymbol);
-    set(handles.controlmax, 'String', ...
-        num2str(project.c));
+    %set(handles.controlsymbol, 'String', project.controlsymbol);
+    %set(handles.controlmax, 'String', ...
+    %    num2str(project.c));
     set(handles.controltolerance, 'String', ...
         num2str(project.controltolerance));
     set(handles.stoppingtolerance, 'String', ...

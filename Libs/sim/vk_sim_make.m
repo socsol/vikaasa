@@ -21,6 +21,7 @@
 %   can be a structure created with vk_options, or a series of name:value
 %   pairs, or both (the former before the latter).  `sim_state' should contain
 %   the following properties (see See vk_sim_simulate_euler for more details):
+
 %   - `K': A constraint set.
 %   - `c': The maximum control size.
 %   - `controlpath': A row-vector of control choices.
@@ -36,7 +37,9 @@
 %   - `V': A viability kernel
 %   - `viablepath': Information about the viability of each point.
 %
-% See also: vikaasa, project, sim, vk_sim_simulate_euler, vk_sim_simulate_ode
+% Requires:  vk_control_make_fn, vk_diff_make_fn, vk_kernel_distances, vk_options, vk_options_make, vk_sim_start
+%
+% See also: vikaasa, vk_sim_simulate_euler, vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

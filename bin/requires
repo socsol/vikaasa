@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+# Sort the files by their names.
+my @files = sort {
+  my ($l, $r) = grep(m!\b([^/])$!, ($a, $b));
+  return $l cmp $r;
+} @ARGV;
+
+# Loop through files specified.  For each one, we will extract the first
+# comments block, and print it with special formatting.
+for my $filename (@files) {
+  open my $file, '<', $filename;
+
+  my $content = '';
+  while (<$file>) {
+    # Get rid of any comment content.
+    s/(^|\b)\K\s*\%.*$//;
+
+    # Remove any CR from the end.
+    chomp;
+
+    # Append to the string unless its blank.
+    $content .= $_ . "\n"
+      unless /^\s*$/;
+  }
+  close $file;
+
+  # Extract all mentions of any "vk_something"
+  my @functions = $content =~ /[^a-z_](vk_[a-z_]+)[^a-z_]/gs;
+
+  # Sort, make unique and ignore references to the file itself.
+  my $thisfile = ($filename =~ /\b([^\/]+)\.m$/ && $1) || '!!!';
+
+  my %count = ();
+  @functions = grep {
+    $count{$_} ++;
+    ($count{$_} == 1 && $_ ne $thisfile) ? ($_) : ();
+  } sort(@functions);
+  
+  print "$filename: ${\join(', ', @functions)}\n";
+}

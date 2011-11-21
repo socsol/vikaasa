@@ -51,8 +51,9 @@
 %       x, time_horizon, control_fn, V, distances, layers, ...
 %       K,  f, c, 'ode_solver', myodesolver);
 %
-% See also: sim, vk_kernel_compute, /vk_kernel_inside, vk_options,
-%   vk_sim_simulate_euler
+% Requires: vk_control_wrap_fn, vk_kernel_inside, vk_options, vk_sim_simulate_ode_helper, vk_viable_exited
+%
+% See also: vk_kernel_compute, vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -81,17 +82,18 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     small = options.small;
     hardupper = options.sim_hardupper;
     hardlower = options.sim_hardlower;
+    numcontrols = options.numcontrols;
 
     %% Create the function for use with the ODE solver.
     control_fn = vk_control_wrap_fn(control_fn, K, f, c, options);
-    odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-1));
+    odefun = @(t, x0) vk_sim_simulate_ode_helper(f, control_fn, x0(1:end-numcontrols));
 
     %% Run the ODE solver.
-    [T, Y] = ode_solver(odefun, [0, time_horizon], [start;0]);
+    [T, Y] = ode_solver(odefun, [0, time_horizon], [start;zeros(numcontrols, 1)]);
 
-    % The final column of Y gives the cumulative control choices.  To decode
-    % this then, we need to subract the differences.
-    path = transpose(Y(:, 1:end-1));
+    % The final "numcontrols"-columns of Y gives the cumulative control
+    % choices.  To decode this then, we need to subract the differences.
+    path = transpose(Y(:, 1:end-numcontrols));
 
     % Check to see if any 'hard' constraints were violated.  If they were, then
     % truncate path and T accordingly.
@@ -114,7 +116,7 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     % Work out the size of the movements from the differences, relative to
     % the time differences.
     normpath = zeros(1, length(T));
-    controlpath = zeros(1, length(T));
+    controlpath = zeros(numcontrols, length(T));
     Y1 = Y(1:end-1, :);
     Y2 = Y(2:end, :);
     Ydiff = Y2 - Y1;
@@ -123,18 +125,18 @@ function [T, path, normpath, controlpath, viablepath] = vk_sim_simulate_ode(...
     T2 = T(2:end);
     Tdiff = T2 - T1;
 
-    pathdiff = transpose(Ydiff(:, 1:end-1));
-    controldiff = transpose(Ydiff(:, end));
+    pathdiff = transpose(Ydiff(:, 1:end-numcontrols));
+    controldiff = transpose(Ydiff(:, end-numcontrols+1:end));
 
     for i = 1:length(T)-1
         normpath(i) = norm_fn(pathdiff(:, i) / Tdiff(i));
-        controlpath(i) = controldiff(i) / Tdiff(i);
+        controlpath(:, i) = controldiff(:, i) / Tdiff(i);
     end
 
     % We need to redo the last one.
     final_diff = odefun(T(end), transpose(Y(end, :)));
-    normpath(end) = norm_fn(final_diff(1:end-1));
-    controlpath(end) = final_diff(end);
+    normpath(end) = norm_fn(final_diff(1:end-numcontrols));
+    controlpath(:, end) = final_diff(end-numcontrols+1:end);
 
     viablepath = zeros(5, length(T));
     for i = 1:length(T)

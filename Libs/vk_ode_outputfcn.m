@@ -8,17 +8,20 @@
 %   command.
 %
 % USAGE
-%   % Standard usage:
-%   outputfcn = @(T, Y, flag) VK_ODE_OUTPUTFCN(T, Y, flag, ...
+%   % Standard usage -- 'outputfcn' would then be suitable for feeding into
+%   'ode45'.
+%   outputfcn = @(T, Y, flag) vk_ode_outputfcn(T, Y, flag, ...
 %       K, f, c);
 %   odeopts = odeset('OutputFcn', outputfcn);
 %   [T, Y] = ode45(odefun, T, Y, odeopts);
 %
 %   % Specifying options:
-%   outputfcn = @(T, Y, flag) VK_ODE_OUTPUTFCN(T, Y, flag, ...
+%   outputfcn = @(T, Y, flag) vk_ode_outputfcn(T, Y, flag, ...
 %       K, f, c, options);
 %
-% See also: TOOLS, TOOLS/VK_OPTIONS, TOOLS/VK_SIMULATE_ODE
+% Requires: vk_options
+%
+% See also: vk_sim_simulate_ode
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

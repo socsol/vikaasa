@@ -5,7 +5,14 @@
 %   the constraint set in doing so.  This function calculates the size of the
 %   necessary display window.
 %
-% See also: vk_plot_path
+% USAGE
+%   % Given some limits, e.g., produced by vk_plot_box, see if they need to be
+%   % expanded.
+%   limits = vk_plot_path_limits(limits, path);
+%
+%   - `path' is a simulation path, as produced by vk_sim_make.
+%
+% See also: vk_plot_path, vk_plot_box, vk_sim_make
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

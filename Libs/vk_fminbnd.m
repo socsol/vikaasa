@@ -1,6 +1,19 @@
-%% VK_FMINBND
-%   A naive (slow) minimisation function.  Better to use the real fminbnd.
+%% VK_FMINBND A naive (slow) minimisation function.
 %
+% SYNOPSIS
+%   This function is similar to `fminbnd', except that instead of using a
+%   golden ratio search, it searches linearly through $[minvar, maxvar]$.
+%   `fminbnd' is faster, so this function is generally not used.
+%
+%   It takes the same arguments as `fminbnd', except that it takes an
+%   additional `tolerance' option, which indicates the distance between points
+%   polled (i.e. `minvar:tolerance:maxvar' is polled).
+%
+% USAGE
+%   % Find the minimum of x^2 between -1 and 1:
+%   min = vk_fminbnd(@(x) x^2, -1, 1, 0.01);
+%
+% See also: fminbnd
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -26,3 +39,4 @@ function min = vk_fminbnd(fn, minvar, maxvar, tolerance)
       min = i;
     end
   end
+end

@@ -1,11 +1,17 @@
 %% MAXIMUMCONTROL Apply maximum control.
+%
+% SYNOPSIS
 %   This control rule simply returns the maximum control, regardless of
 %   position, etc.
 %
-%   u = MAXIMUMCONTROL(x, K, f, c)
+% USAGE
+%   % Standard usage
+%   u = MaximumControl(x, K, f, c);
 %
-% See also: CONTROLALGS/MINIMUMCONTROL, CONTROLALGS/ZEROCONTROL,
-%   TOOLS/VK_VIABLE
+%   % With options
+%   u = MaximumControl(x, K, f, c, options);
+%
+% See also: MinimumControl, ZeroControl, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

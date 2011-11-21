@@ -41,8 +41,9 @@
 %   exited_on = vk_viable_exited(x, K, f, c);
 %   ccsf = all(exited_on(:,1) == 0);
 %
-% Requires: vk_options
-% See also: viable, vk_viable, vk_control_bound
+% Requires:  vk_options
+%
+% See also: vk_control_bound, vk_viable
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

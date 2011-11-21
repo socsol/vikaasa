@@ -1,5 +1,8 @@
 %% VIKAASA_CLI Initialise the VIKAASA enviroment for use from the commandline.
 %
+% Requires: vk_help, vk_init
+%
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -21,6 +24,6 @@ run Libs/vk_init.m
 
 %% Display that information
 fprintf('%s\n', char('-'*ones(1, 79)));
-fprintf(vk_copyright);
+fprintf(vikaasa_copyright);
 fprintf('%s\n\n', char('-'*ones(1, 79)));
 fprintf('Type ''vk_help'' for more information.\n\n');

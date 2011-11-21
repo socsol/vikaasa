@@ -18,7 +18,7 @@
 %   - `alpha_val': The degree of transparency
 %   - `handle': the handle to display the figure in.
 %
-% Requires: vk_plot
+% Requires:  vk_error, vk_figure_data_insert, vk_plot, vk_plot_box
 %
 % See also: vk_kernel_view
 

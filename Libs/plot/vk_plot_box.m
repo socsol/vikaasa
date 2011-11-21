@@ -1,7 +1,18 @@
 %% VK_PLOT_BOX Draw a box around a kernel
+%
+% SYNOPSIS
 %   This function boxes the given figure according to the constraint set.  If
 %   there are slices, then these are considered too.
 %
+% USAGE
+%   % Plot the box in the current figure, and get back limits, which can be
+%   % used with vk_kernel_data_insert.
+%   limits = vk_plot_box(K);
+%
+%   % Plot the box in the current figure, using a slice:
+%   limits = vk_plot_box(K, slices);
+%
+% See also: vk_kernel_slice, vk_kernel_data_insert
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

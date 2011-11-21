@@ -15,6 +15,8 @@
 %       - `layers': How many layers of points before the algorithm
 %         considers that it is in an 'edge' scenario.
 %
+% Requires:  vk_kernel_inside, vk_options
+%
 % See also: vk_simulate_euler, vk_simulate_ode, vk_viable
 
 %%

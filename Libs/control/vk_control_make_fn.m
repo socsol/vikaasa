@@ -1,9 +1,19 @@
 %% VK_CONTROL_MAKE_FN Returns a handle to a control function from a given string
+%
+% SYNOPSIS
 %   Control functions can have one of two signatures.  Either they take info
-%   first (those control algorithms in the 'VControlAlgs' folder), or they
+%   first (those control algorithms in the `VControlAlgs' folder), or they
 %   don't.   This function works out which is the case, and adds info (which
 %   needs to be specified as a second argument) if necessary.
 %
+% USAGE
+%   % Given some function name, and possibly an optional second argument
+%   % containing an info structure, return a handle to a function:
+%   control_fn = vk_control_make_fn(fn_name, varargin);
+%
+% Requires: vk_error, vk_make_control_fn
+%
+% See also: ControlAlgs, VControlAlgs
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

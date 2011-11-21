@@ -6,7 +6,10 @@
 %
 % USAGE
 %   % Standard usage:
-%   u = MinimumControl(x, K, f, c)
+%   u = MinimumControl(x, K, f, c);
+%
+%   % With additional options
+%   u = MinimumControl(x, K, f, c, options);
 %
 % See also: MaximumControl, ZeroControl, vk_viable
 

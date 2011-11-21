@@ -1,9 +1,9 @@
-%% VK_CONTROL_COST_FN compose cost functions that take vector parameters
+%% VK_CONTROL_COST_FN compose cost functions that take vector parameters.
 %
 % SYNOPSIS
 %   This function is needed by certain cost-minimising control functions in
-%   order to be able to minimise using an un-named vector of variables, instead
-%   of a tuple.
+%   VIKAASA in order to be able to minimise using an un-named vector of
+%   variables, instead of a tuple.
 %
 %   This function is used by VIKAASA to transform a cost function which takes a
 %   tuple of named variables into a function that instead takes a pair of
@@ -25,7 +25,7 @@
 %   % Construct a cost function for use in vk_control_cost_fn:
 %   cost_fn = @(x,y,z,xdot,ydot,zdot) x^2 + y^2 + z^2 + norm([xdot, ydot, zdot]);
 %
-% See also: control, vk_control_eval_fn
+% See also: vk_control_eval_fn
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

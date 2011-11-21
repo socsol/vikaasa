@@ -1,5 +1,16 @@
 %% VK_SIM_TIMEPROFILES_FROM Create a simulation and view its time profile
 %
+% SYNOPSIS
+%   This function is short-hand for creating a simulation and then plotting
+%   time profiles from it; here it is done in a single step.  This is
+%   equivalent to calling vk_sim_make, followed by vk_figure_timeprofiles_make.
+%   The start state used is stored into the `sim_start' field of the project.
+%
+% USAGE
+%   % Return an updated project structure with the new simulation information
+%   % in it, and display the time profiles.
+%   project = vk_sim_timeprofiles_from(project, start);
+%
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

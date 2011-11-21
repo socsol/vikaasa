@@ -1,5 +1,12 @@
 %% VK_SIM_DELETE_RESULTS Removes data belonging to the simulation from project
 %
+% SYNOPSIS
+%   This function deletes the `sim_state' field from a project.
+%
+% USAGE
+%   p = vk_sim_delete_results(p);
+%
+% See also: vk_kernel_delete_results
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -15,7 +22,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function project = vk_sim_DELETE_results(project)
+function project = vk_sim_delete_results(project)
     if (isfield(project, 'sim_state'))
         project = rmfield(project, 'sim_state');
     end

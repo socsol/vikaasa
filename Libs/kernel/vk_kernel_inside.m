@@ -1,15 +1,15 @@
 %% VK_KERNEL_INSIDE Test to see whether the given point is inside the kernel
 %
 % SYNOPSIS
-%   This function determines whether the point x lies inside of V or not.
+%   This function determines whether the point `x' lies inside of `V' or not.
 %
-%   A point x is considered to be inside (for some distances and layers) if
-%   x is surrounded neighbour points in V (i.e., for a 3D problem, there
-%   would need to be 8 points in V around x).  See vk_neighbours for a
-%   definition of 'neighbour points'.
+%   A point `x' is considered to be inside (for some distances and layers) if
+%   `x' is surrounded neighbour points in `V' (i.e., for a 3D problem, there
+%   would need to be 8 points in `V' around `x').  See vk_neighbours for a
+%   definition of ``neighbour points''.
 %
-%   If the point is not inside, but it still has some neighbours in V, then
-%   it is considered an 'edge' point instead.
+%   If the point is not inside, but it still has some neighbours in `V', then
+%   it is considered an ``edge'' point instead.
 %
 % USAGE
 %   % Standard usage:
@@ -30,9 +30,9 @@
 %   - `layers' is an integer greater than zero.  See vk_neighbours for
 %     information on how this is used.
 %
-% Requires: vk_kernel_neighbours
+% Requires:  vk_kernel_inside_rec, vk_kernel_neighbours
 %
-% See also: vk_viable_compute, vk_viable, VControlAlgs
+% See also: VControlAlgs, vk_viable, vk_kernel_compute
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

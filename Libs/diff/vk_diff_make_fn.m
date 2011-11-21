@@ -1,10 +1,15 @@
 %% VK_DIFF_MAKE_FN Construct a MATLAB function from an array of strings
+%
+% SYNOPSIS
 %   This function returns a function which returns the array of derviatives
 %   for a given state-space point (represented as a column vector), and a
-%   control choice (represented by a scalar).
+%   control choice (represented by a column vector).
 %
-% See also: diff, vk_diff_fn
+% USAGE
+%   % Given some project, create a function:
+%   diff_fn = vk_diff_make_fn(project)
 %
+% Requires: vk_diff_fn
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -22,9 +27,9 @@
 %  limitations under the License.
 function diff_fn = vk_diff_make_fn(project)
     symbols = project.symbols;
-    controlsymbol = project.controlsymbol;
+    controlsymbols = project.controlsymbols;
     diff_eqns = cellstr(project.diff_eqns);
-    args = cellstr(symbols);
+    % args = cellstr(symbols);
 
     %% Build a string that contains all of the equations
     % With semi-colons separating them
@@ -39,7 +44,7 @@ function diff_fn = vk_diff_make_fn(project)
     end
 
     %% Create an inline function.
-    diff_inline = inline(inline_str, args{:}, controlsymbol);
+    diff_inline = inline(inline_str, symbols{:}, controlsymbols{:});
 
     %% Create the array-based function
     diff_fn = @(x, u) vk_diff_fn(diff_inline, x, u);

@@ -119,6 +119,9 @@
 %         argument, which is a (column) vector of velocities, and should return
 %         a single numeric result.
 %
+%       - `numcontrols': Gives the number of control variables.  This is
+%         calculated automatically from the length of `c'.
+%
 %       - `numvars': Gives the number of variables in the viability problem.
 %         This is usually calculated as half the length of the constraint set,
 %         `K'.  You shouldn't change this unless you know what you are doing.
@@ -131,7 +134,7 @@
 %         Rather than changing this function, it may be best to change
 %         `ode_solver_name'.
 %
-%       - `ode_solver_name' (`ode45'): This string specifies the the name of
+%       - `ode_solver_name' (`ode45'): This string specifies the name of
 %         the function used by `ode_solver' (see above), without altering that
 %         function's use of `MaxStep', etc.  Unless you are doing something
 %         fancy, this is probably what you want to use.
@@ -217,9 +220,9 @@
 %       'min_fn', @(f, min, max) fminbnd(f, min, max, ...
 %           struct('TolX', options.controltolerance)));
 %
-% See also: vikaasa, cellfun, CostMin, CostSumMin, fminbnd, fzero, norm, ode45,
-%   vk_compute,vk_control_bound, vk_kernel_inside, vk_fminbnd,
-%   vk_sim_simulate_euler, vk_sim_simulate_ode, vk_viable
+% Requires:  vk_cellfun_parfor, vk_control_bound, vk_control_enforce, vk_lsode_wrapper, vk_ode_outputfcn, vk_sim_simulate_ode, vk_viable
+%
+% See also: CostMin, CostSumMin, cellfun, fminbnd, fzero, norm, ode45, vikaasa, vk_compute, vk_fminbnd, vk_kernel_inside, vk_sim_simulate_euler
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -264,6 +267,7 @@ function options = vk_options(K, f, c, varargin)
                 'debug', false, ...
                 'discretisation', 10*ones(length(K)/2, 1), ...
                 'maxloops', 46000, ...
+                'numcontrols', length(c), ...
                 'numvars', length(K)/2, ...
                 'ode_solver_name', 'ode45', ...
                 'parallel_processors', 2, ...
@@ -314,13 +318,20 @@ function options = vk_options(K, f, c, varargin)
     % the function.
     min_fn_opts = struct( ...
         'TolX', options.controltolerance, ...
-        'FunValCheck', true, ...
+        'FunValCheck', 'on', ...
         'abstol', options.controltolerance);
     if (~isfield(options, 'min_fn'))
         %options.min_fn = @(f, minimum, maximum) ...
         %    vk_fminbnd(f, minimum, maximum, controltolerance);
 
-        options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
+        if (length(c) > 1 && exist('fmincon') == 2)
+            x0 = zeros(size(c));
+            min_fn_opts.Algorithm = 'active-set';
+            min_fn_opts.Display = 'off';
+            options.min_fn = @(f, lb, ub) fmincon(f, x0, [], [], [], [], lb, ub, [], min_fn_opts);
+        else
+            options.min_fn = @(f, lb, ub) fminbnd(f, lb, ub, min_fn_opts);
+        end
     end
 
     % The zero function is probably just a wrapper around fzero, but with

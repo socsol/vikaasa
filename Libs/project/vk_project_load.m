@@ -1,7 +1,20 @@
-%% VK_PROJECT_LOAD Loads a file and returns a project structure
-%   Performs checks to see if the file is in the old format.  If it is,
-%   then it is converted.
+%% VK_PROJECT_LOAD Loads a file and returns a project structure.
 %
+% SYNOPSIS
+%   This function loads a .mat file into a structure, and checks to make sure
+%   that it represents a consistent project, by calling vk_project_sanitise on
+%   it.  It also performs checks to see if the file is in the old format.  If
+%   it is, then it is converted.
+%
+%   See vk_project_sanitise for a comprehensive list of what should be in a
+%   project.
+%
+% USAGE
+%   p = vk_project_load('filename.mat');
+%
+% Requires: vk_error, vk_kernel_convert, vk_project_sanitise
+%
+% See also: vk_project_save
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

@@ -8,7 +8,10 @@
 %   % For some kernel, V and some colour, c:
 %   p = vk_plot_surface_scatter(V, c);
 %
-% See also: vk_plot_surface
+%   % With a different marker (1 is for alpha, which is not used here).
+%   p = vk_plot_surface_scatter(V, c, 1, '+');
+%
+% See also: vk_plot, vk_plot_area_scatter
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -33,5 +36,12 @@ function vk_plot_surface_scatter(V, colour, varargin)
         marker = varargin{3};
     end
 
-    scatter3(V(:, 1), V(:, 2), V(:, 3), 25, colour, marker);
+    % Octave plots bigger points than MATLAB.
+    if (exist('octave_config_info'))
+        size = 10;
+    else
+        size = 25;
+    end
+
+    scatter3(V(:, 1), V(:, 2), V(:, 3), size, colour, marker);
 end

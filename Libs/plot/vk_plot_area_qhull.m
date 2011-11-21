@@ -1,5 +1,18 @@
 %% VK_PLOT_AREA_QHULL Plots a 2D viability kernel as a convex area
 %
+% SYNOPSIS
+%   This function uses the `convhull' function to make a convex area from the
+%   points in the viability kernel.  This area is then filled using the `fill'
+%   function.
+%
+% USAGE
+%   % Standard:
+%   vk_plot_area_qhull(V, colour);
+%
+%   % With transparency:
+%   vk_plot_area_qhull(V, colour, 0.5);
+%
+% See also: convhull, alpha
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

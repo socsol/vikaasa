@@ -10,15 +10,17 @@
 %
 % EXAMPLES
 %   % Standard usage:
-%   isviable = VK_VIABLE(x, K, f, c);
+%   isviable = vk_viable(x, K, f, c);
 %
-%   % With an OPTIONS structure created by VK_OPTIONS:
-%   isviable = VK_VIABLE(x, K, f, c, OPTIONS);
+%   % With an options structure created by vk_options:
+%   isviable = vk_viable(x, K, f, c, options);
 %
 %   % Returning additional information:
-%   [isviable, paths] = VK_VIABLE(x, K, f, c, OPTIONS);
+%   [isviable, paths] = vk_viable(x, K, f, c, options);
 %
-% See also: CONTROLALGS, VIABLE, KERNEL/VK_KERNEL_COMPUTE, OPTIONS/VK_OPTIONS
+% Requires: vk_control_wrap_fn, vk_options, vk_viable_exited
+%
+% See also: ControlAlgs, vk_kernel_compute
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -67,7 +69,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
         path = zeros(numvars, maxloops);
 
         % This is just a column.
-        control_path = zeros(maxloops,1);
+        control_path = zeros(maxloops,options.numcontrols);
     else
         recordpath = false;
     end
@@ -82,7 +84,6 @@ function varargout = vk_viable(x, K, f, c, varargin)
             viable = false;
             maxloops = 0;
             path(:, 1) = x;
-            control_path(1) = 0;
         end
     end
 
@@ -100,7 +101,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
 
         %% Record the new control.
         if (recordpath)
-            control_path(l) = u;
+            control_path(:,l) = u;
         end
 
         %% Check stopping criteria

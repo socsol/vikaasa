@@ -1,0 +1,153 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+# Open standard input
+open my $input, '<-';
+
+# Read lines from the standard input.  Each line should be of a 'filename:
+# comma separated list' format.
+while (<$input>) {
+  chomp;
+  my ($filename, $reqs) = split /:\s/, $_;
+  my @reqs = grep !/^\s*$/, (split /\b,\s*\b/, $reqs);
+
+  open my $file, '+<', $filename;
+
+  # Now read through the file to the end of the first comments section.
+  my $content = '';
+  while (<$file>) {
+    last unless /^\%/;
+
+    $content .= $_;
+  }
+
+  # Remember the position that 'Requires' began at.
+  my $reqspos = 0;
+  my $foundreqs = $content =~ /\v\K\%+\s*Requires:\h*+((?:[\S\h]+(?:\v\%++\h*+)?)++)/s
+    and $reqspos = length $`
+    and print "$filename: 'Requires' at $reqspos\n"
+    and my $reqsmatches = $1;
+
+  # Similarly for `See also'.
+  my $sapos = 0;
+  my $foundsa = $content =~ /\v\K\%+\s*See also:\h*+((?:[\S\h]+(?:\v\%++\h*+)?)++)/s
+    and $sapos = length $`
+    and print "$filename: 'See also' at $sapos\n"
+    and my $samatches = $1;
+
+  # Process 'Requires' line for list of functions.
+  my @filereqs;
+  if ($foundreqs) {
+    chomp $reqsmatches;
+    $reqsmatches =~ s/^\%++//gm;
+
+    @filereqs = sort(map { chomp; $_ } split /\b,\s*\b/s, $reqsmatches);
+
+    die ("!! $filename: 'See also:' found in requirements\n")
+      if grep /See also:/, @filereqs;
+  }
+
+  # Similarly for 'See also'
+  my @filesa = ();
+  if ($foundsa) {
+    chomp $samatches;
+    $samatches =~ s/^\%++//gm;
+
+    @filesa = sort(map { chomp; $_ } split /\b,\s*\b/s, $samatches);
+    print ">> $filename: SEE ALSO ${\join '|', @filesa}\n";
+  }
+
+  my $neq;
+  if ($foundreqs) {
+    # Compare the requirements in the file with those given:
+    if ($#reqs != $#filereqs) {
+      $neq = 1;
+    }
+    else {
+      # Same length, so compare each (assumed sorted) element:
+      $neq = 0;
+      for my $i (0 .. $#reqs) {
+        last if $neq = $reqs[$i] ne $filereqs[$i];
+      }
+    }
+  }
+  else {
+    $neq = @reqs > 0;
+  }
+
+  # Construct a ``see also'' list, which does not include any of the reqs.
+  my @sa = ();
+  my @conflicts = ();
+  if ($foundsa) {
+    # Check for required functions in the ``see also'' line.
+    @conflicts = grep { my $sa = $_; grep { $sa eq $_ } @reqs; } @filesa;
+
+    if (@conflicts > 0) {
+      print "!! $filename: Conflicts (${\join ', ', @conflicts})\n";
+
+      @sa = grep {
+        my $fsa = $_;
+        my @found = grep { $fsa eq $_ } @conflicts;
+        @found == 0;
+      } @filesa;
+    }
+    else {
+      @sa = @filesa;
+    }
+  }
+
+  # If we found:
+  #  - Discrepancy between the computed and the printed requirements; or
+  #  - Conflicts in that some functions in ``see also'' already appear in the
+  #    requirements,
+  # 
+  # then we need to re-write both segments, but we can only do so if we have
+  # one of the other.
+  my @poses = sort grep { $_ != 0 } ($reqspos, $sapos);
+  if ( @poses > 0 && ($neq || @conflicts > 0) ) {
+    my $rest = '';
+    while (<$file>) {
+      $rest .= $_;
+    }
+
+    # Truncate the file to the earlier of the two (if there are two).
+    truncate $file, $poses[0];
+    seek $file, 0, 2;
+
+    if (@reqs > 0) {
+      print ">> $filename: Rewriting 'Requires' line\n";
+      print $file "% Requires: ${\join ', ', @reqs}\n";
+      
+      print $file "%\n"
+        if @sa > 0;
+    }
+    else {
+      print ">> $filename: No 'Requires' line\n";
+    }
+
+    if (@sa > 0) {
+      print ">> $filename: Rewriting 'See also' line\n";
+      print $file "% See also: ${\join ', ', @sa}\n";
+    }
+    else {
+      print ">> $filename: No 'See also' line\n";
+    }
+
+    # Replace the rest of the file.
+    print $file "\n";
+    print $file $rest;
+
+  }
+  elsif (@poses == 0) {
+    print "!! $filename: Unable to correct because no 'See also' or 'Requires' found.\n";
+  }
+  else {
+    print ">> $filename: Nothing to be done.\n";
+  }
+
+  print "\n";
+
+  close $file;
+}

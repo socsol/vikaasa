@@ -9,7 +9,6 @@
 %   % Viewing a kernel from within a project file:
 %   vk_view_kernel('project.mat');
 %
-%
 %   % Getting a handle to the resulting figure:
 %   fig = vk_view_kernel(proj);
 %
@@ -41,7 +40,7 @@
 %   vk_kernel_view('project2.mat', ...
 %       vk_kernel_view('project1.mat'));
 %
-% Requires: vk_project_load, vk_figure_make, vk_figure_make_slice
+% Requires:  vk_figure_make, vk_figure_make_slice, vk_kernel_augment, vk_kernel_augment_constraints, vk_kernel_augment_slices, vk_project_load
 %
 % See also: vikaasa
 
@@ -73,17 +72,19 @@ function fig = vk_kernel_view(input, varargin)
         fig = figure;
     end
 
-    V = project.V;
-    K = project.K;
-    labels = project.labels;
+    V = vk_kernel_augment(project);
+    K = vk_kernel_augment_constraints(project);
+    slices = vk_kernel_augment_slices(project);
+    labels = [project.labels; ...
+        project.addnlabels(find(~project.addnignore))];
     colour = project.plotcolour;
     method = project.plottingmethod;
     box = project.drawbox;
     alpha_val = project.alpha;
 
 
-    if (size(project.slices,1) > 0)
-        vk_figure_make_slice(V, project.slices, K, labels, colour, ...
+    if (size(slices,1) > 0)
+        vk_figure_make_slice(V, slices, K, labels, colour, ...
             method, box, alpha_val, fig);
     else
         vk_figure_make(V, K, labels, colour, method, ...

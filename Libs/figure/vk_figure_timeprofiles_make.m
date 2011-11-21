@@ -1,5 +1,10 @@
 %% VK_FIGURE_TIMEPROFILES_MAKE Construct a time profile figure from a project
 %
+% SYNOPSIS
+%   This function creates a figure (or uses an existing one, if one is
+%   supplied) and draws time profile sub-plots into it, using the information
+%   and settings from the given project.
+%
 % USAGE
 %   % Plot the time profiles using the 'sim_state' field in 'project' in a new
 %   % figure, returned as 'handle'.
@@ -14,7 +19,7 @@
 %   sim = vk_sim_make(project);
 %   vk_figure_timeprofiles_make(project, 'simulation', sim, 'handle', handle);
 %
-% Requires: vk_figure_timeprofiles_plot
+% Requires:  vk_figure_timeprofiles_plot, vk_kernel_augment, vk_kernel_augment_constraints, vk_sim_augment
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -47,6 +52,7 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
 
     labels = [project.labels; ...
         project.addnlabels(find(~project.addnignore))];
+    controllabels = project.controllabels;
     K = vk_kernel_augment_constraints(project);
     discretisation = [project.discretisation; max(project.discretisation)*ones(project.numaddnvars-length(project.addnignore), 1)];
     c = project.c;
@@ -84,7 +90,8 @@ function handle = vk_figure_timeprofiles_make(project, varargin)
     plottingmethod = project.plottingmethod;
     alpha_val = project.alpha;
 
-    handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, ...
+    handle = vk_figure_timeprofiles_plot(labels, controllabels, ...
+        K, discretisation, c, V, ...
         plotcolour, sim_line_colour, width, showpoints, showkernel, plottingmethod, ...
         alpha_val, sim_timeprofile_cols, sim_state, handle);
 end

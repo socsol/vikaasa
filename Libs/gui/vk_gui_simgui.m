@@ -1,5 +1,14 @@
-%% VK_GUI_SIMGUI GUI for interactive view of simulations
+%% VK_GUI_SIMGUI GUI for interactive view of simulations.
 %
+% SYNOPSIS
+%   This function creates a separate GUI window in which one can view the
+%   dynamic evolution of a simulation in relation to the viability kernel, or a
+%   slice through the kernel.  The slice will be updated as the simulation
+%   proceeds to reflect the appropriate slice.
+%
+% Requires: vk_figure_data_insert, vk_gui_simgui_, vk_gui_simgui_drawstep, vk_gui_simgui_setup, vk_kernel_slice, vk_plot, vk_plot_box, vk_plot_path, vk_plot_path_limits
+%
+% See also: vikaasa
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo

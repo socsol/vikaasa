@@ -13,9 +13,9 @@
 %
 %   All values are as in the projects.
 %
-% Requires: vk_kernel_distances, vk_kernel_slice
+% Requires:  vk_kernel_distances, vk_kernel_slice, vk_plot_path
 %
-% See also: project, vk_figure_timeprofiles_plot_make, vk_project_new
+% See also: vk_figure_timeprofiles_plot_make, vk_project_new
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
@@ -31,7 +31,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, ...
+function handle = vk_figure_timeprofiles_plot(labels, controllabels, K, discretisation, c, V, ...
     plotcolour, line_colour, width, showpoints, showkernel, plottingmethod, ...
     alpha_val, cols, simulation, handle)
 
@@ -47,7 +47,7 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
     %% Set handle as the active figure (for plotting in below)
     figure(handle);
 
-    numplots = size(path, 1) + 2;
+    numplots = size(path, 1) + 1 + size(controlpath, 1);
     rows = ceil(numplots/cols);
 
     for i = 1:size(path, 1)
@@ -103,7 +103,7 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
     end
 
     %% Plot the system velocity.
-    subplot(rows, cols, numplots-1);
+    subplot(rows, cols, numplots-size(controlpath, 1));
     hold on;
     plot(T, normpath, 'Color', line_colour, 'LineWidth', width);
     plot(T, simulation.small * ones(1, length(T)), ...
@@ -116,15 +116,17 @@ function handle = vk_figure_timeprofiles_plot(labels, K, discretisation, c, V, .
     title('velocity');
     axis tight;
 
-    if (length(controlpath) == length(T))
-        subplot(rows, cols, numplots);
-        hold on;
-        plot(T, c * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, -c * ones(1, length(T)), ...
-            'Color', 'r', 'LineWidth', 1);
-        plot(T, controlpath, 'Color', line_colour, 'LineWidth', width);
-        title('control');
-        axis tight;
+    if (size(controlpath, 2) == length(T))
+        for i = 1:size(controlpath, 1)
+            subplot(rows, cols, numplots - size(controlpath,1) + i);
+            hold on;
+            plot(T, c(i) * ones(1, length(T)), ...
+                'Color', 'r', 'LineWidth', 1);
+            plot(T, -c(i) * ones(1, length(T)), ...
+                'Color', 'r', 'LineWidth', 1);
+            plot(T, controlpath(i,:), 'Color', line_colour, 'LineWidth', width);
+            title(controllabels(i));
+            axis tight;
+        end
     end
 end

@@ -1,5 +1,16 @@
 %% VK_KERNEL_DELETE_RESULTS Delete the results of a kernel approximation from the project
 %
+% SYNOPSIS
+%   This function deletes a kernel and associated computation info from
+%   project.  The fields removed are:
+%
+%   - `V',
+%   - `comp_datetime',
+%   - `comp_time'.
+%
+% USAGE
+%   % The resulting project will have no V field, etc.
+%   project = vk_kernel_delete_results(project);
 
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
