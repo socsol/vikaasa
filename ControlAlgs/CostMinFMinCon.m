@@ -54,9 +54,11 @@ function u = FMinConControl(x, K, f, c, varargin)
     lb = zeros(steps*len, 1);
     ub = zeros(steps*len, 1);
 
-    for i = 0:steps
-      lb(1+i*len:i*len+len) = -c;
-      ub(1+i*len:i*len+len) = c;
+    for i = 0:steps-1
+      start = 1+i*len;
+      fin = i*len + len;
+      lb(start:fin) = -c;
+      ub(start:fin) = c;
     end
 
     opts = optimset( ...
@@ -65,7 +67,7 @@ function u = FMinConControl(x, K, f, c, varargin)
         'Algorithm', 'active-set', ...
         'Display', 'off');
     uall = fmincon(cost, zeros(steps*len, 1), [], [], [], [], lb, ub, [], opts);
-    u = uall(end-len+1:end)
+    u = uall(1:len)
 end
 
 function x = FMinConControl_recursive(x0, u, n, len, next_fn)
