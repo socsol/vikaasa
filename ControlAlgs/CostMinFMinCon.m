@@ -67,7 +67,7 @@ function u = FMinConControl(x, K, f, c, varargin)
         'Algorithm', 'active-set', ...
         'Display', 'off');
     uall = fmincon(cost, zeros(steps*len, 1), [], [], [], [], lb, ub, [], opts);
-    u = uall(1:len)
+    u = uall(1:len);
 end
 
 function x = FMinConControl_recursive(x0, u, n, len, next_fn)
