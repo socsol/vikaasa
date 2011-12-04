@@ -1,7 +1,7 @@
 # This should give the most recent version
 VERSION?=$(shell git tag | grep version- | grep -Eo '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$$' | tail -n 1)
 
-RELEASETAG=version-${VERSION}
+RELEASETAG?=version-${VERSION}
 ZIP=release/vikaasa-${VERSION}.zip
 BZ2=release/vikaasa-${VERSION}.tar.bz2
 PREFIX=vikaasa-${VERSION}/
