@@ -49,7 +49,7 @@ function u = FMinConControl(x, K, f, c, varargin)
     xn = @(u) FMinConControl_recursive(x, u, steps, len, next_fn);
 
     % We want to minimise the cost of the last state.
-    cost = @(u) FMinConControl_cost(xn(u), u(end-len+1:end), cost_fn, next_fn, f);
+    cost = @(u) real(FMinConControl_cost(xn(u), u(end-len+1:end), cost_fn, next_fn, f));
 
     lb = zeros((steps+1)*len, 1);
     ub = zeros((steps+1)*len, 1);
