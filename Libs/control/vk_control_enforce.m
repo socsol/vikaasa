@@ -26,7 +26,7 @@
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
 function uenf = vk_control_enforce(u, c)
-    uenf = u
+    uenf = u;
     for i = 1:length(u)
         if (abs(u(i)) > c(i))
             uenf(i) = sign(u(i))*c(i);
