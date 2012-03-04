@@ -43,5 +43,5 @@
 %  limitations under the License.
 function cost = vk_control_cost_fn(cost_fn, x, xdot)
     vars = num2cell([x;xdot]);
-    cost = cost_fn(vars{:});
+    cost = real(cost_fn(vars{:}));
 end

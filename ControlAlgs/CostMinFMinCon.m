@@ -3,8 +3,20 @@
 % SYNOPSIS
 %   This function performs forward-looking optimisation for an arbitrary number
 %   of controls using `fmincon`, part of the MATLAB(R) Optimization Toolkit.
-%   If minimises the system's cost function, or the norm of the system velocity
-%   if no cost function is specified.
+%
+%   The function works by trying to find a vector of length m*(s+1), where m is
+%   the number of controls, and s is the number of forward-looking steps (s+1
+%   because the first control represents the current step).  This vector thus
+%   represents a series of s+1 control choices.  This vector is fed into a
+%   function which gives the series of state-space points that these controls
+%   will cause the system to pass through, and then an optimal control vector
+%   is sought out by looking for the vector that:
+%
+%   - does not violate the requirement that $\u(t) \in [-c, c]$; and
+%   - does not cause a violation of the rectangular constraints at each step;
+%     and
+%   - minimises the provided cost function, when evaluated against the final
+%     provided state-space point.
 %
 % USAGE
 %   % Standard use with required arguments:
@@ -43,24 +55,27 @@ function u = CostMinFMinCon(x, K, f, c, varargin)
     steps = options.steps;
     cost_fn = options.cost_fn;
     next_fn = options.next_fn;
-    len = length(c);
+    n = length(x);
+    m = length(c);
     
-    % A function which takes a concatonated vector of control choices, and returns the nth vector
-    xn = @(u) CostMinFMinCon_recursive(x, u, steps, len, next_fn);
+    % A function which takes a concatonated vector of control choices, and
+    % returns the set of state-space points that the system will pass through
+    % as a result.
+    loop = @(u) CostMinFMinCon_loop(x, u, steps, n, m, next_fn);
 
     % We want to minimise the cost of the last state.
-    cost = @(u) CostMinFMinCon_cost(xn(u), u(end-len+1:end), cost_fn, next_fn, f);
+    cost = @(u) CostMinFMinCon_cost(loop(u), u(end-m+1:end), cost_fn, next_fn, f);
 
     % Non-linear constraints attempt to ensure that control choices stay in the
     % constraint space.
-    nonlcon = @(u) CostMinFMinCon_nonlcon(x, K, c, next_fn, u);
+    nonlcon = @(u) CostMinFMinCon_nonlcon(loop(u), K);
 
-    lb = zeros((steps+1)*len, 1);
-    ub = zeros((steps+1)*len, 1);
+    lb = zeros((steps+1)*m, 1);
+    ub = zeros((steps+1)*m, 1);
 
     for i = 0:steps
-      start = 1+i*len;
-      fin = i*len + len;
+      start = 1+i*m;
+      fin = i*m + m;
       lb(start:fin) = -c;
       ub(start:fin) = c;
     end
@@ -70,45 +85,50 @@ function u = CostMinFMinCon(x, K, f, c, varargin)
         'FunValCheck', 'on', ...
         'Algorithm', 'active-set', ...
         'Display', 'off');
-    uall = fmincon(cost, zeros((steps + 1)*len, 1), [], [], [], [], lb, ub, nonlcon, opts);
-    u = uall(1:len);
+
+    uall = fmincon(cost, zeros((steps + 1)*m, 1), [], [], [], [], lb, ub, nonlcon, opts);
+    u = uall(1:m);
 end
 
-function x = CostMinFMinCon_recursive(x0, u, n, len, next_fn)
-    if (n == 0)
-      x = next_fn(x0, u);
-    else
-      x = CostMinFMinCon_recursive(next_fn(x0, u(1:len)), u(len+1:end), n - 1, len, next_fn);
+function xs = CostMinFMinCon_loop(x0, u, steps, n, m, next_fn)
+    xs = zeros(n, steps);
+
+    x = x0;
+    for i = 1:steps
+      start = m*(i-1) + 1;
+      x = next_fn(x, u(start:start+m-1));
+      xs(:, i) = x;
     end
 end
 
-function m = CostMinFMinCon_cost(xn, un, cost_fn, next_fn, f)
-    m = real(cost_fn(next_fn(xn, un), f(xn, un)));
+function m = CostMinFMinCon_cost(xs, un, cost_fn, next_fn, f)
+  m = cost_fn(next_fn(xs(:, end), un), f(xs(:, end), un));
 end
 
-function [c,ceq] = CostMinFMinCon_nonlcon(x0, K, c, next_fn, u)
-  n = length(x0);
-  m = length(c);
-  p = length(u)/length(c);
+function [cin,ceq] = CostMinFMinCon_nonlcon(xs, K)
+    n = size(xs, 1);
+    p = size(xs, 2);
 
-  % Create a vector of length 2*|x|*|u|; 2 because there is an upper and a
-  % lower constraint for each dimension.
-  c = zeros(2*n*p, 1);
+    % Create a vector of length 2*|x|*|u|; 2 because there is an upper and a
+    % lower constraint for each dimension.
+    cin = zeros(2*n*p, 1);
 
-  % Initial value of x.
-  x = x0;
+    % No equality constraints
+    ceq = [];
 
-  % Loop through the time values.
-  for t = 0:(p - 1)
-    % Use the given control vector to work out the next state.
-    x = next_fn(x, u(m*t + 1:m*t + m));
-    % Loop through the dimensions.
-    for i = 1:n
-      c(2*n*t + 2*i - 1) = real(K(2*i - 1) - x(i));
-      c(2*n*t + 2*i) = real(x(i) - K(2*i));
+    % Loop through the time values.
+    for t = 1:p
+        start = 2*n*(t - 1) + 1;
+        for i = 1:n
+            % Add the real parts of the exited fn to the vector.
+            cin(start + 2*i-2) = real(K(2*i - 1) - xs(i,t));
+            cin(start + 2*i-1) = real(xs(i,t) - K(2*i));
+        end
+
+        if any(cin(start:(start+2*n-1)) > 0)
+            break;
+        end
     end
-  end
 
-  % No equality constraints
-  ceq = [];
+    % Leave the rest of the values as zero.
 end
