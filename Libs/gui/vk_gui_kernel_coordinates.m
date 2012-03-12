@@ -89,109 +89,134 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
     main_handles = guidata(handles.main_hObject);
 
     % If a 'click' was clicked ...
-    if eventdata.Indices(2) - size(data, 2) + 4 > 0
-      pos = eventdata.Indices(2) - size(data, 2) + 4;
+    if eventdata.Indices(2) - size(data, 2) + 4 <= 0
+      return
+    end
 
-      if pos == 1
-          % Show
+    pos = eventdata.Indices(2) - size(data, 2) + 4;
 
-          % Create a figure, or use the current one.
-          h = vk_gui_figure_create(main_handles);
-          figure(h);
+    K = main_handles.project.K; 
+    labels = main_handles.project.labels;
 
-          [limits, slices] = vk_figure_data_retrieve(h);
+    if pos == 1
+        % Show
 
-          % If the 'limits' are zero, then this must be a new plot.
-          if any(size(limits) <= 0)
-              slices = vk_kernel_augment_slices(main_handles.project);
-              K = main_handles.project.K; 
+        % Create a figure, or use the current one.
+        h = vk_gui_figure_create(main_handles);
+        figure(h);
 
-              if (~isempty(slices))
-                  slices = sortrows(slices, -1);
-                  for i = 1:size(slices, 1)
-                      path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-                      K = [K(1:2*slices(i, 1)-2), ...
-                          K(2*slices(i, 1)+1:end)];
-                      labels = [labels(1:slices(i, 1)-1); ...
-                          labels(slices(i, 1)+1:end)];
-                  end
-              end
+        [limits, slices] = vk_figure_data_retrieve(h);
 
-              if (main_handles.project.drawbox)
-                  limits = vk_plot_box(K);
-              else
-                  limits = K;
-              end
+        x = main_handles.project.V(eventdata.Indices(1), :);
 
-              if length(limits) == 6
-                view(3);
-              end
-          end
+        % If the 'limits' are zero, then this must be a new plot.
+        new = 0;
+        if any(size(limits) <= 0)
+            new = 1;
+            slices = vk_kernel_augment_slices(main_handles.project);
+            limits = K;
+        end
 
-          vk_plot_point(main_handles.project.V(eventdata.Indices(1), :));
-          vk_figure_data_insert(h, limits, slices);
-          grid on;
-          axis(limits);
+        if (~isempty(slices))
+            slices = sortrows(slices, -1);
+            for i = 1:size(slices, 1)
+                K = [K(1:2*slices(i, 1)-2), ...
+                    K(2*slices(i, 1)+1:end)];
+                labels = [labels(1:slices(i, 1)-1); ...
+                    labels(slices(i, 1)+1:end)];
+                x = [x(1:slices(i,1)-1); x(slices(i,1)+1:end)];
+            end
+        end
 
-          % We should set the current_figure value here ... but won't it corrupt?
-          main_handles.current_figure = h;
-          guidata(handles.main_hObject, main_handles);
-      elseif pos == 2
-          % Phase diagram
+        if new
+            if (main_handles.project.drawbox)
+                limits = vk_plot_box(K);
+            else
+                limits = K;
+            end
+        end
 
-          % Create a figure, or use the current one.
-          h = vk_gui_figure_create(main_handles);
-          figure(h);
+        xlabel(labels{1});
+        ylabel(labels{2});
+        if length(limits) == 6
+            view(3);
+            zlabel(labels{3});
+        end
 
-          [limits, slices] = vk_figure_data_retrieve(h);
+        vk_plot_point(x);
+        vk_figure_data_insert(h, limits, slices);
+        grid on;
+        axis(limits);
 
-          % If the 'limits' are zero, then this must be a new plot.
-          if any(size(limits) <= 0)
-              slices = vk_kernel_augment_slices(main_handles.project);
-              K = main_handles.project.K; 
+        % We should set the current_figure value here ... but won't it corrupt?
+        main_handle.current_figure = h;
+        guidata(handles.main_hObject, main_handles);
+    elseif pos == 2
+        % Phase diagram
 
-              if (~isempty(slices))
-                  slices = sortrows(slices, -1);
-                  for i = 1:size(slices, 1)
-                      path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-                      K = [K(1:2*slices(i, 1)-2), ...
-                          K(2*slices(i, 1)+1:end)];
-                      labels = [labels(1:slices(i, 1)-1); ...
-                          labels(slices(i, 1)+1:end)];
-                  end
-              end
+        % Create a figure, or use the current one.
+        h = vk_gui_figure_create(main_handles);
+        figure(h);
 
-              if (main_handles.project.drawbox)
-                  limits = vk_plot_box(K);
-              else
-                  limits = K;
-              end
-          end
+        [limits, slices] = vk_figure_data_retrieve(h);
 
-          paths = main_handles.project.viable_paths{eventdata.Indices(1)};
-          limits = vk_plot_path_limits(limits, paths.path);
-          
-          % The 'inside' values can't be computed ahead of time.
-          viablepath = paths.viablepath;
-          distances = vk_kernel_distances(main_handles.project.K, main_handles.project.discretisation);
-          V = main_handles.project.V;
-          for i = 1:length(paths.T)
-              [viablepath(1, i), viablepath(2, i)] = ...
-                vk_kernel_inside(paths.path(:,i), V, distances, main_handles.project.layers);
-          end
+        % get the path information.
+        paths = main_handles.project.viable_paths{eventdata.Indices(1)};
+        path = paths.path;
 
-          vk_plot_path(paths.T, paths.path, viablepath, main_handles.project.sim_showpoints, main_handles.project.sim_line_colour, main_handles.project.sim_line_width);
+        % If the 'limits' are zero, then this must be a new plot.
+        if any(size(limits) <= 0)
+            slices = vk_kernel_augment_slices(main_handles.project);
 
-          grid on;
-          axis(limits);
-          vk_figure_data_insert(h, limits, slices); 
+            if (~isempty(slices))
+                slices = sortrows(slices, -1);
+                for i = 1:size(slices, 1)
+                    path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
+                    K = [K(1:2*slices(i, 1)-2), ...
+                        K(2*slices(i, 1)+1:end)];
+                    labels = [labels(1:slices(i, 1)-1); ...
+                        labels(slices(i, 1)+1:end)];
+                end
+            end
 
-          main_handles.current_figure = h;
-          guidata(handles.main_hObject, main_handles);
-      elseif pos == 3
-          % Time profile
-      elseif pos == 4 
-          % Copy to simulation
-      end
+            if (main_handles.project.drawbox)
+                limits = vk_plot_box(K);
+            else
+                limits = K;
+            end
+
+            xlabel(labels{1});
+            ylabel(labels{2});
+            if length(limits) == 6
+              view(3);
+              zlabel(labels{3});
+            end
+        end
+
+        limits = vk_plot_path_limits(limits, path);
+        
+        % The 'inside' values can't be computed ahead of time.
+        viablepath = paths.viablepath;
+        distances = vk_kernel_distances(main_handles.project.K, main_handles.project.discretisation);
+        V = main_handles.project.V;
+        for i = 1:length(paths.T)
+            [viablepath(1, i), viablepath(2, i)] = ...
+              vk_kernel_inside(paths.path(:,i), V, distances, main_handles.project.layers);
+        end
+
+        vk_plot_path(paths.T, path, viablepath, main_handles.project.sim_showpoints, main_handles.project.sim_line_colour, main_handles.project.sim_line_width);
+
+        grid on;
+        axis(limits);
+        vk_figure_data_insert(h, limits, slices); 
+
+        main_handles.current_figure = h;
+        guidata(handles.main_hObject, main_handles);
+    elseif pos == 3
+        % Time profile
+
+
+    elseif pos == 4 
+        % Copy to simulation
     end
 end
