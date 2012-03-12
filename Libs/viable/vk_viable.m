@@ -68,8 +68,9 @@ function varargout = vk_viable(x, K, f, c, varargin)
         % transpose it before returning.
         path = zeros(numvars, maxloops);
 
-        % This is just a column.
-        control_path = zeros(maxloops,options.numcontrols);
+        controlpath = zeros(options.numcontrols, maxloops);
+        normpath = zeros(1, maxloops);
+        viablepath = zeros(5, maxloops);
     else
         recordpath = false;
     end
@@ -101,7 +102,15 @@ function varargout = vk_viable(x, K, f, c, varargin)
 
         %% Record the new control.
         if (recordpath)
-            control_path(:,l) = u;
+            controlpath(:,l) = u;
+            viablepath(3, l) = any(~isnan(exited_on(:,1)));
+            viablepath(4, l) = any(~isnan(exited_on(:,2)));
+
+            %% Record velocity and steadyness
+            norm_val = norm_fn(f(x, u));
+            steady = norm_val <= small;
+            viablepath(5, l) = steady;
+            normpath(l) = norm_val;
         end
 
         %% Check stopping criteria
@@ -115,7 +124,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
             fprintf('Maxloops exceeded\n');
             viable = false;
             break;
-        elseif (norm_fn(f(x, u)) <= small)
+        elseif (recordpath && steady) || (norm_fn(f(x, u)) <= small)
             viable = true;
             break;
         end
@@ -130,9 +139,14 @@ function varargout = vk_viable(x, K, f, c, varargin)
 
     %% Potentially return extra info too, if requested.
     if (nargout > 1)
+        h = options.h;
+
         paths = struct;
+        paths.T = 0:h:h*(l-1);
         paths.path = path(:, 1:l);
-        paths.control_path = control_path(1:l, :);
+        paths.normpath = normpath(1:l);
+        paths.controlpath = controlpath(:, 1:l);
+        paths.viablepath = viablepath(:, 1:l);
 
         if (viable == false)
             paths.exited_on = exited_on;

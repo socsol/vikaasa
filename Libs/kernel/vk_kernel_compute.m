@@ -75,7 +75,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function V = vk_kernel_compute(K, f, c, varargin)
+function [V, viable_paths] = vk_kernel_compute(K, f, c, varargin)
 
     %% Build options.
     options = vk_options(K, f, c, varargin{:});
@@ -98,7 +98,8 @@ function V = vk_kernel_compute(K, f, c, varargin)
     %   prepopulating all variables except for 'start' and 'posn'.  See
     %   VK_KERNEL_COMPUTE_RECURSIVE, below.
     fn = @(start, posn) vk_kernel_compute_recursive(...
-        zeros(prod(discretisation(2:end)), numvars), start, 0, posn, ...
+        zeros(prod(discretisation(2:end)), numvars), ...
+        cell(prod(discretisation(2:end)), 1), start, 0, posn, ...
         ax(2:end), K, f, c, options);
 
     %% Create a cell of 'starts'.
@@ -110,14 +111,16 @@ function V = vk_kernel_compute(K, f, c, varargin)
     end
 
     %% Call CELLFUN or PARCELLFUN
-    [V_cells,cnt_cells] = options.cell_fn(fn, start_cells, num2cell(ax{1}));
+    [V_cells,viable_path_cells, cnt_cells] = options.cell_fn(fn, start_cells, num2cell(ax{1}));
 
 
     %% Build the viability kernel from the results of the CELLFUN call
     V = zeros(sum(cell2mat(cnt_cells)), numvars);
+    viable_paths = cell(sum(cell2mat(cnt_cells)), 1);
     c = 0;
     for i = 1:discretisation(1)
         V(c+1:c+cnt_cells{i}, :) = V_cells{i}(1:cnt_cells{i},:);
+        viable_paths(c+1:c+cnt_cells{i}) = viable_path_cells{i}(1:cnt_cells{i});
         c = c + cnt_cells{i};
     end
 end
@@ -139,7 +142,7 @@ end
 %   - 'posn' is a (possibly partially constructed) point to consider.  In those
 %     cases where posn is not fully constructed, points are taken from the ax
 %     variable to produce points.
-function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
+function [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, start, cnt, posn, ax, ...
     K, f, c, options)
 
     cancel_test = options.cancel_test;
@@ -155,7 +158,7 @@ function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
             end
 
             s = start + (i-1) * prod(discretisation(length(posn)+2:end));
-            [V,cnt] = vk_kernel_compute_recursive(V, s, cnt, ...
+            [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, s, cnt, ...
                 [posn; curr_ax(i)], ax(2:end), K, f, c, options);
         end
     else % Only one axis remaining -- call options.viable_fn on each point.
@@ -176,11 +179,12 @@ function [V, cnt] = vk_kernel_compute_recursive(V, start, cnt, posn, ax, ...
                 options.progress_fn(start + i);
             end
 
-            viable = options.viable_fn(x, K, f, c, options);
+            [viable, viable_path] = options.viable_fn(x, K, f, c, options);
 
             if (viable)
                 cnt = cnt + 1;
                 V(cnt, :) = transpose(x);
+                viable_paths{cnt} = viable_path;
             end
         end
     end

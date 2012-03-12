@@ -146,7 +146,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
     fprintf('RUNNING ALGORITHM\n');
     success = 0; error = 0;
     try
-        V = vk_kernel_compute(K, f, c, options);
+        [V, viable_paths] = vk_kernel_compute(K, f, c, options);
 
         if (options.cancel_test_fn())
             message_title = 'Kernel Computation Cancelled';
@@ -179,6 +179,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
     % Save the results into our state structure if successful.
     if (success)
         handles.project.V = V;
+        handles.project.viable_paths = viable_paths;
         handles.project.comp_time = comp_time;
         handles.project.comp_datetime = ...
             sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
@@ -249,16 +250,8 @@ function plot_button_Callback(hObject, eventdata, handles)
     box = handles.project.drawbox;
     alpha_val = handles.project.alpha;
 
-    if (handles.project.holdfig && isfield(handles, 'current_figure'))
-        h = handles.current_figure;
-    else
-        h = figure(...
-            'CloseRequestFcn', ...
-            @(h, event) eval('try vk_gui_figure_close(h, event), catch, delete(h), end'), ...
-            'WindowButtonMotionFcn', ...
-            @(h, event) eval('try vk_gui_figure_focus(h, event), catch, end'));
-    end
-
+    h = vk_gui_figure_create(handles);
+    
     % If we are ignoring any variables, elminate them from the slices, and all
     % slice = all values.
     slices = vk_kernel_augment_slices(handles.project);
@@ -780,19 +773,8 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
     % Information from the project
     project = handles.project;
 
-    % Make a figure (or use an existing one)
-    if (project.holdfig && isfield(handles, 'current_timeprofile'))
-        h = handles.current_timeprofile;
-    else
-        h = figure(...
-            'CloseRequestFcn', ...
-            @(h, event) eval('try vk_gui_figure_close(h, event, ''tp''), catch, delete(h), end'), ...
-            'WindowButtonMotionFcn', ...
-            @(h, event) eval('try vk_gui_figure_focus(h, event, ''tp''), catch, end'), ...
-            'Name', 'Time Profiles' ...
-            );
-    end
-
+    h = vk_gui_timeprofile_create(handles);
+    
     h = vk_figure_timeprofiles_make(project, 'handle', h);
     handles.current_timeprofile = h;
     guidata(hObject, handles);
@@ -1143,11 +1125,16 @@ function view_coords_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-    Vcell = [cellstr(handles.project.labels)';
-        num2cell(handles.project.V)];
-    assignin('base', 'V', Vcell);
-    openvar V;
+    %Vcell = [cellstr(handles.project.labels)';
+    %    num2cell(handles.project.V)];
+    %assignin('base', 'V', Vcell);
+    %openvar V;
 
+    if (isfield(handles.project, 'V'))
+        vk_gui_kernel_coordinates(hObject);
+    else
+        errordlg('No kernel coordinates to display.');
+    end
 end
 
 
