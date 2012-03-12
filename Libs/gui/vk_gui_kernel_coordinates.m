@@ -90,7 +90,7 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
 
     % If a 'click' was clicked ...
     if eventdata.Indices(2) - size(data, 2) + 4 > 0
-      pos = eventdata.Indices(2) - size(data, 2) + 4
+      pos = eventdata.Indices(2) - size(data, 2) + 4;
 
       if pos == 1
           % Show
@@ -122,10 +122,16 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
               else
                   limits = K;
               end
+
+              if length(limits) == 6
+                view(3);
+              end
           end
 
           vk_plot_point(main_handles.project.V(eventdata.Indices(1), :));
           vk_figure_data_insert(h, limits, slices);
+          grid on;
+          axis(limits);
 
           % We should set the current_figure value here ... but won't it corrupt?
           main_handles.current_figure = h;
@@ -176,6 +182,7 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
 
           vk_plot_path(paths.T, paths.path, viablepath, main_handles.project.sim_showpoints, main_handles.project.sim_line_colour, main_handles.project.sim_line_width);
 
+          grid on;
           axis(limits);
           vk_figure_data_insert(h, limits, slices); 
 

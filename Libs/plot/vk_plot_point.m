@@ -19,6 +19,7 @@ function vk_plot_path(pt, varargin)
         colour = 'k';
     end
 
+    hold on;
     if (length(pt) == 2)
         plot(pt(1), pt(2), 'Marker', 'x', 'Color', colour, 'MarkerSize', 5);
     elseif (length(pt) == 3)
