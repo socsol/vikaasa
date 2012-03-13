@@ -14,7 +14,7 @@
 %  limitations under the License.
 function h = vk_gui_timeprofile_create(handles)
     % Make a figure (or use an existing one)
-    if (project.holdfig && isfield(handles, 'current_timeprofile'))
+    if (handles.project.holdfig && isfield(handles, 'current_timeprofile'))
         h = handles.current_timeprofile;
     else
         h = figure(...
