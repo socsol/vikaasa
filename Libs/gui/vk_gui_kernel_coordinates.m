@@ -57,17 +57,22 @@ function vk_gui_kernel_coordinates_OpeningFcn(hObject, eventdata, handles, varar
 
     opts = {'Show'; 'Phase diagram'; 'Time profile'; 'Copy to simulation'};
 
-    set(handles.kernel_coordinates_table, 'ColumnName', [main_handles.project.symbols; opts])
+    set(handles.kernel_coordinates_table, 'ColumnName', [main_handles.project.symbols; 'Steps'; opts])
 
     Vcell = num2cell(main_handles.project.V);
     buttons = cell(size(Vcell, 1), 4);
+    steps = cell(size(Vcell, 1), 1);
     for i = 1:size(Vcell, 1)
+      if (isfield(main_handles.project, 'viable_paths'))
+          paths = main_handles.project.viable_paths{i};
+          steps{i} = size(paths.path,2);
+      end
       for j = 1:4
-        buttons(i,1:4) = opts;
+          buttons(i,1:4) = opts;
       end
     end
 
-    set(handles.kernel_coordinates_table, 'Data', [Vcell, buttons]);
+    set(handles.kernel_coordinates_table, 'Data', [Vcell, steps, buttons]);
 end
 
 % --- Outputs from this function are returned to the command line.
