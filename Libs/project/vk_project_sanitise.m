@@ -20,7 +20,7 @@
 %  - `addnsymbols' (empty cell array of length `numaddnvars'): the symbols for
 %    the additional variables.  Should be a cell array in column form.
 %  - `addneqns' (empty cell array of length `numaddnvars'): the right-hand
-%    sides of the eqautions for the additional variables.  Should be a cell
+%    sides of the equations for the additional variables.  Should be a cell
 %    array in column form.
 %  - `addnignore' (a column vector of zeros, of length `numaddnvars'): whether
 %    or not to ignore each additional variable.  A one means it will be

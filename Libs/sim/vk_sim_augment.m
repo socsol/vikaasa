@@ -41,20 +41,23 @@ function sim_state = vk_sim_augment(project, varargin)
     sim_state.K = vk_kernel_augment_constraints(project, sim_state.K);
 
     %% Augment V with zeros to begin with:
-    sim_state.path = [sim_state.path; zeros(project.numaddnvars, size(sim_state.path, 2))];
-
-    %% For each non-ignored index, fill in the gaps:
-    for i = transpose(find(~project.addnignore))
-        fn = inline(project.addneqns{i}, project.symbols{:});
-        for col = 1:size(sim_state.path, 2)
-            args = num2cell(sim_state.path(1:project.numvars, col));
-            sim_state.path(i+project.numvars, col) = fn(args{:});
-        end
-    end
-
-    %% Now remove all the ignored rows in reverse:
-    for i = sort(transpose(find(project.addnignore))+project.numvars, 'descend')
-        sim_state.path = [sim_state.path(1:i-1,:); sim_state.path(i+1:end,:)];
-    end
+    sim_state.path = vk_sim_augment_path(path, project.numvars, project.numaddnvars, ...
+        project.addnignore, project.addneqns, project.symbols);
+    
+    %[sim_state.path; zeros(project.numaddnvars, size(sim_state.path, 2))];
+%
+%    %% For each non-ignored index, fill in the gaps:
+%    for i = transpose(find(~project.addnignore))
+%        fn = inline(project.addneqns{i}, project.symbols{:});
+%        for col = 1:size(sim_state.path, 2)
+%            args = num2cell(sim_state.path(1:project.numvars, col));
+%            sim_state.path(i+project.numvars, col) = fn(args{:});
+%        end
+%    end
+%
+%    %% Now remove all the ignored rows in reverse:
+%    for i = sort(transpose(find(project.addnignore))+project.numvars, 'descend')
+%        sim_state.path = [sim_state.path(1:i-1,:); sim_state.path(i+1:end,:)];
+%    end
 
 end

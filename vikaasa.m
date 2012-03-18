@@ -1477,3 +1477,12 @@ function controlvartable_CellEditCallback(hObject, eventdata, handles)
     handles.project = vk_project_sanitise(handles.project);
     guidata(hObject, handles);
 end
+
+
+% --- Executes on button press in sim_manualcontrol_button.
+function sim_manualcontrol_button_Callback(hObject, eventdata, handles)
+% hObject    handle to sim_manualcontrol_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+    vk_gui_manual_control(hObject);
+end
