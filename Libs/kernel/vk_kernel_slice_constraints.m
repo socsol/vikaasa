@@ -12,22 +12,16 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function path = vk_sim_augment_path(path, numvars, numaddnvars, ...
-    addnignore, addneqns, symbols)
-    
-    path = [path; zeros(numaddnvars, size(path, 2))];
+function K = vk_kernel_slice_constraints(K, slices)
 
-    %% For each non-ignored index, fill in the gaps:
-    for i = transpose(find(~addnignore))
-        fn = inline(addneqns{i}, symbols{:});
-        for col = 1:size(path, 2)
-            args = num2cell(path(1:numvars, col));
-            path(i+numvars, col) = fn(args{:});
-        end
+    % Order slices from largest to smallest dimension.  There is a bug in
+    % Octave which causes this to break if there is only one slice.
+    if (size(slices, 1) > 1)
+        slices = sortrows(slices, -1);
     end
 
-    %% Now remove all the ignored rows in reverse:
-    for i = sort(transpose(find(addnignore))+numvars, 'descend')
-        path = [path(1:i-1,:); path(i+1:end,:)];
+    for i = 1:size(slices, 1)
+        K = [K(1:2*slices(i, 1)-2), ...
+            K(2*slices(i, 1)+1:end)];
     end
 end

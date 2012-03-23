@@ -176,6 +176,23 @@ function phasediagram_button_Callback(hObject, eventdata, handles)
 % hObject    handle to phasediagram_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    % Create a figure, or use the current one.
+    h = vk_gui_figure_create(main_handles);
+    figure(h);
+
+    [limits, slices] = vk_figure_data_retrieve(h);
+
+    % get the path information.
+    paths = project.viable_paths{eventdata.Indices(1)};
+    %path = vk_kernel_slice_path(vk_sim_augment_path( 
+
+
+    if any(size(limits) <= 0)
+    end
 end
 
 % --- Executes on button press in timeprofiles_button.

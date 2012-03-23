@@ -115,8 +115,12 @@ function runalg_button_Callback(hObject, eventdata, handles)
     else
         if (project.use_parallel)
             warning('Waitbar cannot be displayed when computing in parallel.');
+            computations = prod(project.discretisation);
+            progress_opts = {@(x) fprintf('%6.2f%% done\n', (x/computations)*100)};
+        else
+            progress_opts = {};
         end
-        options = vk_options_make(project, f);
+        options = vk_options_make(project, f, progress_opts{:});
     end
 
 
@@ -243,8 +247,7 @@ end
 function plot_button_Callback(hObject, eventdata, handles)
     V = vk_kernel_augment(handles.project);
     K = vk_kernel_augment_constraints(handles.project);
-    labels = [handles.project.labels; ...
-        handles.project.addnlabels(find(~handles.project.addnignore))];
+    labels = vk_kernel_augment_labels(handles.project);
     colour = handles.project.plotcolour;
     method = handles.project.plottingmethod;
     box = handles.project.drawbox;
@@ -842,8 +845,7 @@ function sim_gui_button_Callback(hObject, eventdata, handles)
     % Display settings.
     display_opts = struct(...
         'alpha', handles.project.alpha, ...
-        'labels', {[handles.project.labels; ...
-            handles.project.addnlabels(find(~handles.project.addnignore))]}, ...
+        'labels', {vk_kernel_augment_labels(handles.project)}, ...
         'colour', handles.project.plotcolour, ...
         'line_colour', handles.project.sim_line_colour, ...
         'line_width', handles.project.sim_line_width, ...
@@ -938,22 +940,16 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
     sim_state = vk_sim_augment(handles.project);
 
     T = sim_state.T;
-    path = sim_state.path;
-
+    path = vk_kernel_slice_path( ...
+        sim_state.path, ...
+        slice);
     slices = vk_kernel_augment_slices(handles.project);
-    K = vk_kernel_augment_constraints(handles.project);
-    labels = [handles.project.labels; ...
-        handles.project.addnlabels(find(~handles.project.addnignore))];
-    if (~isempty(slices))
-        slices = sortrows(slices, -1);
-        for i = 1:size(slices, 1)
-            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-            K = [K(1:2*slices(i, 1)-2), ...
-                K(2*slices(i, 1)+1:end)];
-            labels = [labels(1:slices(i, 1)-1); ...
-                labels(slices(i, 1)+1:end)];
-        end
-    end
+    K = vk_kernel_slice_constraints( ...
+        vk_kernel_augment_constraints(handles.project), ...
+        slices);
+    labels = vk_kernel_slice_text( ...
+        vk_kernel_augment_labels(handles.project), ...
+        slices);
 
     if (handles.project.drawbox)
         limits = vk_plot_box(K);
@@ -1263,7 +1259,6 @@ function slices_CellEditCallback(hObject, eventdata, handles)
 
     handles.project.slices = vk_kernel_make_slices( ...
         data, handles.project.K, handles.project.discretisation);
-    handles.project.slices
     guidata(hObject, handles);
 end
 

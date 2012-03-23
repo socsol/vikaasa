@@ -93,179 +93,192 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
     %	Indices: row and column indices of the cell(s) currently selected
     % handles    structure with handles and user data (see GUIDATA)
 
+    % Get the index of the button pressed.
     data = get(handles.kernel_coordinates_table, 'Data');
-    main_handles = guidata(handles.main_hObject);
-
-    % If a 'click' was clicked ...
-    if eventdata.Indices(2) - size(data, 2) + 4 <= 0
-      return
-    end
-
     pos = eventdata.Indices(2) - size(data, 2) + 4;
 
-    K = main_handles.project.K; 
-    labels = main_handles.project.labels;
+    % If a non-interactive item is selected, do nothing.
+    if pos <= 0
+      return;
+    end
 
     if pos == 1
         % Show
-
-        % Create a figure, or use the current one.
-        h = vk_gui_figure_create(main_handles);
-        figure(h);
-
-        [limits, slices] = vk_figure_data_retrieve(h);
-
-        x = main_handles.project.V(eventdata.Indices(1), :);
-
-        % If the 'limits' are zero, then this must be a new plot.
-        if any(size(limits) <= 0)
-            slices = vk_kernel_augment_slices(main_handles.project);
-            limits = K;
-
-            if (~isempty(slices))
-                slices = sortrows(slices, -1);
-                for i = 1:size(slices, 1)
-                    K = [K(1:2*slices(i, 1)-2), ...
-                        K(2*slices(i, 1)+1:end)];
-                    labels = [labels(1:slices(i, 1)-1); ...
-                        labels(slices(i, 1)+1:end)];
-                    x = [x(1:slices(i,1)-1); x(slices(i,1)+1:end)];
-                end
-            end
-
-            if (main_handles.project.drawbox)
-                limits = vk_plot_box(K);
-            else
-                limits = K;
-            end
-
-            xlabel(labels{1});
-            ylabel(labels{2});
-            if length(limits) == 6
-                view(3);
-                zlabel(labels{3});
-            end
-        else
-            if (~isempty(slices))
-                slices = sortrows(slices, -1);
-                for i = 1:size(slices, 1)
-                    x = [x(1:slices(i,1)-1); x(slices(i,1)+1:end)];
-                end
-            end
-        end
-
-        vk_plot_point(x, main_handles.project.plotcolour);
-        vk_figure_data_insert(h, limits, slices);
-        grid on;
-        axis(limits);
-
-        % We should set the current_figure value here ... but won't it corrupt?
-        main_handles.current_figure = h;
-        guidata(handles.main_hObject, main_handles);
+        vk_gui_kernel_coordinates_show(hObject, handles, eventdata.Indices(1));
     elseif pos == 2
         % Phase diagram
-
-        % Create a figure, or use the current one.
-        h = vk_gui_figure_create(main_handles);
-        figure(h);
-
-        [limits, slices] = vk_figure_data_retrieve(h);
-
-        % get the path information.
-        paths = main_handles.project.viable_paths{eventdata.Indices(1)};
-        path = paths.path;
-
-        % If the 'limits' are zero, then this must be a new plot.
-        if any(size(limits) <= 0)
-            slices = vk_kernel_augment_slices(main_handles.project);
-
-            if (~isempty(slices))
-                slices = sortrows(slices, -1);
-                for i = 1:size(slices, 1)
-                    path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-                    K = [K(1:2*slices(i, 1)-2), ...
-                        K(2*slices(i, 1)+1:end)];
-                    labels = [labels(1:slices(i, 1)-1); ...
-                        labels(slices(i, 1)+1:end)];
-                end
-            end
-
-            if (main_handles.project.drawbox)
-                limits = vk_plot_box(K);
-            else
-                limits = K;
-            end
-
-            xlabel(labels{1});
-            ylabel(labels{2});
-            if length(limits) == 6
-              view(3);
-              zlabel(labels{3});
-            end
-        else
-            % We still need to reduce the path variable.
-            if (~isempty(slices))
-                slices = sortrows(slices, -1);
-                for i = 1:size(slices, 1)
-                    path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-                end
-            end
-        end
-
-        limits = vk_plot_path_limits(limits, path);
-        
-        % The 'inside' values can't be computed ahead of time.
-        viablepath = paths.viablepath;
-        distances = vk_kernel_distances(main_handles.project.K, main_handles.project.discretisation);
-        V = main_handles.project.V;
-        for i = 1:length(paths.T)
-            [viablepath(1, i), viablepath(2, i)] = ...
-              vk_kernel_inside(paths.path(:,i), V, distances, main_handles.project.layers);
-        end
-
-        vk_plot_path(paths.T, path, viablepath, main_handles.project.sim_showpoints, main_handles.project.sim_line_colour, main_handles.project.sim_line_width);
-
-        grid on;
-        axis(limits);
-        vk_figure_data_insert(h, limits, slices); 
-
-        main_handles.current_figure = h;
-        guidata(handles.main_hObject, main_handles);
+        vk_gui_kernel_coordinates_phasediagram(hObject, handles, eventdata.Indices(1));
     elseif pos == 3
         % Time profile
-
-        % Create system's dynamics.
-        f = vk_diff_make_fn(main_handles.project);
-
-        % Use vk_options make to construct options.
-        options = vk_options_make(main_handles.project, f);
-
-        % Make a mock simulation
-        simulation = main_handles.project.viable_paths{eventdata.Indices(1)};
-        simulation.distances = vk_kernel_distances(main_handles.project.K, main_handles.project.discretisation);
-        simulation.V = main_handles.project.V;
-
-        % Extend the viablepath info
-        viablepath = simulation.viablepath;
-        for i = 1:length(simulation.T)
-            [viablepath(1, i), viablepath(2, i)] = ...
-                vk_kernel_inside(simulation.path(:,i), simulation.V, simulation.distances, main_handles.project.layers);
-        end
-        simulation.viablepath = viablepath;
-
-        simulation.K = main_handles.project.K;
-        simulation.small = options.small;
-        simulation.layers = main_handles.project.layers;
-
-        h = vk_gui_timeprofile_create(main_handles);
-        h = vk_figure_timeprofiles_make(main_handles.project, 'handle', h, 'simulation', simulation);
-
-        main_handles.current_timeprofile = h;
-        guidata(handles.main_hObject, main_handles);
+        vk_gui_kernel_coordinates_timeprofiles(hObject, handles, eventdata.Indices(1));
     elseif pos == 4 
         % Copy to simulation
-        main_handles.project.sim_start = transpose(main_handles.project.V(eventdata.Indices(1), :));
-        main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
-        guidata(handles.main_hObject, main_handles);
+        vk_gui_kernel_coordinates_copy(hObject, handles, eventdata.Indices(1));
+    end
+end
+
+%% Show point
+function vk_gui_kernel_coordinates_show(hObject, handles, index)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    % Create a figure, or use the current one.
+    h = vk_gui_figure_create(main_handles);
+    figure(h);
+
+    % Get the existing figure, if there is one.
+    [limits, slices] = vk_figure_data_retrieve(h);
+
+    % If the 'limits' are zero, then this must be a new plot.
+    if any(size(limits) <= 0)
+        slices = vk_kernel_augment_slices(project);
+
+        K = vk_kernel_slice_constraints( ...
+            vk_kernel_augment_constraints(project), ...
+            slices);
+
+        labels = vk_kernel_slice_text( ...
+            vk_kernel_augment_labels(project), ...
+            slices);
+        
+        if (main_handles.project.drawbox)
+            limits = vk_plot_box(K);
+        else
+            limits = K;
+        end
+
+        xlabel(labels{1});
+        ylabel(labels{2});
+        if length(limits) == 6
+            view(3);
+            zlabel(labels{3});
+        end
+    end
+
+    x = vk_kernel_slice_path( ...
+        vk_sim_augment_path(transpose(project.V(index, :)), project.numvars, ...
+            project.numaddnvars, project.addnignore, project.addneqns, ...
+            project.symbols), slices);
+
+    vk_plot_point(x, project.plotcolour);
+    vk_figure_data_insert(h, limits, slices);
+    grid on;
+    axis(limits);
+
+    main_handles.current_figure = h;
+    guidata(handles.main_hObject, main_handles);
+end
+
+%% Phase diagram
+function vk_gui_kernel_coordinates_phasediagram(hObject, handles, index)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    % Create a figure, or use the current one.
+    h = vk_gui_figure_create(main_handles);
+    figure(h);
+
+    [limits, slices] = vk_figure_data_retrieve(h);
+
+    % If the 'limits' are zero, then this must be a new plot.
+    if any(size(limits) <= 0)
+        slices = vk_kernel_augment_slices(project);
+
+        K = vk_kernel_slice_constraints( ...
+            vk_kernel_augment_constraints(project), ...
+            slices);
+
+        labels = vk_kernel_slice_text( ...
+            vk_kernel_augment_labels(project), ...
+            slices);
+
+        if (main_handles.project.drawbox)
+            limits = vk_plot_box(K);
+        else
+            limits = K;
+        end
+
+        xlabel(labels{1});
+        ylabel(labels{2});
+        if length(limits) == 6
+          view(3);
+          zlabel(labels{3});
+        end
+    end
+
+    % get the path information.
+    paths = main_handles.project.viable_paths{index};
+
+    path = vk_kernel_slice_path( ...
+        vk_sim_augment_path(paths.path, project.numvars, project.numaddnvars, ...
+            project.addnignore, project.addneqns, project.symbols), slices);
+
+    limits = vk_plot_path_limits(limits, path);
+
+    viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
+        paths.viablepath, paths.path, paths.T, project.V, project.K, ...
+        project.discretisation, project.layers);
+    
+    vk_plot_path(paths.T, path, viablepath, project.sim_showpoints, ...
+        project.sim_line_colour, project.sim_line_width);
+
+    grid on;
+    axis(limits);
+    vk_figure_data_insert(h, limits, slices);
+
+    main_handles.current_figure = h;
+    guidata(handles.main_hObject, main_handles);
+end
+
+%% Time profiles
+function vk_gui_kernel_coordinates_timeprofiles(hObject, handles, index)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    % Use vk_options make to construct options.
+    f = vk_diff_make_fn(project);
+    options = vk_options_make(project, f);
+
+    % Make a mock simulation
+    simulation = project.viable_paths{index};
+    simulation.distances = vk_kernel_distances(project.K, project.discretisation);
+    simulation.V = project.V;
+
+    % Extend the viablepath info
+    simulation.viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
+        simulation.viablepath, simulation.path, simulation.T, project.V, project.K, ...
+        project.discretisation, project.layers);
+    
+    simulation.K = project.K;
+    simulation.small = options.small;
+    simulation.layers = project.layers;
+
+    h = vk_gui_timeprofile_create(main_handles);
+    h = vk_figure_timeprofiles_make(project, ...
+        'handle', h, ...
+        'simulation', simulation);
+
+    main_handles.current_timeprofile = h;
+    guidata(handles.main_hObject, main_handles);
+end
+
+%% Copy to simulation
+function vk_gui_kernel_coordinates_copy(hObject, handles, index)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    main_handles.project.sim_start = transpose(project.V(index, :));
+    main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
+    guidata(handles.main_hObject, main_handles);
+end
+
+function viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
+    viablepath, path, T, V, K, discretisation, layers)
+
+    % The 'inside' values can't be computed ahead of time.
+    distances = vk_kernel_distances(K, discretisation);
+    for i = 1:length(T)
+        [viablepath(1, i), viablepath(2, i)] = ...
+            vk_kernel_inside(path(:,i), V, distances, layers);
     end
 end

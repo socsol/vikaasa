@@ -41,8 +41,8 @@ function sim_state = vk_sim_augment(project, varargin)
     sim_state.K = vk_kernel_augment_constraints(project, sim_state.K);
 
     %% Augment V with zeros to begin with:
-    sim_state.path = vk_sim_augment_path(path, project.numvars, project.numaddnvars, ...
-        project.addnignore, project.addneqns, project.symbols);
+    sim_state.path = vk_sim_augment_path(sim_state.path, project.numvars, ...
+        project.numaddnvars, project.addnignore, project.addneqns, project.symbols);
     
     %[sim_state.path; zeros(project.numaddnvars, size(sim_state.path, 2))];
 %
