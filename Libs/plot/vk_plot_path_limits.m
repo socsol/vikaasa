@@ -33,4 +33,6 @@ function limits = vk_plot_path_limits(limits, path)
         limits(2*j - 1) = min([limits(2*j - 1), path(j, :)]);
         limits(2*j) = max([limits(2*j), path(j, :)]);
     end
+
+    limits = real(limits);
 end

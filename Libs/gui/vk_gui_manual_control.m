@@ -79,19 +79,24 @@ function vk_gui_manual_control_OpeningFcn(hObject, eventdata, handles, varargin)
 
   % Set the variable names
   set(handles.controls_table, 'RowName', project.controlsymbols);
-  symbols = [project.symbols; project.addnsymbols(find(project.addnignore == false))];
+  symbols = [project.symbols; project.addnsymbols(find(~project.addnignore))];
   set(handles.variables_table, 'RowName', symbols);
 
   % Set the time axis
   set(handles.controls_table, 'ColumnName', num2cell(handles.T));
   set(handles.variables_table, 'ColumnName', num2cell(handles.T));
+  set(handles.velocity_table, 'ColumnName', num2cell(handles.T));
 
   % Create a set of empty data cells
-  set(handles.controls_table, 'Data', zeros(length(project.controlsymbols), length(handles.T)));
-  set(handles.variables_table, 'Data', zeros( ...
-    length(project.symbols) + length(project.addnsymbols), ...
-    length(handles.T) ...
-  ));
+  handles.path = zeros( ...
+    length(project.symbols) + length(project.addnsymbols(find(~project.addnignore))), ...
+    length(handles.T));
+  handles.controlpath = zeros(length(project.controlsymbols), length(handles.T));
+  handles.normpath = zeros(1, length(handles.T));
+
+  set(handles.controls_table, 'Data', handles.controlpath);
+  set(handles.variables_table, 'Data', handles.path);
+  set(handles.velocity_table, 'Data', handles.normpath);
 
   % Make the control table editable.
   set(handles.controls_table, 'ColumnEditable', logical(ones(1, length(handles.T))));
@@ -119,8 +124,9 @@ end
 
 %% Updates the variables section.
 function vk_gui_manual_control_update(hObject, handles, start)
-    controls = get(handles.controls_table, 'Data');
-    variables = get(handles.variables_table, 'Data');
+    path = get(handles.variables_table, 'Data');
+    controlpath = get(handles.controls_table, 'Data');
+    normpath = handles.normpath;
 
     main_handles = guidata(handles.main_hObject);
     project = main_handles.project;
@@ -128,29 +134,44 @@ function vk_gui_manual_control_update(hObject, handles, start)
     f = vk_diff_make_fn(project); 
     options = vk_options_make(project, f);
     next_fn = options.next_fn;
+    norm_fn = options.norm_fn;
 
     % Special case when start = 0, we have to get the start state from the main
-    % window.
+    % window, and set up the normpath.
     if (start == 0)
-        variables(:,1) = vk_sim_augment_path(project.sim_start, project.numvars, project.numaddnvars, project.addnignore, project.addneqns, project.symbols);
+        project.sim_start
+        path(:,1) = vk_sim_augment_path(project.sim_start, project.numvars, project.numaddnvars, project.addnignore, project.addneqns, project.symbols);
 
         start = 1;
     end
 
     % First, update the dynamic equations
     for i = start:length(handles.T) - 1
-        variables(1:project.numvars, i+1) = next_fn( ...
-            variables(1:project.numvars, i), ...
-            controls(:, i));
+        path(1:project.numvars, i+1) = next_fn( ...
+            path(1:project.numvars, i), ...
+            controlpath(:, i));
+        normpath(i) = norm_fn(f( ...
+            path(1:project.numvars, i), ...
+            controlpath(:, i)));
     end
+    normpath(end) = norm_fn(f( ...
+        path(1:project.numvars, end), ...
+        controlpath(:, end)));
+
 
     % Now update the additional vars
-    variables(:,start+1:length(handles.T)) = vk_sim_augment_path( ...
-        variables(1:project.numvars,start+1:length(handles.T)), ...
+    path(:,start+1:length(handles.T)) = vk_sim_augment_path( ...
+        path(1:project.numvars,start+1:length(handles.T)), ...
         project.numvars, project.numaddnvars, project.addnignore, ...
         project.addneqns, project.symbols);
 
-    set(handles.variables_table, 'Data', variables);
+    set(handles.variables_table, 'Data', path);
+    set(handles.velocity_table, 'Data', normpath);
+
+    handles.path = path;
+    handles.normpath = normpath; 
+    handles.controlpath = controlpath;
+    guidata(hObject, handles);
 end
 
 % --- Outputs from this function are returned to the command line.
@@ -169,6 +190,14 @@ function copytosim_button_Callback(hObject, eventdata, handles)
 % hObject    handle to copytosim_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    main_handles.project.sim_start = handles.path(1:project.numvars, 1);
+    main_handles.project.sim_state = vk_gui_manual_control_simulation( ...
+        project, handles.T, handles.path, ...
+        handles.controlpath, handles.normpath);
+    guidata(handles.main_hObject, main_handles);
 end
 
 % --- Executes on button press in phasediagram_button.
@@ -186,13 +215,53 @@ function phasediagram_button_Callback(hObject, eventdata, handles)
 
     [limits, slices] = vk_figure_data_retrieve(h);
 
-    % get the path information.
-    paths = project.viable_paths{eventdata.Indices(1)};
-    %path = vk_kernel_slice_path(vk_sim_augment_path( 
-
-
     if any(size(limits) <= 0)
+      slices = vk_kernel_augment_slices(project);
+
+      K = vk_kernel_slice_constraints( ...
+          vk_kernel_augment_constraints(project), ...
+          slices);
+      if (~any(length(K) == [4,6]))
+          errordlg('Phase diagram can only be drawn for 2 or 3 dimensions.');
+          return;
+      end
+
+      labels = vk_kernel_slice_text( ...
+          vk_kernel_augment_labels(project), ...
+          slices);
+
+      if (main_handles.project.drawbox)
+          limits = vk_plot_box(K);
+      else
+          limits = K;
+      end
+
+      xlabel(labels{1});
+      ylabel(labels{2});
+      if length(limits) == 6
+        view(3);
+        zlabel(labels{3});
+      end
+
+      hold on;
+      grid on;
     end
+
+    % Create the path variable
+    path = vk_kernel_slice_path(handles.path, slices);
+    limits = vk_plot_path_limits(limits, path);
+
+    viablepath = vk_gui_manual_control_viablepath(handles.path(1:project.numvars,:), ...
+        handles.normpath, project);
+    
+    vk_plot_path(handles.T, path, viablepath, project.sim_showpoints, ...
+        project.sim_line_colour, project.sim_line_width);
+
+    vk_figure_data_insert(h, limits, slices);
+    axis(limits);
+
+    main_handles.current_figure = h;
+    guidata(handles.main_hObject, main_handles);
 end
 
 % --- Executes on button press in timeprofiles_button.
@@ -200,6 +269,19 @@ function timeprofiles_button_Callback(hObject, eventdata, handles)
 % hObject    handle to timeprofiles_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    simulation = vk_gui_manual_control_simulation(project, handles.T, handles.path, ...
+        handles.controlpath, handles.normpath);
+
+    h = vk_gui_timeprofile_create(main_handles);
+    h = vk_figure_timeprofiles_make(project, ...
+        'handle', h, ...
+        'simulation', simulation);
+
+    main_handles.current_timeprofile = h;
+    guidata(handles.main_hObject, main_handles);
 end
 
 % --- Executes on button press in clearcontrols_button.
@@ -207,6 +289,9 @@ function clearcontrols_button_Callback(hObject, eventdata, handles)
 % hObject    handle to clearcontrols_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+    handles.controlpath = zeros(size(handles.controlpath));
+    set(handles.controls_table, 'Data', handles.controlpath);
+    guidata(hObject, handles);
 end
 
 
@@ -222,4 +307,64 @@ function controls_table_CellEditCallback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
     vk_gui_manual_control_update(hObject, handles, eventdata.Indices(2));
+end
+
+function viablepath = vk_gui_manual_control_viablepath(path, normpath, project)
+    viablepath = zeros(5, size(path,2));
+
+    V = project.V;
+    K = project.K;
+    discretisation = project.discretisation;
+    layers = project.layers;
+    c = project.c;
+
+    f = vk_diff_make_fn(project);
+    options = vk_options_make(project, f);
+
+    distances = vk_kernel_distances(K, discretisation);
+
+    for i = 1:size(path,2)
+        x = path(:, i);
+
+        %% Record viability, etc. at this point
+        [viablepath(1, i), viablepath(2, i)] = vk_kernel_inside(x, V, ...
+            distances, layers);
+        exited_on = vk_viable_exited(x, K, f, c, options);
+        viablepath(3, i) = any(~isnan(exited_on(:,1)));
+        viablepath(4, i) = any(~isnan(exited_on(:,2)));
+
+        %% Record velocity and steadyness
+        viablepath(5, i) = normpath(i) <= options.small;
+    end
+end
+
+function simulation = vk_gui_manual_control_simulation(project, T, path, controlpath, normpath)
+    % Use vk_options make to construct options.
+    f = vk_diff_make_fn(project);
+    options = vk_options_make(project, f);
+
+    % We don't need the augmented path in this function.
+    path = path(1:project.numvars, :);
+
+    comp_time = 0;
+    cl = fix(clock);
+    comp_datetime = ...
+        sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
+
+    % Make a mock simulation
+    simulation = struct( ...
+        'T', T, ...
+        'path', path, ...
+        'normpath', normpath, ...
+        'controlpath', controlpath, ...
+        'viablepath', vk_gui_manual_control_viablepath(path, normpath, project), ...
+        'distances', vk_kernel_distances(project.K, project.discretisation), ...
+        'V', project.V, ...
+        'K', project.K, ...
+        'c', project.c, ...
+        'small', options.small, ...
+        'layers', project.layers, ...
+        'time_horizon', T(end), ...
+        'comp_time', comp_time, ...
+        'comp_datetime', comp_datetime);
 end

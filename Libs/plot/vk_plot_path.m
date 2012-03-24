@@ -32,6 +32,9 @@
 %  limitations under the License.
 function vk_plot_path(T, path, viablepath, showpoints, varargin)
 
+    % Ignore imaginary parts
+    path = real(path);
+
     if (nargin > 4)
         colour = varargin{1};
         width = varargin{2};

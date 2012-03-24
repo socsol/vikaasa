@@ -136,6 +136,11 @@ function vk_gui_kernel_coordinates_show(hObject, handles, index)
         K = vk_kernel_slice_constraints( ...
             vk_kernel_augment_constraints(project), ...
             slices);
+        if (~any(length(K) == [4,6]))
+            errordlg('Points can only be drawn for 2 or 3 dimensions.');
+            return;
+        end
+
 
         labels = vk_kernel_slice_text( ...
             vk_kernel_augment_labels(project), ...
@@ -153,6 +158,9 @@ function vk_gui_kernel_coordinates_show(hObject, handles, index)
             view(3);
             zlabel(labels{3});
         end
+
+        hold on;
+        grid on;
     end
 
     x = vk_kernel_slice_path( ...
@@ -162,7 +170,6 @@ function vk_gui_kernel_coordinates_show(hObject, handles, index)
 
     vk_plot_point(x, project.plotcolour);
     vk_figure_data_insert(h, limits, slices);
-    grid on;
     axis(limits);
 
     main_handles.current_figure = h;
@@ -187,6 +194,10 @@ function vk_gui_kernel_coordinates_phasediagram(hObject, handles, index)
         K = vk_kernel_slice_constraints( ...
             vk_kernel_augment_constraints(project), ...
             slices);
+        if (~any(length(K) == [4,6]))
+            errordlg('Phase diagram can only be drawn for 2 or 3 dimensions.');
+            return;
+        end
 
         labels = vk_kernel_slice_text( ...
             vk_kernel_augment_labels(project), ...
@@ -235,6 +246,40 @@ function vk_gui_kernel_coordinates_timeprofiles(hObject, handles, index)
     main_handles = guidata(handles.main_hObject);
     project = main_handles.project;
 
+    simulation = vk_gui_kernel_coordinates_simulation(project, index);
+
+    h = vk_gui_timeprofile_create(main_handles);
+    h = vk_figure_timeprofiles_make(project, ...
+        'handle', h, ...
+        'simulation', simulation);
+
+    main_handles.current_timeprofile = h;
+    guidata(handles.main_hObject, main_handles);
+end
+
+%% Copy to simulation
+function vk_gui_kernel_coordinates_copy(hObject, handles, index)
+    main_handles = guidata(handles.main_hObject);
+    project = main_handles.project;
+
+    main_handles.project.sim_start = transpose(project.V(index, :));
+    main_handles.project.sim_state = vk_gui_kernel_coordinates_simulation(project, index);
+    main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
+    guidata(handles.main_hObject, main_handles);
+end
+
+function viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
+    viablepath, path, T, V, K, discretisation, layers)
+
+    % The 'inside' values can't be computed ahead of time.
+    distances = vk_kernel_distances(K, discretisation);
+    for i = 1:length(T)
+        [viablepath(1, i), viablepath(2, i)] = ...
+            vk_kernel_inside(path(:,i), V, distances, layers);
+    end
+end
+
+function simulation = vk_gui_kernel_coordinates_simulation(project, index)
     % Use vk_options make to construct options.
     f = vk_diff_make_fn(project);
     options = vk_options_make(project, f);
@@ -252,33 +297,9 @@ function vk_gui_kernel_coordinates_timeprofiles(hObject, handles, index)
     simulation.K = project.K;
     simulation.small = options.small;
     simulation.layers = project.layers;
-
-    h = vk_gui_timeprofile_create(main_handles);
-    h = vk_figure_timeprofiles_make(project, ...
-        'handle', h, ...
-        'simulation', simulation);
-
-    main_handles.current_timeprofile = h;
-    guidata(handles.main_hObject, main_handles);
-end
-
-%% Copy to simulation
-function vk_gui_kernel_coordinates_copy(hObject, handles, index)
-    main_handles = guidata(handles.main_hObject);
-    project = main_handles.project;
-
-    main_handles.project.sim_start = transpose(project.V(index, :));
-    main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
-    guidata(handles.main_hObject, main_handles);
-end
-
-function viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
-    viablepath, path, T, V, K, discretisation, layers)
-
-    % The 'inside' values can't be computed ahead of time.
-    distances = vk_kernel_distances(K, discretisation);
-    for i = 1:length(T)
-        [viablepath(1, i), viablepath(2, i)] = ...
-            vk_kernel_inside(path(:,i), V, distances, layers);
-    end
+    simulation.time_horizon = simulation.T(end);
+    simulation.c = project.c;
+    simulation.small = options.small;
+    simulation.comp_time = project.comp_time;
+    simulation.comp_datetime = project.comp_datetime;
 end

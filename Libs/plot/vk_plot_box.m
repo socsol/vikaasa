@@ -144,5 +144,7 @@ function limits = vk_plot_box(K, varargin)
         if (exist('alpha'))
             alpha(p, 0.2);
         end
+    else
+        error('Too many dimensions');
     end
 end

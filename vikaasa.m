@@ -818,10 +818,7 @@ function sim_plot_button_Callback(hObject, eventdata, handles)
     T = sim_state.T;
     path = sim_state.path;
     if (~isempty(slices))
-        slices = sortrows(slices, -1);
-        for i = 1:size(slices, 1)
-            path = [path(1:slices(i, 1)-1, :); path(slices(i, 1)+1:end, :)];
-        end
+        path = vk_kernel_slice_path(path, slices);
     end
 
     limits = vk_plot_path_limits(limits, path);
@@ -940,10 +937,10 @@ function sim_plotalone_button_Callback(hObject, eventdata, handles)
     sim_state = vk_sim_augment(handles.project);
 
     T = sim_state.T;
+    slices = vk_kernel_augment_slices(handles.project);
     path = vk_kernel_slice_path( ...
         sim_state.path, ...
-        slice);
-    slices = vk_kernel_augment_slices(handles.project);
+        slices);
     K = vk_kernel_slice_constraints( ...
         vk_kernel_augment_constraints(handles.project), ...
         slices);
