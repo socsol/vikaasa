@@ -75,7 +75,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function [V, viable_paths] = vk_kernel_compute(K, f, c, varargin)
+function [V, NV, viable_paths nonviable_paths] = vk_kernel_compute(K, f, c, varargin)
 
     %% Build options.
     options = vk_options(K, f, c, varargin{:});
@@ -99,7 +99,9 @@ function [V, viable_paths] = vk_kernel_compute(K, f, c, varargin)
     %   VK_KERNEL_COMPUTE_RECURSIVE, below.
     fn = @(start, posn) vk_kernel_compute_recursive(...
         zeros(prod(discretisation(2:end)), numvars), ...
-        cell(prod(discretisation(2:end)), 1), start, 0, posn, ...
+        zeros(prod(discretisation(2:end)), numvars), ...
+        cell(prod(discretisation(2:end)), 1), cell(prod(discretisation(2:end)), 1), ...
+        start, 0, 0, posn, ...
         ax(2:end), K, f, c, options);
 
     %% Create a cell of 'starts'.
@@ -111,7 +113,8 @@ function [V, viable_paths] = vk_kernel_compute(K, f, c, varargin)
     end
 
     %% Call CELLFUN or PARCELLFUN
-    [V_cells,viable_path_cells, cnt_cells] = options.cell_fn(fn, start_cells, num2cell(ax{1}));
+    [V_cells, NV_cells, viable_path_cells, nonviable_path_cells, cnt_cells, ncnt_cells] = ...
+        options.cell_fn(fn, start_cells, num2cell(ax{1}));
 
 
     %% Build the viability kernel from the results of the CELLFUN call
@@ -122,6 +125,16 @@ function [V, viable_paths] = vk_kernel_compute(K, f, c, varargin)
         V(c+1:c+cnt_cells{i}, :) = V_cells{i}(1:cnt_cells{i},:);
         viable_paths(c+1:c+cnt_cells{i}) = viable_path_cells{i}(1:cnt_cells{i});
         c = c + cnt_cells{i};
+    end
+
+    % Build the 'anti-kernel' in the same way.
+    NV = zeros(sum(cell2mat(ncnt_cells)), numvars);
+    nonviable_paths = cell(sum(cell2mat(ncnt_cells)), 1);
+    c = 0;
+    for i = 1:discretisation(1)
+        NV(c+1:c+ncnt_cells{i}, :) = NV_cells{i}(1:ncnt_cells{i},:);
+        nonviable_paths(c+1:c+ncnt_cells{i}) = nonviable_path_cells{i}(1:ncnt_cells{i});
+        c = c + ncnt_cells{i};
     end
 end
 
@@ -142,8 +155,11 @@ end
 %   - 'posn' is a (possibly partially constructed) point to consider.  In those
 %     cases where posn is not fully constructed, points are taken from the ax
 %     variable to produce points.
-function [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, start, cnt, posn, ax, ...
-    K, f, c, options)
+function [V, NV, viable_paths, nonviable_paths, cnt, ncnt] = ...
+    vk_kernel_compute_recursive(V, NV, ...
+        viable_paths, nonviable_paths, ...
+        start, cnt, ncnt, posn, ax, ...
+        K, f, c, options)
 
     cancel_test = options.cancel_test;
     discretisation = options.discretisation;
@@ -158,8 +174,10 @@ function [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, s
             end
 
             s = start + (i-1) * prod(discretisation(length(posn)+2:end));
-            [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, s, cnt, ...
-                [posn; curr_ax(i)], ax(2:end), K, f, c, options);
+            [V, NV, viable_paths, nonviable_paths, cnt ncnt] = ...
+                vk_kernel_compute_recursive(V, NV, ...
+                    viable_paths, nonviable_paths, s, cnt, ncnt, ...
+                    [posn; curr_ax(i)], ax(2:end), K, f, c, options);
         end
     else % Only one axis remaining -- call options.viable_fn on each point.
         curr_ax = ax{1};
@@ -179,12 +197,25 @@ function [V, viable_paths, cnt] = vk_kernel_compute_recursive(V, viable_paths, s
                 options.progress_fn(start + i);
             end
 
-            [viable, viable_path] = options.viable_fn(x, K, f, c, options);
+            try
+              [viable, viable_path] = options.viable_fn(x, K, f, c, options);
 
-            if (viable)
-                cnt = cnt + 1;
-                V(cnt, :) = transpose(x);
-                viable_paths{cnt} = viable_path;
+              if (viable)
+                  cnt = cnt + 1;
+                  V(cnt, :) = transpose(x);
+                  viable_paths{cnt} = viable_path;
+              else
+                  ncnt = ncnt + 1;
+                  NV(ncnt, :) = transpose(x);
+                  nonviable_paths{ncnt} = viable_path;
+              end
+
+            catch
+              exception = lasterror();
+              warning(['Error computing viability of point ', ...
+                mat2str(transpose(x)), ...
+                ': ', ...
+                exception.message]);
             end
         end
     end

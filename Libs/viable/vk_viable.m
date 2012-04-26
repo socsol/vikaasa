@@ -59,6 +59,8 @@ function varargout = vk_viable(x, K, f, c, varargin)
     % crash.  The bound_fn also returns non-viability of the point.
     control_fn = vk_control_wrap_fn(options.control_fn, K, f, c, options);
 
+    %% Construct a fallback control function
+    fallback_fn = vk_control_wrap_fn(@ZeroControl, K, f, c, options);
 
     %% Can additionall return the path taken in determining viability
     if (nargout > 1)
@@ -98,7 +100,15 @@ function varargout = vk_viable(x, K, f, c, varargin)
         end
 
         %% Find control for point x
-        [u, crashed, exited_on] = control_fn(x);
+        try
+            [u, crashed, exited_on] = control_fn(x);
+        catch
+            ex = lasterror();
+            warning(['Error using control algorithm at point ', ...
+                mat2str(transpose(x)), ...
+                ' falling back on ZeroControl.']);
+            [u, crashed, exited_on] = fallback_fn(x);
+        end
 
         %% Record the new control.
         if (recordpath)

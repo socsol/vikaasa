@@ -50,7 +50,6 @@ function fn = vk_control_wrap_fn(control_fn, K, f, c, varargin)
             K, f, c, options);
     else
         fn = @(x) bound_fn(x, ...
-        	control_fn(x, K, f, c, options), K, f, c, options);
+            control_fn(x, K, f, c, options), K, f, c, options);
     end
 end
-
