@@ -36,25 +36,18 @@ function vk_plot(V, colour, method, varargin)
     end
 
     alpha_val = 1;
+    opts = {};
     if (nargin > 3)
         alpha_val = varargin{1};
+    end
+    if (nargin > 5)
+        opts = varargin(2:end);
     end
 
     hold on;
     grid on;
 
-    if (length(method) > 6 && strcmp(method(end-6:end), '-smooth'))
-        method = method(1:end-7);
-        opts = {'smooth', 1};
-    elseif (length(method) > 2 && any(strcmp(method(end-1:end), ...
-      {'-.', '-o', '-x', '-+', '-*', '-s', '-d', '-v', '-^', '-<', '->', '-p', '-h'})))
-
-        opts = {'marker', method(end)};
-        method = method(1:end-2);
-    else
-        opts = {};
-    end
-
+    
     fallbackfn = eval(['@vk_plot_',type,'_scatter']);
     if (exist(['vk_plot_',type,'_',method]))
         plotfn = eval(['@vk_plot_',type,'_',method]);
@@ -63,16 +56,16 @@ function vk_plot(V, colour, method, varargin)
     end
 
     err = 0;
-    try
+    %try
         plotfn(V, colour, alpha_val, opts{:});
-    catch
-        err = 1;
-        exception = lasterror();
-        warning(['Couldn''t plot kernel using "', method, '" method. Reverting to fall-back']);
-        fallbackfn(V, colour, alpha_val);
-    end
-
-    %if (err)
-    %    rethrow(exception);
+    %catch
+    %    err = 1;
+    %    exception = lasterror();
+    %    warning(['Couldn''t plot kernel using "', method, '" method. Reverting to fall-back']);
+    %    fallbackfn(V, colour, alpha_val);
     %end
+
+    if (err)
+        rethrow(exception);
+    end
 end

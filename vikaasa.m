@@ -150,7 +150,7 @@ function runalg_button_Callback(hObject, eventdata, handles)
     fprintf('RUNNING ALGORITHM\n');
     success = 0; error = 0;
     try
-        [V, viable_paths] = vk_kernel_compute(K, f, c, options);
+        [V, NV, viable_paths, nonviable_paths] = vk_kernel_compute(K, f, c, options);
 
         if (options.cancel_test_fn())
             message_title = 'Kernel Computation Cancelled';
@@ -184,6 +184,8 @@ function runalg_button_Callback(hObject, eventdata, handles)
     if (success)
         handles.project.V = V;
         handles.project.viable_paths = viable_paths;
+        handles.project.NV = NV;
+        handles.project.nonviable_paths = nonviable_paths;
         handles.project.comp_time = comp_time;
         handles.project.comp_datetime = ...
             sprintf('%i-%i-%i %i:%i:%i', cl(1), cl(2), cl(3), cl(4), cl(5), cl(6));
@@ -245,27 +247,9 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function plot_button_Callback(hObject, eventdata, handles)
-    V = vk_kernel_augment(handles.project);
-    K = vk_kernel_augment_constraints(handles.project);
-    labels = vk_kernel_augment_labels(handles.project);
-    colour = handles.project.plotcolour;
-    method = handles.project.plottingmethod;
-    box = handles.project.drawbox;
-    alpha_val = handles.project.alpha;
-
-    h = vk_gui_figure_create(handles);
     
-    % If we are ignoring any variables, elminate them from the slices, and all
-    % slice = all values.
-    slices = vk_kernel_augment_slices(handles.project);
-
-    if (size(slices, 1) > 0)
-        vk_figure_make_slice(V, slices, K, labels, colour, ...
-            method, box, alpha_val, h);
-    else % Just plot the whole thing.
-        vk_figure_make(V, K, labels, colour, method, ...
-            box, alpha_val, h);
-    end
+    h = vk_gui_figure_create(handles);
+    vk_figure_make(handles.project, h);
 
     handles.current_figure = h;
     guidata(hObject, handles);
@@ -1124,7 +1108,8 @@ function view_coords_button_Callback(hObject, eventdata, handles)
     %openvar V;
 
     if (isfield(handles.project, 'V'))
-        vk_gui_kernel_coordinates(hObject);
+        vk_gui_kernel_coordinates(hObject, handles.project.V, ...
+            handles.project.viable_paths, 'Viable Points');
     else
         errordlg('No kernel coordinates to display.');
     end
@@ -1477,4 +1462,19 @@ function sim_manualcontrol_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
     vk_gui_manual_control(hObject);
+end
+
+
+% --- Executes on button press in nonviablepoints_button.
+function nonviablepoints_button_Callback(hObject, eventdata, handles)
+% hObject    handle to nonviablepoints_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+    if (isfield(handles.project, 'NV'))
+        vk_gui_kernel_coordinates(hObject, handles.project.NV, ...
+            handles.project.nonviable_paths, 'Non-viable Points');
+    else
+        errordlg('No non-viable points to display.');
+    end
 end

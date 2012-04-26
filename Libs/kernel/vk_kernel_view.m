@@ -72,22 +72,5 @@ function fig = vk_kernel_view(input, varargin)
         fig = figure;
     end
 
-    V = vk_kernel_augment(project);
-    K = vk_kernel_augment_constraints(project);
-    slices = vk_kernel_augment_slices(project);
-    labels = [project.labels; ...
-        project.addnlabels(find(~project.addnignore))];
-    colour = project.plotcolour;
-    method = project.plottingmethod;
-    box = project.drawbox;
-    alpha_val = project.alpha;
-
-
-    if (size(slices,1) > 0)
-        vk_figure_make_slice(V, slices, K, labels, colour, ...
-            method, box, alpha_val, fig);
-    else
-        vk_figure_make(V, K, labels, colour, method, ...
-            box, alpha_val, fig);
-    end
+    vk_figure_make(project, fig);
 end

@@ -46,6 +46,10 @@ function vk_gui_kernel_coordinates_OpeningFcn(hObject, eventdata, handles, varar
 
     % The main 'handles' object is passed in on creation.
     handles.main_hObject = varargin{1};
+    handles.V = varargin{2};
+    handles.viable_paths = varargin{3};
+
+    set(hObject, 'Name', varargin{4});
 
     % Update handles structure
     guidata(hObject, handles);
@@ -59,12 +63,12 @@ function vk_gui_kernel_coordinates_OpeningFcn(hObject, eventdata, handles, varar
 
     set(handles.kernel_coordinates_table, 'ColumnName', [main_handles.project.symbols; 'Steps'; opts])
 
-    Vcell = num2cell(main_handles.project.V);
+    Vcell = num2cell(handles.V);
     buttons = cell(size(Vcell, 1), 4);
     steps = cell(size(Vcell, 1), 1);
     for i = 1:size(Vcell, 1)
       if (isfield(main_handles.project, 'viable_paths'))
-          paths = main_handles.project.viable_paths{i};
+          paths = handles.viable_paths{i};
           steps{i} = size(paths.path,2);
       end
       for j = 1:4
@@ -164,7 +168,7 @@ function vk_gui_kernel_coordinates_show(hObject, handles, index)
     end
 
     x = vk_kernel_slice_path( ...
-        vk_sim_augment_path(transpose(project.V(index, :)), project.numvars, ...
+        vk_sim_augment_path(transpose(handles.V(index, :)), project.numvars, ...
             project.numaddnvars, project.addnignore, project.addneqns, ...
             project.symbols), slices);
 
@@ -218,7 +222,7 @@ function vk_gui_kernel_coordinates_phasediagram(hObject, handles, index)
     end
 
     % get the path information.
-    paths = main_handles.project.viable_paths{index};
+    paths = handles.viable_paths{index};
 
     path = vk_kernel_slice_path( ...
         vk_sim_augment_path(paths.path, project.numvars, project.numaddnvars, ...
@@ -246,7 +250,7 @@ function vk_gui_kernel_coordinates_timeprofiles(hObject, handles, index)
     main_handles = guidata(handles.main_hObject);
     project = main_handles.project;
 
-    simulation = vk_gui_kernel_coordinates_simulation(project, index);
+    simulation = vk_gui_kernel_coordinates_simulation(project, handles.viable_paths{index});
 
     h = vk_gui_timeprofile_create(main_handles);
     h = vk_figure_timeprofiles_make(project, ...
@@ -262,7 +266,7 @@ function vk_gui_kernel_coordinates_copy(hObject, handles, index)
     main_handles = guidata(handles.main_hObject);
     project = main_handles.project;
 
-    main_handles.project.sim_start = transpose(project.V(index, :));
+    main_handles.project.sim_start = transpose(handles.V(index, :));
     main_handles.project.sim_state = vk_gui_kernel_coordinates_simulation(project, index);
     main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
     guidata(handles.main_hObject, main_handles);
@@ -279,13 +283,12 @@ function viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
     end
 end
 
-function simulation = vk_gui_kernel_coordinates_simulation(project, index)
+function simulation = vk_gui_kernel_coordinates_simulation(project, simulation)
     % Use vk_options make to construct options.
     f = vk_diff_make_fn(project);
     options = vk_options_make(project, f);
 
     % Make a mock simulation
-    simulation = project.viable_paths{index};
     simulation.distances = vk_kernel_distances(project.K, project.discretisation);
     simulation.V = project.V;
 
