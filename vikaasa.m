@@ -1240,7 +1240,7 @@ function slices_CellEditCallback(hObject, eventdata, handles)
     set(hObject, 'Data', data);
 
     handles.project.slices = vk_kernel_make_slices( ...
-        data, handles.project.K, handles.project.discretisation);
+        data, handles.project);
     guidata(hObject, handles);
 end
 

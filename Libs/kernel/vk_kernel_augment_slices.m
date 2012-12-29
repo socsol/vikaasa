@@ -2,8 +2,7 @@
 %
 % SYNOPSIS
 %   Where additional values are specified, make sure that any that are set
-%   to 'ignore' are not included in the list of slices, and then add
-%   'all' slices for them, so that they will be eliminated.
+%   to 'ignore' are not included in the list of slices.
 %
 % USAGE
 %   % Augment the slices, store the result in slices, using data from p:
@@ -33,23 +32,25 @@ function slices = vk_kernel_augment_slices(project)
         return;
     end
 
-    ignore = transpose(find(project.addnignore))+project.numvars;
+    ignore = sort(transpose(find(project.addnignore))+project.numvars, ...
+      2, 'descend');
+
     if (~isempty(ignore))
         %% If an ignored variable is in the list of slices, remove it.
         %   We need to remove all the ignored slices before decrementing, below.
         for i = ignore
             sliceindex = find(slices(:,1) == i);
             if (~isempty(sliceindex))
-                slices = [slices(1:sliceindex-1, :); slices(sliceindex+1, :)];
+                slices = [slices(1:sliceindex-1, :); slices(sliceindex+1:end, :)];
             end
         end
 
         for i = ignore
-            % If there are any slices at indexes greater than an ignored one,
+            % If there are any slices at indices greater than an ignored one,
             % decrement them.
             decrementindices = find(slices(:,1) > i);
             if (~isempty(decrementindices))
-                slices(decrementindices,1) = slices(decrementindices) - 1;
+                slices(decrementindices,1) = slices(decrementindices,1) - 1;
             end
         end
     end

@@ -27,11 +27,25 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function slices = vk_kernel_make_slices(data, K, discretisation)
+function slices = vk_kernel_make_slices(data, project)
 
     slices = [];
 
+    % Construct the augmented constraint-set.
+    K = vk_kernel_augment_constraints(project);
+
+    % Augment the discretisation matrix -- make the faux-discretisation for the
+    % additional rows the same as the maximum discretisation.
+    discretisation = [project.discretisation; ...
+      ones(project.numaddnvars,1) * max(project.discretisation)];
+
     distances = vk_kernel_distances(K, discretisation);
+
+    % Add padding to the data array for the ignored rows.
+    ignore = transpose(find(project.addnignore))+project.numvars;
+    for i = ignore
+      data = [data(1:i-1,:);{true [0] [0]};data(i:end,:)];
+    end
 
     %% Loop through rows of data
     % There will be one row in data for each variable.
