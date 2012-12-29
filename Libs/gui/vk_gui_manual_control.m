@@ -139,7 +139,6 @@ function vk_gui_manual_control_update(hObject, handles, start)
     % Special case when start = 0, we have to get the start state from the main
     % window, and set up the normpath.
     if (start == 0)
-        project.sim_start
         path(:,1) = vk_sim_augment_path(project.sim_start, project.numvars, project.numaddnvars, project.addnignore, project.addneqns, project.symbols);
 
         start = 1;
