@@ -71,16 +71,15 @@ function exited_on = vk_viable_exited(x, K, f, c, varargin)
     for i = 1:length(x)
       if (~isreal(x(i)))
         exited_on(i,2) = imag(x(i));
-      else
-        exited_on(i,2) = NaN;
       end
     end
 
     % If we use the custom constraint set, check that first. If that
-    % returns false, then give up.
+    % returns a positive number, give up.
     if (options.use_custom_constraint_set_fn)
         vars = num2cell(x);
-        if (~options.custom_constraint_set_fn(vars{:}))
+        ccsf = options.custom_constraint_set_fn(vars{:});
+        if ccsf > 0        
             exited_on(:,1) = zeros(length(x), 1);
             return;
         end
