@@ -3,7 +3,8 @@ VERSION?=$(shell git tag | grep version- | grep -Eo '[[:digit:]]+\.[[:digit:]]+\
 
 RELEASETAG?=version-${VERSION}
 ZIP=release/vikaasa-${VERSION}.zip
-BZ2=release/vikaasa-${VERSION}.tar.bz2
+TAR=release/vikaasa-${VERSION}.tar
+BZ2=${TAR}.bz2
 PREFIX=vikaasa-${VERSION}/
 
 # Make achives for the given version, and then clean up.
@@ -12,11 +13,19 @@ all:		archives clean
 # Make zip and bz2 files of the given version
 archives:	${ZIP} ${BZ2} versioncheck
 
-${ZIP}:
-		git archive --format=zip --prefix=${PREFIX} --output=${ZIP} ${RELEASETAG} 
+${ZIP}:		${TAR}
+		tar -x -C tmp -f ${TAR}
+		cd tmp && zip -q -r ../${ZIP} vikaasa-${VERSION}
 
-${BZ2}:
-		git archive --format=tar --prefix=${PREFIX} ${RELEASETAG} | bzip2 -9 > ${BZ2}
+${BZ2}:		${TAR}
+		bzip2 -9 ${TAR} -c > ${BZ2}
+
+
+${TAR}:
+		git archive --format=tar --prefix=${PREFIX} ${RELEASETAG} --output=${TAR}
+		git --git-dir=Libs/InfSOCSol/.git archive --format=tar --prefix=${PREFIX}Libs/InfSOCSol/ HEAD --output=${TAR}.1
+		tar -A -f ${TAR} ${TAR}.1
+		rm ${TAR}.1
 
 # Checking the version markers of the ZIP archive just created
 versioncheck:	${ZIP} cleantmp
