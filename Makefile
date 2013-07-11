@@ -13,7 +13,7 @@ all:		archives clean
 # Make zip and bz2 files of the given version
 archives:	${ZIP} ${BZ2} versioncheck
 
-${ZIP}:		${TAR}
+${ZIP}:		${TAR} cleantmp
 		tar -x -C tmp -f ${TAR}
 		cd tmp && zip -q -r ../${ZIP} vikaasa-${VERSION}
 
