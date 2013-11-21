@@ -79,7 +79,7 @@ function exited_on = vk_viable_exited(x, K, f, c, varargin)
     if (options.use_custom_constraint_set_fn)
         vars = num2cell(x);
         ccsf = options.custom_constraint_set_fn(vars{:});
-        if any(ccsf) > 0        
+        if any(ccsf > 0)
             exited_on(:,1) = zeros(length(x), 1);
             return;
         end
