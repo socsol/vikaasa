@@ -83,7 +83,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
     % to 0 to skip the main loop.
     if (options.use_custom_constraint_set_fn)
         exited_on = vk_viable_exited(x, K, f, c, options);
-        if (any(any(~isnan(exited_on))))
+        if any(~isnan(exited_on(:)))
             viable = false;
             maxloops = 0;
             path(:, 1) = x;
