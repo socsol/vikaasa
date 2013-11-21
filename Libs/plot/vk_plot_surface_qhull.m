@@ -46,7 +46,7 @@ function vk_plot_surface_qhull(V, colour, varargin)
         p = patch(V(T(i,:), 1), V(T(i,:), 2), V(T(i,:), 3), ...
             colour);
         set(p, 'FaceColor', colour, 'EdgeColor', edgecolour);
-        if (exist('alpha'))
+        if exist('alpha') && alpha_val < 1
             alpha(p, alpha_val);
         end
     end
