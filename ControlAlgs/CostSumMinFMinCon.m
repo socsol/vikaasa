@@ -89,6 +89,11 @@ function u = CostSumMinFMinCon(x, K, f, c, varargin)
 
     uall = fmincon(cost, zeros((steps + 1)*m, 1), [], [], [], [], lb, ub, nonlcon, opts);
     u = uall(1:m);
+    
+    % Apparently fmincon will occasionally produce control rules
+    % that are outside of the bounds.
+    u(u > c) = c(u > c);
+    u(u < -c) = -c(u < -c);
 end
 
 function xs = CostSumMinFMinCon_loop(x0, u, steps, n, m, next_fn)
