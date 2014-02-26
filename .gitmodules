@@ -1,3 +1,3 @@
 [submodule "Libs/InfSOCSol"]
 	path = Libs/InfSOCSol
-	url = ssh://apeiranthos/var/opt/git/asp/infsocsol.git
+	url = https://code.google.com/p/socsol/

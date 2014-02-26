@@ -23,7 +23,7 @@
 % See also: ControlAlgs, vk_kernel_compute
 
 %%
-%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%  Copyright 2014 Jacek B. Krawczyk and Alastair Pharo
 %
 %  Licensed under the Apache License, Version 2.0 (the "License");
 %  you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ function varargout = vk_viable(x, K, f, c, varargin)
     norm_fn = options.norm_fn;
     next_fn = options.next_fn;
     cancel_test_fn = options.cancel_test_fn;
+    stop_fn = options.stop_fn;
 
 
     %% Construct a control function
@@ -130,14 +131,13 @@ function varargout = vk_viable(x, K, f, c, varargin)
         if (crashed || (cancel_test && cancel_test_fn()))
             viable = false;
             break;
-        elseif (l == maxloops)
-            fprintf('Maxloops exceeded\n');
-            viable = false;
-            break;
-        elseif (recordpath && steady) || (norm_fn(f(x, u)) <= small)
-            viable = true;
-            break;
+        else
+            [viable, stop] = stop_fn(l, x, u, K, f, c, options);
+            if stop
+                break;
+            end
         end
+
 
         %% Update x for next iteration.
         x = next_fn(x, u);

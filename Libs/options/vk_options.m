@@ -155,6 +155,10 @@
 %       - `steps' (1): The number of forward-looking steps used by finite-time
 %         optimising control algorithms such as CostMin.
 %
+%       - `stop_fn` (vk_viable_stop): The function used to
+%         determine whether `vk_viable` should stop, and if so,
+%         what the viability value is.
+%
 %       - `sim_fn' (vk_sim_simulate_ode):  The ``simulation function'' to
 %         use.  This is only really an important option if you decide to use
 %         vk_sim_make.  It should be either vk_simulate_ode or
@@ -189,7 +193,7 @@
 %
 %       - `use_parallel' (0):  If set to 1, vk_kernel_compute will try to use a
 %         parallel implementation of `cellfun' (either `parcellfun' or
-%         `vk_cellfun_parfor') so as to compute viability kernels in parallel.
+%         `iss_cellfun_distributed') so as to compute viability kernels in parallel.
 %         In MATLAB you need to have the Parallel Computing Toolbox for this to
 %         work.  In GNU Octave parcellfun is available from Octave-Forge.
 %
@@ -217,7 +221,7 @@
 %       'min_fn', @(f, min, max) fminbnd(f, min, max, ...
 %           struct('TolX', options.controltolerance)));
 %
-% Requires:  vk_cellfun_parfor, vk_control_bound, vk_control_enforce, vk_lsode_wrapper, vk_ode_outputfcn, vk_sim_simulate_ode, vk_viable
+% Requires:  iss_cellfun_distributed, vk_control_bound, vk_control_enforce, vk_lsode_wrapper, vk_ode_outputfcn, vk_sim_simulate_ode, vk_viable
 %
 % See also: CostMin, CostSumMin, cellfun, fminbnd, fzero, norm, ode45, vikaasa, vk_compute, vk_fminbnd, vk_kernel_inside, vk_sim_simulate_euler
 
@@ -365,14 +369,39 @@ function options = vk_options(K, f, c, varargin)
         % function.
         if (options.use_parallel)
             % If parcellfun is available, use it.
-            if (exist('parcellfun', 'file') == 2)
+            if exist('parcellfun', 'file') == 2
                 options.cell_fn = @(varargin) ...
                     parcellfun(...
                         options.parallel_processors, ...
                         varargin{:}, 'UniformOutput', false);
-            elseif (exist('parfor', 'builtin') == 5)
+            elseif exist('distributed', 'file') == 2
                 options.cell_fn = @(varargin) ...
-                    vk_cellfun_parfor(...
+                    iss_cellfun_distributed(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            elseif exist('parfor', 'builtin') == 5
+                options.cell_fn = @(varargin) ...
+                    iss_cellfun_parfor(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            else
+                warning('Parallel selected, but no parallel capabilities could be detected.');
+            end
+
+            % If pararrayfun is available, use it.
+            if exist('pararrayfun', 'file') == 2
+                options.array_fn = @(varargin) ...
+                    pararrayfun(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            elseif exist('distributed', 'file') == 2
+                options.array_fn = @(varargin) ...
+                    iss_arrayfun_distributed(...
+                        options.parallel_processors, ...
+                        varargin{:}, 'UniformOutput', false);
+            elseif exist('parfor', 'builtin') == 5
+                options.array_fn = @(varargin) ...
+                    iss_arrayfun_parfor(...
                         options.parallel_processors, ...
                         varargin{:}, 'UniformOutput', false);
             else
@@ -386,12 +415,24 @@ function options = vk_options(K, f, c, varargin)
             options.cell_fn = @(varargin) ...
                 cellfun(varargin{:}, 'UniformOutput', false);
         end
+
+        if (~isfield(options, 'array_fn'))
+            options.array_fn = @(varargin) ...
+                arrayfun(varargin{:}, 'UniformOutput', false);
+        end
     end
 
     % The viable_fn is the algorithm that we use to determine a point's
     % viability.
     if (~isfield(options, 'viable_fn'))
         options.viable_fn = @vk_viable;
+    end
+
+
+    % The viable_fn is the algorithm that we use to determine stopping
+    % in vk_viable.
+    if (~isfield(options, 'stop_fn'))
+        options.stop_fn = @vk_viable_stop;
     end
 
     % The custom constraint set function.  Called by VK_EXITED if

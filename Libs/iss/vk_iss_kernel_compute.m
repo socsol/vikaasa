@@ -1,3 +1,24 @@
+% VK_ISS_KERNEL_COMPUTE Determine the viability kernel using InfSOCSol
+%
+% SYNOPSIS
+%   This has the same method signature as `vk_kernel_compute`, but
+%   uses InfSOCSol (i.e.  the "exclusion algorithm") instead of the
+%   normal "inclusion algorithm".
+
+%%
+%  Copyright 2014 Jacek B. Krawczyk and Alastair Pharo
+%
+%  Licensed under the Apache License, Version 2.0 (the "License");
+%  you may not use this file except in compliance with the License.
+%  You may obtain a copy of the License at
+%
+%      http://www.apache.org/licenses/LICENSE-2.0
+%
+%  Unless required by applicable law or agreed to in writing, software
+%  distributed under the License is distributed on an "AS IS" BASIS,
+%  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+%  See the License for the specific language governing permissions and
+%  limitations under the License.
 function [V, NV, viable_paths, nonviable_paths] = vk_iss_kernel_compute(K, ...
                                                   f, c, varargin)
 
@@ -25,11 +46,17 @@ function [V, NV, viable_paths, nonviable_paths] = vk_iss_kernel_compute(K, ...
         state_ub(d) = vectors{d}(end) + state_step(d);
     end
 
+    pool_size = 1;
+    if options.use_parallel
+        pool_size = options.parallel_processors;
+    end
+
     conf = iss_conf(state_lb, state_ub, ...
                     'StateStepSize', state_step, ...
                     'TimeStep', options.h, ...
                     'DiscountRate', 0.1, ...
                     'ControlDimension', options.numcontrols, ...
+                    'PoolSize', pool_size, ...
                     'ControlLB', -c', ...
                     'ControlUB', c', ...
                     'UserConstraintFunctionFile', @vk_iss_constraints);
@@ -46,96 +73,18 @@ function [V, NV, viable_paths, nonviable_paths] = vk_iss_kernel_compute(K, ...
                                               state_ub, conf);
 
 
-    %% iss_sim
+    %% Simulation, using vk_kernel_compute
 
-    % Work out which coordinates got "bad" flags
-    flagged_coords = zeros(conf.TotalStates, options.numvars + 1);
-
-    viable_fn = @vk_iss_viable;
-    T = cumsum([0, conf.Options.SimulationTimeStep]);
-
-    fprintf('Running InfSim ...\n');
-    [value_cells, row_cells, path_cells] = options.cell_fn(@(flag, ...
-                                                      state_num) ...
-                                                      vk_iss_kernel_compute_cellfn(T, flag, state_num, ocm, delta_fn, viable_fn, state_lb, state_ub, conf), num2cell(flags), num2cell(1:conf.TotalStates));
-
-    values = cell2mat(value_cells);
-    
-    viable_idx = find(values == 0);
-    nonviable_idx = find(values > 0);
-    
-    % Lists of viable and non-viable points and trajectories
-    V = zeros(length(viable_idx), options.numvars);
-    viable_paths = cell(length(viable_idx), 1);
-    viable_count = 0;
-
-    NV = zeros(length(nonviable_idx), options.numvars);
-    nonviable_paths = cell(length(nonviable_idx), 1);
-    nonviable_count = 0;
-
-    for i = viable_idx
-        viable_count = viable_count + 1;
-        V(viable_count, :) = row_cells{i};
-        viable_paths{viable_count} = path_cells{i};
-    end
-    
-    for i = nonviable_idx
-        nonviable_count = nonviable_count + 1;
-        NV(nonviable_count, :) = row_cells{i};
-        nonviable_paths{nonviable_count} = path_cells{i};
-    end
-end
-
-function [value, row, paths] = vk_iss_kernel_compute_cellfn(T, ...
-                                                      flag, ...
-                                                      state_num, ...
-                                                      ocm, delta_fn, ...
-                                                      viable_fn, ...
+    % Create a VIKAASA control function using infsocsol
+    control_fn = @(x, K, f, c, varargin) iss_odm_control(ocm, x', ...
                                                       state_lb, ...
                                                       state_ub, ...
-                                                      conf)
-
-    K = conf.vk_K;
-    f = conf.vk_f;
-    c = conf.vk_c;
-    options = conf.vk_opts;
-
-    StateVect = SnToSVec(state_num, conf.CodingVector, conf.Dimension);
-    row = (StateVect-1) .* conf.Options.StateStepSize + state_lb;
-    paths = struct;
+                                                      conf)';
     
-    fprintf([num2str(row), '\n']);
-    
-    % Skip if the flag has any of these values
-    if flag == 0 || flag == -2 || flag == -3
-        value = -1.0;
-        return;
-    end
-    
-    % Check for viability as well
-    if viable_fn(0, row, 0, conf) > 0
-        value = -1.0;
-        return;
-    end
-    
-    [value, path, deltapath, controlpath] = iss_sim(row, ocm, delta_fn, ...
-                                                      viable_fn, state_lb, ...
-                                                      state_ub, conf);
-    
-    paths.T = T;
-    paths.path = path';
-    paths.controlpath = [controlpath', zeros(options.numcontrols, 1)];
-    paths.viablepath = zeros(5, length(paths.T));
-    paths.normpath = zeros(1, length(paths.T));
-    
-    deltapath = [deltapath', f(paths.path(:,end), paths.controlpath(:,end))];
-    
-    for i = 1:length(paths.T)
-        exited_on = vk_viable_exited(paths.path(:,i), K, f, c, options);
-        paths.viablepath(3, i) = any(~isnan(exited_on(:,1)));
-        paths.viablepath(4, i) = any(~isnan(exited_on(:,2)));
-        
-        paths.normpath(i) = options.norm_fn(deltapath(:,i));
-        paths.viablepath(5, i) = paths.normpath(i) <= options.small;
-    end
+    % Run vk_viable with exclusion algorithm settings.
+    [V, NV, viable_paths, nonviable_paths] = ...
+        vk_kernel_compute(K, f, c, options, ...
+                          'control_fn', control_fn, ...
+                          'stop_fn', @vk_iss_viable_stop, ...
+                          'maxloops', 200);
 end

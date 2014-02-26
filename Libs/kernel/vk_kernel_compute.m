@@ -62,7 +62,7 @@
 % See also: cellfun, parcellfun, vk_cellfun_parfor, vk_viable
 
 %%
-%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%  Copyright 2014 Jacek B. Krawczyk and Alastair Pharo
 %
 %  Licensed under the Apache License, Version 2.0 (the "License");
 %  you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ function [V, NV, viable_paths nonviable_paths] = vk_kernel_compute(K, f, c, vara
     numvars = options.numvars;
     discretisation = options.discretisation;
 
-    %% Create vectors of points for each dimension
+    %% Create grids representing the search space
     %   LINSPACE is used to accomplish this.  Discretisation in each dimension
     %   is potentially different.
     ax = cell(numvars, 1);
@@ -93,130 +93,71 @@ function [V, NV, viable_paths nonviable_paths] = vk_kernel_compute(K, f, c, vara
             K(2*i), discretisation(i));
     end
 
+    % Create grids.  These give all possible combinations of
+    % variables when read linearly
+    grids = cell(numvars, 1);
+    [grids{:}] = ndgrid(ax{:});
+
+    % Create column vectors.
+    pts = options.array_fn(@(varargin) [varargin{:}]', grids{:});
+
+    % Free the memory.
+    grids = [];
+
+    % Create an enumeration.
+    enum = num2cell(reshape(1:numel(pts), size(pts)));
+
+
     %% Create a function for use with CELLFUN
     %   This function wraps the VK_KERNEL_COMPUTE_RECURSIVE helper function
-    %   prepopulating all variables except for 'start' and 'posn'.  See
-    %   VK_KERNEL_COMPUTE_RECURSIVE, below.
-    fn = @(start, posn) vk_kernel_compute_recursive(...
-        zeros(prod(discretisation(2:end)), numvars), ...
-        zeros(prod(discretisation(2:end)), numvars), ...
-        cell(prod(discretisation(2:end)), 1), cell(prod(discretisation(2:end)), 1), ...
-        start, 0, 0, posn, ...
-        ax(2:end), K, f, c, options);
-
-    %% Create a cell of 'starts'.
-    %   These are used by progress feedback functions to tell how far along the
-    %   algorithm is.
-    start_cells = cell(1, discretisation(1));
-    for i = 1:discretisation(1)
-        start_cells{i} = (i - 1) * prod(discretisation(2:end));
-    end
+    %   prepopulating all variables except for i and x.  See
+    %   VK_KERNEL_COMPUTE_CELLFN, below.
+    fn = @(i, x) vk_kernel_compute_cellfn(i, x, K, f, c, options);
 
     %% Call CELLFUN or PARCELLFUN
-    [V_cells, NV_cells, viable_path_cells, nonviable_path_cells, cnt_cells, ncnt_cells] = ...
-        options.cell_fn(fn, start_cells, num2cell(ax{1}));
-
+    [viable_cells, viable_path_cells] = options.cell_fn(fn, enum, pts);
 
     %% Build the viability kernel from the results of the CELLFUN call
-    V = zeros(sum(cell2mat(cnt_cells)), numvars);
-    viable_paths = cell(sum(cell2mat(cnt_cells)), 1);
-    c = 0;
-    for i = 1:discretisation(1)
-        V(c+1:c+cnt_cells{i}, :) = V_cells{i}(1:cnt_cells{i},:);
-        viable_paths(c+1:c+cnt_cells{i}) = viable_path_cells{i}(1:cnt_cells{i});
-        c = c + cnt_cells{i};
-    end
+    viable = cell2mat(viable_cells);
 
-    % Build the 'anti-kernel' in the same way.
-    NV = zeros(sum(cell2mat(ncnt_cells)), numvars);
-    nonviable_paths = cell(sum(cell2mat(ncnt_cells)), 1);
-    c = 0;
-    for i = 1:discretisation(1)
-        NV(c+1:c+ncnt_cells{i}, :) = NV_cells{i}(1:ncnt_cells{i},:);
-        nonviable_paths(c+1:c+ncnt_cells{i}) = nonviable_path_cells{i}(1:ncnt_cells{i});
-        c = c + ncnt_cells{i};
-    end
+    viable_idx = find(viable == 1);
+    nonviable_idx = find(viable == 0);
+
+    % Reshaping is necessary for empty matrices
+    V = reshape(cell2mat(pts(viable_idx)')', [numel(viable_idx), numvars]);
+    NV = reshape(cell2mat(pts(nonviable_idx)')', [numel(nonviable_idx), numvars]);
+
+    viable_paths = viable_path_cells(viable_idx)';
+    nonviable_paths = viable_path_cells(nonviable_idx)';
 end
 
+% This function is called on each point under consideration for viability.
+function [viable, viable_path] = ...
+      vk_kernel_compute_cellfn(i, x, K, f, c, options)
 
-%% VK_KERNEL_COMPUTE_RECURSIVE Recursive helper function for VK_KERNEL_COMPUTE
-%   This is a recursive function that takes  calls a viability function on each
-%   one.  It returns an untrucated list of viable points, along with a counter
-%   of how many points in the list are viable (hence it is easy to truncate
-%   this list as needed).
-%
-%
-%
-%   - 'start' indicates how many computations will have been undertaken
-%     by the time that the sub-problem in question is called (assuming
-%     that computation is not occuring in parallel).  This is used to
-%     display progress information during computation.
-%
-%   - 'posn' is a (possibly partially constructed) point to consider.  In those
-%     cases where posn is not fully constructed, points are taken from the ax
-%     variable to produce points.
-function [V, NV, viable_paths, nonviable_paths, cnt, ncnt] = ...
-    vk_kernel_compute_recursive(V, NV, ...
-        viable_paths, nonviable_paths, ...
-        start, cnt, ncnt, posn, ax, ...
-        K, f, c, options)
+  if (options.report_progress)
+    options.progress_fn(i);
+  end
 
-    cancel_test = options.cancel_test;
-    discretisation = options.discretisation;
+  if (options.cancel_test && options.cancel_test_fn())
+    break;
+  end
 
-    % More than one axis still under consideration -- call
-    % vk_kernel_compute_recursive on the subset of points.
-    if (length(ax) > 1)
-        curr_ax = ax{1};
-        for i = 1:length(curr_ax)
-            if (cancel_test && options.cancel_test_fn())
-                break;
-            end
+  if (options.debug)
+    disp(i);
+    disp(x');
+  end
 
-            s = start + (i-1) * prod(discretisation(length(posn)+2:end));
-            [V, NV, viable_paths, nonviable_paths, cnt ncnt] = ...
-                vk_kernel_compute_recursive(V, NV, ...
-                    viable_paths, nonviable_paths, s, cnt, ncnt, ...
-                    [posn; curr_ax(i)], ax(2:end), K, f, c, options);
-        end
-    else % Only one axis remaining -- call options.viable_fn on each point.
-        curr_ax = ax{1};
-        for i = 1:length(curr_ax)
-            if (cancel_test && options.cancel_test_fn())
-                break;
-            end
+  try
+    [viable, viable_path] = options.viable_fn(x, K, f, c, options);
 
-            x = [posn; curr_ax(i)];
-
-            if (options.debug)
-                disp(start + i);
-                disp(transpose(x));
-            end
-
-            if (options.report_progress)
-                options.progress_fn(start + i);
-            end
-
-            try
-              [viable, viable_path] = options.viable_fn(x, K, f, c, options);
-
-              if (viable)
-                  cnt = cnt + 1;
-                  V(cnt, :) = transpose(x);
-                  viable_paths{cnt} = viable_path;
-              else
-                  ncnt = ncnt + 1;
-                  NV(ncnt, :) = transpose(x);
-                  nonviable_paths{ncnt} = viable_path;
-              end
-
-            catch
-              exception = lasterror();
-              warning(['Error computing viability of point ', ...
-                mat2str(transpose(x)), ...
-                ': ', ...
-                exception.message]);
-            end
-        end
-    end
+  catch
+    exception = lasterror();
+    warning(['Error computing viability of point ', ...
+             mat2str(transpose(x)), ...
+             ': ', ...
+             exception.message]);
+    viable = false;
+    viable_path = [];
+  end
 end
