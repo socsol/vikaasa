@@ -115,7 +115,7 @@
 % See also: vikaasa, vk_project_new
 
 %%
-%  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
+%  Copyright 2014 Jacek B. Krawczyk and Alastair Pharo
 %
 %  Licensed under the Apache License, Version 2.0 (the "License");
 %  you may not use this file except in compliance with the License.
@@ -319,4 +319,15 @@ function project = vk_project_sanitise(project)
             project.(dfn{i}) = project_default.(dfn{i});
         end
     end
+
+    %% Make sure all control symbols and labels are strings
+    bad_symbols = ~cellfun(@ischar, project.controlsymbols);
+    project.controlsymbols(bad_symbols) = ...
+        cellfun(@(label) 'unknown', project.controlsymbols(bad_symbols), ...
+                'UniformOutput', false);
+
+    bad_labels =  ~cellfun(@ischar, project.controllabels);
+    project.controllabels(bad_labels) = ...
+        cellfun(@(symbol) 'unknown', project.controllabels(bad_labels), ...
+                'UniformOutput', false);
 end
