@@ -8,7 +8,7 @@ BZ2=${TAR}.bz2
 PREFIX=vikaasa-${VERSION}/
 
 # This is just the current ISS checkout, so this won't work for making old archives
-ISS_VERSON=$(shell git submodule status Libs/InfSOCSol | grep -Eo "[a-f0-9]{40}")
+ISS_VERSION=$(shell git submodule status Libs/InfSOCSol | grep -Eo "[a-f0-9]{40}")
 
 # Make achives for the given version, and then clean up.
 all:		archives clean
@@ -25,8 +25,8 @@ ${BZ2}:		${TAR}
 
 
 ${TAR}:
-		git archive --format=tar --prefix=${PREFIX} ${RELEASETAG} --output=${TAR}
-		git --git-dir=Libs/InfSOCSol/.git archive --format=tar --prefix=${PREFIX}Libs/InfSOCSol/ ${ISS_VERSION} --output=${TAR}.1
+		git archive --format=tar --prefix=${PREFIX} --output=${TAR} ${RELEASETAG}
+		git --git-dir=Libs/InfSOCSol/.git archive --format=tar --prefix=${PREFIX}Libs/InfSOCSol/ --output=${TAR}.1 ${ISS_VERSION}
 		tar -A -f ${TAR} ${TAR}.1
 		rm ${TAR}.1
 
