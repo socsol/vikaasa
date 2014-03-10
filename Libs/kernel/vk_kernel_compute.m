@@ -140,7 +140,7 @@ function [viable, viable_path] = ...
   end
 
   if (options.cancel_test && options.cancel_test_fn())
-    break;
+    return;
   end
 
   if (options.debug)
