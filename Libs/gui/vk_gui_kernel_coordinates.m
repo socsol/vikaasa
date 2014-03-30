@@ -267,7 +267,7 @@ function vk_gui_kernel_coordinates_copy(hObject, handles, index)
     project = main_handles.project;
 
     main_handles.project.sim_start = transpose(handles.V(index, :));
-    main_handles.project.sim_state = vk_gui_kernel_coordinates_simulation(project, index);
+    main_handles.project.sim_state = vk_gui_kernel_coordinates_simulation(project, handles.viable_paths{index});
     main_handles = vk_gui_update_inputs(handles.main_hObject, main_handles);
     guidata(handles.main_hObject, main_handles);
 end
