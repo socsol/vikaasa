@@ -87,53 +87,44 @@ function [V, NV, viable_paths nonviable_paths] = vk_kernel_compute(K, f, c, vara
     %% Create grids representing the search space
     %   LINSPACE is used to accomplish this.  Discretisation in each dimension
     %   is potentially different.
-    ax = cell(numvars, 1);
+    axes = cell(numvars, 1);
     for i = 1:numvars
-        ax{i} = linspace(K(2*i - 1), ...
+        axes{i} = linspace(K(2*i - 1), ...
             K(2*i), discretisation(i));
     end
 
-    % Create grids.  These give all possible combinations of
-    % variables when read linearly
-    grids = cell(numvars, 1);
-    [grids{:}] = ndgrid(ax{:});
+    %% Make a cumulative product along the dims
+    cp = cumprod([1; discretisation(1:end-1)]);
 
-    % Create column vectors.
-    pts = options.array_fn(@(varargin) [varargin{:}]', grids{:});
-
-    % Free the memory.
-    grids = [];
-
-    % Create an enumeration.
-    enum = num2cell(reshape(1:numel(pts), size(pts)));
-
+    %% Compute the total number of points
+    num_pts = prod(discretisation);
 
     %% Create a function for use with CELLFUN
     %   This function wraps the VK_KERNEL_COMPUTE_RECURSIVE helper function
     %   prepopulating all variables except for i and x.  See
     %   VK_KERNEL_COMPUTE_CELLFN, below.
-    fn = @(i, x) vk_kernel_compute_cellfn(i, x, K, f, c, options);
+    fn = @(i) vk_kernel_compute_cellfn(i, axes, cp, discretisation, K, f, c, options);
 
-    %% Call CELLFUN or PARCELLFUN
-    [viable_cells, viable_path_cells] = options.cell_fn(fn, enum, pts);
+    %% Call ARRAYFN or PARARRAYFUN
+    [pts, viable_cells, viable_path_cells] = options.array_fn(fn, 0:num_pts-1);
 
     %% Build the viability kernel from the results of the CELLFUN call
     viable = cell2mat(viable_cells);
 
-    viable_idx = find(viable == 1);
-    nonviable_idx = find(viable == 0);
+    viable_idx = find(viable);
+    nonviable_idx = find(not(viable));
 
     % Reshaping is necessary for empty matrices
-    V = reshape(cell2mat(pts(viable_idx)')', [numel(viable_idx), numvars]);
-    NV = reshape(cell2mat(pts(nonviable_idx)')', [numel(nonviable_idx), numvars]);
+    V = reshape(cell2mat(pts(viable_idx))', [numel(viable_idx), numvars]);
+    NV = reshape(cell2mat(pts(nonviable_idx))', [numel(nonviable_idx), numvars]);
 
     viable_paths = viable_path_cells(viable_idx)';
     nonviable_paths = viable_path_cells(nonviable_idx)';
 end
 
 % This function is called on each point under consideration for viability.
-function [viable, viable_path] = ...
-      vk_kernel_compute_cellfn(i, x, K, f, c, options)
+function [x, viable, viable_path] = ...
+      vk_kernel_compute_cellfn(i, axes, cp, discretisation, K, f, c, options)
 
   if (options.report_progress)
     options.progress_fn(i);
@@ -141,6 +132,13 @@ function [viable, viable_path] = ...
 
   if (options.cancel_test && options.cancel_test_fn())
     return;
+  end
+
+  idx = mod(floor(i ./ cp), discretisation);
+  x = zeros(length(idx), 1);
+  for n = 1:length(axes)
+    axis = axes{n};
+    x(n) = axis(idx(n) + 1);
   end
 
   if (options.debug)
