@@ -57,7 +57,7 @@ function u = CostMinFMinCon(x, K, f, c, varargin)
     next_fn = options.next_fn;
     n = length(x);
     m = length(c);
-    
+
     % A function which takes a concatonated vector of control choices, and
     % returns the set of state-space points that the system will pass through
     % as a result.
@@ -88,7 +88,7 @@ function u = CostMinFMinCon(x, K, f, c, varargin)
 
     uall = fmincon(cost, zeros((steps + 1)*m, 1), [], [], [], [], lb, ub, nonlcon, opts);
     u = uall(1:m);
-    
+
     % Apparently fmincon will occasionally produce control rules
     % that are outside of the bounds.
     u(u > c) = c(u > c);

@@ -24,7 +24,7 @@
 %   % of name,value pairs, or a structure created by vk_options.
 %   u = CostMin(x, K, f, c, options)
 %
-% Requires:  vk_costmin_recursive, vk_options
+% Requires: vk_costmin_recursive, vk_options
 %
 % See also: ControlAlgs, options
 

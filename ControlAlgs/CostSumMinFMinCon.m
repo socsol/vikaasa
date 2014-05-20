@@ -1,4 +1,4 @@
-%% COSTMINFMINCON Multi-step cost minimising control algorithm using `fmincon`.
+%% COSTSUMMINFMINCON Multi-step cost minimising control algorithm using `fmincon`.
 %
 % SYNOPSIS
 %   This function performs forward-looking optimisation for an arbitrary number
@@ -57,7 +57,7 @@ function u = CostSumMinFMinCon(x, K, f, c, varargin)
     next_fn = options.next_fn;
     n = length(x);
     m = length(c);
-    
+
     % A function which takes a concatonated vector of control choices, and
     % returns the set of state-space points that the system will pass through
     % as a result.
@@ -89,7 +89,7 @@ function u = CostSumMinFMinCon(x, K, f, c, varargin)
 
     uall = fmincon(cost, zeros((steps + 1)*m, 1), [], [], [], [], lb, ub, nonlcon, opts);
     u = uall(1:m);
-    
+
     % Apparently fmincon will occasionally produce control rules
     % that are outside of the bounds.
     u(u > c) = c(u > c);
@@ -111,14 +111,14 @@ function cost = CostSumMinFMinCon_cost(xs, us, cost_fn, next_fn, f, ...
                                        m)
   num_states = size(xs, 2);
   costs = zeros(1, num_states);
-  
+
   for i = 1:num_states
     u_idx = m*(i-1);
     un = us(u_idx+1:u_idx+m);
     costs(i) = cost_fn(next_fn(xs(:, i), un), ...
                                f(xs(:, i), un));
   end
-  
+
   cost = sum(costs);
 end
 
