@@ -1,3 +1,12 @@
+%% VK_GUI_KERNEL_COORDINATES A GUI window for viewing kernel coordinates
+%
+% SYNOPSIS
+%   This function is used by the VIKAASA GUI to view kernel
+%   coordinates in a tabular display.  It can be accessed via the
+%   ``Viable points'' button in the main window.
+%
+% See also: vikaasa
+
 %%
 %  Copyright 2011 Jacek B. Krawczyk and Alastair Pharo
 %
@@ -80,7 +89,7 @@ function vk_gui_kernel_coordinates_OpeningFcn(hObject, eventdata, handles, varar
 end
 
 % --- Outputs from this function are returned to the command line.
-function varargout = vk_gui_kernel_coordinates_OutputFcn(hObject, eventdata, handles) 
+function varargout = vk_gui_kernel_coordinates_OutputFcn(hObject, eventdata, handles)
     % varargout  cell array for returning output args (see VARARGOUT);
     % hObject    handle to figure
     % eventdata  reserved - to be defined in a future version of MATLAB
@@ -115,7 +124,7 @@ function kernel_coordinates_table_CellSelectionCallback(hObject, eventdata, hand
     elseif pos == 3
         % Time profile
         vk_gui_kernel_coordinates_timeprofiles(hObject, handles, eventdata.Indices(1));
-    elseif pos == 4 
+    elseif pos == 4
         % Copy to simulation
         vk_gui_kernel_coordinates_copy(hObject, handles, eventdata.Indices(1));
     end
@@ -149,7 +158,7 @@ function vk_gui_kernel_coordinates_show(hObject, handles, index)
         labels = vk_kernel_slice_text( ...
             vk_kernel_augment_labels(project), ...
             slices);
-        
+
         if (main_handles.project.drawbox)
             limits = vk_plot_box(K);
         else
@@ -233,7 +242,7 @@ function vk_gui_kernel_coordinates_phasediagram(hObject, handles, index)
     viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
         paths.viablepath, paths.path, paths.T, project.V, project.K, ...
         project.discretisation, project.layers);
-    
+
     vk_plot_path(paths.T, path, viablepath, project.sim_showpoints, ...
         project.sim_line_colour, project.sim_line_width);
 
@@ -296,7 +305,7 @@ function simulation = vk_gui_kernel_coordinates_simulation(project, simulation)
     simulation.viablepath = vk_gui_kernel_coordinates_viablepath_extend( ...
         simulation.viablepath, simulation.path, simulation.T, project.V, project.K, ...
         project.discretisation, project.layers);
-    
+
     simulation.K = project.K;
     simulation.small = options.small;
     simulation.layers = project.layers;

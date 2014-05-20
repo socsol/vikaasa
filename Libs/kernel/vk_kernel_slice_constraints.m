@@ -1,3 +1,5 @@
+%% VK_KERNEL_SLICE_CONSTRAINTS Slices kernel constraint set
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

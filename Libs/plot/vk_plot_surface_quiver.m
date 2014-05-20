@@ -5,7 +5,7 @@
 %   kernel, or kernel slice in 3D space.  The current figure is used.
 %
 % USAGE
-%   % You must specify points and dynamics; in whatever order 
+%   % You must specify points and dynamics; in whatever order
 %   p = vk_plot_surface_quiver(V, c, 1, 'points', points, 'dynamics', dynamics);
 %
 % See also: vk_plot, vk_plot_area_quiver

@@ -1,3 +1,12 @@
+%% VK_GUI_FIGURE_CREATE Create a new GUI-managed figure
+%
+% SYNOPSIS
+%   This function is used by the VIKAASA GUI to keep track of focus events
+%   being sent to windows.  It is unlikely that you will need to use it
+%   yourself.
+%
+% See also: vk_gui_figure_focus, vikaasa
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

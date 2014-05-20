@@ -1,3 +1,12 @@
+%% VK_GUI_TIMEPROFILE_CREATE Constructs a figure handle for plotting time profiles in
+%
+% SYNOPSIS
+%   This function is used by the VIKAASA GUI to keep track of focus events
+%   being sent to windows.  It is unlikely that you will need to use it
+%   yourself.
+%
+% See also: vikaasa
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

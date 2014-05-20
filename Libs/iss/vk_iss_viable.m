@@ -8,7 +8,7 @@ function v = vk_iss_viable(u, x, t, conf)
   else
       ccsf = [];
   end
-  
+
   % eps is used because of rounding issues.
   c = [lower - x - eps(x), x - upper - eps(x), ccsf];
   v = any(c > 0);

@@ -162,7 +162,7 @@ function project = vk_project_sanitise(project)
         if (numvars > 1 && length(project.discretisation) == 1)
             %% If 'discretisation' is length one, repeat it.
             project.discretisation = project.discretisation*ones(numvars, 1);
-        elseif (size(project.discretisation, 1) == 1) 
+        elseif (size(project.discretisation, 1) == 1)
             %% If there is only one row, it may need to be transposed.
             project.discretisation = transpose(project.discretisation);
         end

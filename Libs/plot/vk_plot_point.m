@@ -1,3 +1,5 @@
+%% VK_PLOT_POINT Plots a single point into an existing plot
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %
@@ -12,7 +14,7 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_plot_path(pt, varargin)
+function vk_plot_point(pt, varargin)
     if (nargin > 1)
         colour = varargin{1};
     else

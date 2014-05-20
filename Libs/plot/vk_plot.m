@@ -47,7 +47,7 @@ function vk_plot(V, colour, method, varargin)
     hold on;
     grid on;
 
-    
+
     fallbackfn = eval(['@vk_plot_',type,'_scatter']);
     if (exist(['vk_plot_',type,'_',method]))
         plotfn = eval(['@vk_plot_',type,'_',method]);

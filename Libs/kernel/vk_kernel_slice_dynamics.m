@@ -45,7 +45,7 @@ function [points, dynamics] = vk_kernel_slice_dynamics_helper(...
 
     % Filter if required.
     if (~isnan(plane))
-        dynamics = dynamics(:, find(abs(points(slice_axis, :) - plane) < distance/2)); 
+        dynamics = dynamics(:, find(abs(points(slice_axis, :) - plane) < distance/2));
         points = points(:, find(abs(points(slice_axis, :) - plane) < distance/2));
     end
 

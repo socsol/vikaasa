@@ -2,7 +2,7 @@
 %
 % SYNOPSIS
 %   This function 3D phase diagrams of all the viable (and possibly non-viable)
-%   points in the kernel. 
+%   points in the kernel.
 %
 % USAGE
 %   % You must specify viable_paths.
@@ -57,13 +57,13 @@ function vk_plot_surface_paths(V, colour, alpha, varargin)
         c = 1 - colour;
         vk_plot_surface_paths_helper(opts.nonviable_paths, slices, showpoints, c, width);
     end
-      
+
 end
 
 function vk_plot_surface_paths_helper(paths, slices, showpoints, colour, width)
     for i = 1:length(paths)
       path = paths{i};
-      
+
       if length(path.T) > 0
           vk_plot_path(path.T, vk_kernel_slice_path(path.path, slices), ...
               path.viablepath, showpoints, colour, width);

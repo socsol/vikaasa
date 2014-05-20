@@ -111,7 +111,7 @@ function vk_figure_make(project, handle)
     % Remove the info about the axes that have been sliced.
     K = vk_kernel_slice_constraints(K, slices);
     labels = vk_kernel_slice_text(labels, slices);
-    
+
     vk_plot(V, colour, method, alpha_val, opts{:});
     xlabel(labels{1});
     ylabel(labels{2});

@@ -22,7 +22,7 @@
 %     the norm (as specified by the `norm_fn' option in vk_options)
 %     velocity of the system at each point in time.
 %
-%   - `controlpath': $m\times |T|$ matrix. Each column represents a vector of
+%   - `controlpath': $m \times |T|$ matrix. Each column represents a vector of
 %     control choises.
 %
 %   - `viablepath': $5 \times |T|$ matrix.  Each column represents four

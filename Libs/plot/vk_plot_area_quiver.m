@@ -1,4 +1,4 @@
-%% VK_PLOT_AREA_QUIVER Plots a 2D set of trajectories 
+%% VK_PLOT_AREA_QUIVER Plots a 2D set of trajectories
 %
 % SYNOPSIS
 %   This function plots a 2D kernel as a quiver plot, using the `quiver'

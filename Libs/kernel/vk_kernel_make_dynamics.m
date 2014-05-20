@@ -1,3 +1,11 @@
+%% VK_KERNEL_MAKE_DYNAMICS Determines system dynamics at initial states
+%
+% SYNOPSIS
+%   This function is used by plots that display system's dynamics,
+%   such as vk_plot_area_quiver.
+%
+% See also: vk_plot_area_quiver, vk_plot_surface_quiver
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

@@ -1,3 +1,13 @@
+%% VK_GUI_MANUAL_CONTROL A GUI window for experimenting with control policies
+%
+% SYNOPSIS
+%   This function allows the user to manually edit control choices
+%   to see how the system reacts.  It can be accessed via the
+%   ``Manual control'' button in the ``Simulation'' panel of the
+%   main window.
+%
+% See also: vikaasa
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %
@@ -131,7 +141,7 @@ function vk_gui_manual_control_update(hObject, handles, start)
     main_handles = guidata(handles.main_hObject);
     project = main_handles.project;
 
-    f = vk_diff_make_fn(project); 
+    f = vk_diff_make_fn(project);
     options = vk_options_make(project, f);
     next_fn = options.next_fn;
     norm_fn = options.norm_fn;
@@ -168,13 +178,13 @@ function vk_gui_manual_control_update(hObject, handles, start)
     set(handles.velocity_table, 'Data', normpath);
 
     handles.path = path;
-    handles.normpath = normpath; 
+    handles.normpath = normpath;
     handles.controlpath = controlpath;
     guidata(hObject, handles);
 end
 
 % --- Outputs from this function are returned to the command line.
-function varargout = vk_gui_manual_control_OutputFcn(hObject, eventdata, handles) 
+function varargout = vk_gui_manual_control_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -252,7 +262,7 @@ function phasediagram_button_Callback(hObject, eventdata, handles)
 
     viablepath = vk_gui_manual_control_viablepath(handles.path(1:project.numvars,:), ...
         handles.normpath, project);
-    
+
     vk_plot_path(handles.T, path, viablepath, project.sim_showpoints, ...
         project.sim_line_colour, project.sim_line_width);
 

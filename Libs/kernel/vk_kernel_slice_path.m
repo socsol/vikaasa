@@ -1,3 +1,9 @@
+%% VK_KERNEL_SLICE_PATH Slices a simualtion trajectory
+%
+% SYNOPSIS
+%   Used to reduce a simulation trajectory to just the dimensions
+%   that are to be displayed.
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

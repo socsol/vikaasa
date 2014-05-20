@@ -1,3 +1,10 @@
+%% VK_KERNEL_AUGMENT_LABELS Augment the list of labels
+%
+% SYNPOSIS
+%   This function is used to augment the list of state-space labels
+%   with labels of ``additional'' variables, as specified in the
+%   ``Additional Variables'' table of the ``Variables'' panel.
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %

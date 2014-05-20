@@ -1,3 +1,5 @@
+%% VK_SIM_AUGMENT_PATH Add details about additional variables to a simulation path
+
 %%
 %  Copyright 2012 Jacek B. Krawczyk and Alastair Pharo
 %
@@ -14,7 +16,7 @@
 %  limitations under the License.
 function path = vk_sim_augment_path(path, numvars, numaddnvars, ...
     addnignore, addneqns, symbols)
-    
+
     path = [path; zeros(numaddnvars, size(path, 2))];
 
     %% For each non-ignored index, fill in the gaps:

@@ -155,8 +155,8 @@
 %       - `steps' (1): The number of forward-looking steps used by finite-time
 %         optimising control algorithms such as CostMin.
 %
-%       - `stop_fn` (vk_viable_stop): The function used to
-%         determine whether `vk_viable` should stop, and if so,
+%       - `stop_fn' (vk_viable_stop): The function used to
+%         determine whether `vk_viable' should stop, and if so,
 %         what the viability value is.
 %
 %       - `sim_fn' (vk_sim_simulate_ode):  The ``simulation function'' to
