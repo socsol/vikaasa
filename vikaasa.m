@@ -131,7 +131,7 @@ end
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 function plot_button_Callback(hObject, eventdata, handles)
-    
+
     h = vk_gui_figure_create(handles);
     vk_figure_make(handles.project, h);
 
@@ -645,7 +645,7 @@ function sim_timeprofiles_button_Callback(hObject, eventdata, handles)
     project = handles.project;
 
     h = vk_gui_timeprofile_create(handles);
-    
+
     h = vk_figure_timeprofiles_make(project, 'handle', h);
     handles.current_timeprofile = h;
     guidata(hObject, handles);
