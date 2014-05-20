@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use English;
 
 # Sort the files by their names.
 my @files = sort {
@@ -33,7 +34,7 @@ for my $filename (@files) {
   # Any line that is not indented, and begins with all caps is a heading.  The
   # first of these is the main heading.
   if ($content =~ /^([A-Z0-9_]+)\s*(\S.*)?\n/) {
-    my ($before, $title, $description, $after) = ($`, $1, $2, $');
+    my ($before, $title, $description, $after) = ($`, $1, $2, $POSTMATCH);
     # Replace the title with the filename (so that capitalisation is correct),
     # where this matches what is in the file.
     my ($filename_short) = ($filename =~ /\/([^\/]+)\.m$/);
@@ -52,7 +53,7 @@ EOF
 
     # Replace each sub-heading found
     while ($content =~ /^([A-Z_]+)$/m) {
-      $content =  "$`\\vkfunctionsection{${\ucfirst(lc($1))}}$'";
+      $content =  "$`\\vkfunctionsection{${\ucfirst(lc($1))}}$POSTMATCH";
     }
   }
 
@@ -61,7 +62,7 @@ EOF
   my $remaining = $content;
   while ($remaining =~ /^(?:\S.*)?\v\K ^(\h+\%\V+\v (?:^\h+\S.*\v)+) ^(?=\S|$)/mx) {
     # Match whatever is left next time around.
-    $remaining = $';
+    $remaining = $POSTMATCH;
     my $match = $&;
     my $lines = $1;
 
@@ -84,15 +85,16 @@ EOF
   } 
 
   # Replace the ``See also:'' section (should be at the end)
-  my %pairs = (
-    'Requires', qr/(?:(?:\\vkfunctionsection{See also})|(?:See also))/,
-    'See also', qr/\\end{vkfunction}/
-  );
-  while (my ($header, $end) = each %pairs) {
+  my $pairs = [
+    ['Requires', qr/(?:(?:\\vkfunctionsection{See also})|(?:See also))/],
+    ['See also', qr/\\end{vkfunction}/]
+  ];
+  while (my ($idx, $pair) = each @$pairs) {
+    my ($header, $end) = @$pair;
     if ($content =~ /\v$header:?\h+\b(.*\S)\s*(?=$end)/si) {
       my $links = join', ', map { "\\vkfunctionref{$_}" } split(/\b\s*,\s*\b/m, $1);
-      
-      $content = $`. <<EOF . $links . "\n" . $';
+    
+      $content = $`. <<EOF . $links . "\n" . $POSTMATCH;
 \n\n\\vkfunctionsection{$header}
 EOF
     }
@@ -102,15 +104,15 @@ EOF
   $content =~ s/(?<!`)`([a-z_0-9@(,)*+-= ]+)'(?!`)/\\lstinline!$1!/gmi;
 
   # Replace any bare function words with \vkfunctionref{...}
-  while ($content =~ /[^!{]\K([:])?(CostMin|(?:vk_|vikaasa_)[a-z_]+)(?![}A-Z_])/gmi) {
-    my ($before, $match, $after) = ($`, $2, $');
+  while ($content =~ /[^!{]\K([:])?(CostMin|(?:vk_|vikaasa_|iss_)[a-z_]+)(?![}A-Z_])/gmi) {
+    my ($before, $match, $after) = ($`, $2, $POSTMATCH);
 
     next if defined($1);
 
     # Check that we are not inside of a lstlisting
     my $inlisting = 0;
     while ($before =~ /\\begin{lstlisting}/gm) {
-      $inlisting = ($' !~ /\\end{lstlisting}/m);
+      $inlisting = ($POSTMATCH !~ /\\end{lstlisting}/m);
     }
 
     $content = "$before\\vkfunctionref{$match}$after"
@@ -127,7 +129,7 @@ EOF
   $content =~ s/MATLAB\(R\)/\\matlab{}/gm;
 
   # Replace .MAT or .M with \texttt{...}
-  $content =~ s/(?<=\s)(.M(?:AT)?)(?=[^A-Z])/\\texttt{${\lc $1}}/i;
+  $content =~ s/(?<=\s)(\.M(?:AT)?)(?=[^A-Z])/\\texttt{${\lc $1}}/i;
 
   print $content;
 }
