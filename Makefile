@@ -18,7 +18,7 @@ archives:	${ZIP} ${BZ2} versioncheck
 
 ${ZIP}:		${TAR} cleantmp
 		tar -x -C tmp -f ${TAR}
-		cd tmp && zip -q -r ../${ZIP} vikaasa-${VERSION}
+		cd tmp && zip -q -r -y ../${ZIP} vikaasa-${VERSION}
 
 ${BZ2}:		${TAR}
 		bzip2 -9 ${TAR} -c > ${BZ2}
