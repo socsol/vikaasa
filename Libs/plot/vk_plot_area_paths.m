@@ -16,6 +16,6 @@
 %  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 %  See the License for the specific language governing permissions and
 %  limitations under the License.
-function vk_plot_surface_quiver(V, colour, alpha, varargin)
+function vk_plot_area_paths(V, colour, alpha, varargin)
     vk_plot_surface_paths(V, colour, alpha, varargin{:})
 end
