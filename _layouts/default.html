@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="VIKAASA" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ site.baseurl }}/css/screen.css">
 
     <title>{{ page.title }} - VIKAASA</title>
   </head>
@@ -16,22 +16,21 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
       <header class="inner">
-        <a href="https://github.com/socsol/vikaasa">View on GitHub</a>
-
-        <div>
-          <svg class="title" height="43">
-            <filter id="dropshadow" height="130%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-              <feOffset dx="2" dy="2" result="offsetblur"/>
-              <feMerge> 
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-            </filter>
-            <text x="0" y="20" style="font-size: 40px; filter: url(#dropshadow);">VIKAASA</text>
-          </svg>
-        </div>
+        <svg class="title" height="100" width="100%">
+          <filter id="dropshadow" height="130%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+            <feOffset dx="2" dy="2" result="offsetblur"/>
+            <feMerge> 
+              <feMergeNode/>
+              <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+          </filter>
+          <text x="0" y="50" style="font-size: 80px; filter: url(#dropshadow);">VIKAASA</text>
+        </svg>
       </header>
+      <div class="view-in-github"> 
+        <a href="https://github.com/socsol/vikaasa">View in GitHub</a>
+      </div>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -44,6 +43,7 @@
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
+        <hr/>
         <p class="copyright">VIKAASA maintained by Jacek B. Krawczyk and Alastair S. Pharo.</p>
         <p><a href="http://www.vuw.ac.nz/">VUW</a> support for creation and maintenance acknowledged.</p>
       </footer>

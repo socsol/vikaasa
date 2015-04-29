@@ -1,2 +1,4 @@
 github: [Repository metadata]
 baseurl: /vikaasa
+sass:
+  sass_dir: _sass

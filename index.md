@@ -3,9 +3,9 @@ layout: default
 title: home
 ---
 
-VIKAASA provides a library of functions for GNU Octave or MATLAB(R)
+VIKAASA provides a library of functions for GNU Octave or MATLAB&reg;
 for working with viability kernels, as well as a graphical user
-interface for MATLAB(R).  For more information, see the manual.
+interface for MATLAB&reg;.  For more information, see the manual.
 
 
 Download
@@ -22,7 +22,7 @@ Starting VIKAASA
 ----------------
 
 To launch VIKAASA run either `vikaasa` (for the GUI) or `vikaasa_cli`
-(to initialise the library) from within MATLAB(R) or Octave.
+(to initialise the library) from within MATLAB&reg; or Octave.
 
 
 Command-line examples
@@ -54,11 +54,10 @@ See also
 --------
 
 [The VIKAASA manual][manual] should be considered the most
-authoritative document.  It should have been included with this
-program.
+authoritative document.  It is included with the program.
 
 Type `help <subject>` for any VIKAASA command from within Octave or
-MATLAB(R), as well as any of the following:
+MATLAB&reg;, as well as any of the following:
 
 `Libs`, `control`, `diff`, `figure`, `gui`, `kernel`, `options`,
 `project`, `sim`, `test`, `viable`

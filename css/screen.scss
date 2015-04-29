@@ -1,0 +1,87 @@
+---
+---
+
+@import "normalize";
+@import "susy";
+
+$susy: (
+    columns: 12,
+    gutters: 1/4,
+    math: fluid
+);
+
+body {
+    @include container(1024px);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+
+    font-family: "Myriad Pro",Calibri,Helvetica,Arial,sans-serif;
+
+    &::before {
+        background-image: url({{ site.baseurl }}/mainwindow.png);
+        background-repeat: no-repeat;
+        background-size: cover;
+        content: "";
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+    }
+}
+
+a[href] {
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+}
+
+.outer {
+    background-color: lighten(cyan, 30%);
+    padding: 1em;
+}
+
+#header_wrap {
+    height: 100px;
+
+    header {
+        @include span(8 of 12);
+    }
+
+    .view-in-github {
+        @include span(last 4 of 12);
+
+        a {
+            display: block;
+            background: #0090FF url("../images/blacktocat.png") no-repeat scroll 95% 50%;
+            padding: 10px 50px 10px 10px;
+            font-weight: 700;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            border-bottom-left-radius: 2px;
+            border-bottom-right-radius: 2px;
+            position: absolute;
+            top: 0;
+        }
+    }
+}
+
+.title text {
+    font-family: serif;
+    font-weight: bold;
+    font-style: oblique;
+    stroke: red;
+    stroke-width: 3pt;
+    fill: yellow;
+    dominant-baseline: middle;
+    text-shadow: 0 0 2px red;
+}
+
+pre {
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    
+    code {
+        padding: 3px;
+        margin: 0 3px;
+    }
+}
