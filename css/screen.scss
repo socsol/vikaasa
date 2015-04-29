@@ -17,7 +17,7 @@ body {
     font-family: "Myriad Pro",Calibri,Helvetica,Arial,sans-serif;
 
     &::before {
-        background-image: url({{ site.baseurl }}/mainwindow.png);
+        background-image: url({{ site.baseurl }}/images/wallpaper.png);
         background-repeat: no-repeat;
         background-size: cover;
         content: "";
