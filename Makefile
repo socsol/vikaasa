@@ -28,10 +28,13 @@ ${TAR}:
 		git archive --format=tar --prefix=${PREFIX} --output=${TAR} ${RELEASETAG}
 		git --git-dir=Libs/InfSOCSol/.git archive --format=tar --prefix=${PREFIX}Libs/InfSOCSol/ --output=${TAR}.1 ${ISS_VERSION}
 		tar -A -f ${TAR} ${TAR}.1
+		tar -tf ${TAR} | grep '^${PREFIX}Libs/InfSOCSol/tests\?' | tac | xargs tar --delete --file ${TAR}
 		rm ${TAR}.1
 
 # Checking the version markers of the ZIP archive just created
-versioncheck:	${ZIP} cleantmp
+versioncheck:	${ZIP}
+		rm -rf tmp
+		mkdir tmp
 		unzip -q -x ${ZIP} -d tmp
 		cd tmp/${PREFIX} && ../../bin/versioncheck
 
