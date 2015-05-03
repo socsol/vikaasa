@@ -64,7 +64,7 @@ function vikaasa_OpeningFcn(hObject, eventdata, handles, varargin)
 
     %% Initialise the VIKAASA environment.
     handles.path = fileparts(mfilename('fullpath'));
-    run Libs/vk_init.m
+    run(fullfile(handles.path, 'Libs', 'vk_init.m'));
     handles.version = vikaasa_version;
     handles.copyright = vikaasa_copyright;
     fprintf('%s\n\n', vikaasa_copyright);
