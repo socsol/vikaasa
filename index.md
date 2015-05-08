@@ -11,11 +11,11 @@ interface for MATLAB&reg;.  For more information, see the manual.
 Download
 --------
 
-Download version 2.1.0 of VIKAASA in [ZIP format][zip] or
+Download version 2.1.1 of VIKAASA in [ZIP format][zip] or
 [bzip2 format][bz2].
 
-[zip]: releases/vikaasa-2.1.0.zip
-[bz2]: releases/vikaasa-2.1.0.tar.bz2
+[zip]: releases/vikaasa-2.1.1.zip
+[bz2]: releases/vikaasa-2.1.1.tar.bz2
 
 
 Starting VIKAASA
