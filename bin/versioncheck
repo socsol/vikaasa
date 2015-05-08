@@ -3,10 +3,7 @@
 use strict;
 use warnings;
 
-my ($noticeversion, $version, $aboutversion, $makeversion);
-
-$noticeversion = $1
-  if `grep VIKAASA NOTICE` =~ /VIKAASA\s+([\d.]+)[^\d.]/;
+my ($version, $aboutversion, $makeversion);
 
 $version = $1
   if `cat VERSION` =~ /^([\d.]+)$/;
@@ -14,14 +11,10 @@ $version = $1
 $aboutversion = $1
   if `grep Version Docs/html/about_vikaasa.html` =~ /<p>Version\s+([\d.]+)<\/p>/;
 
-warn "NOTICE and VERSION do not match\n"
-  unless $noticeversion eq $version;
-
 warn "VERSION and about_vikaasa.html versions do not match\n"
   unless $version eq $aboutversion;
 
 die "! Version numbers do not match.\n"
-  unless $noticeversion eq $version
-    && $version eq $aboutversion;
+  unless $version eq $aboutversion;
 
 print "=> Version numbers match.\n";
