@@ -30,6 +30,10 @@ body {
     }
 }
 
+h1 {
+    margin: 0;
+}
+
 a[href] {
     text-decoration: none;
     &:hover { text-decoration: underline; }
