@@ -72,7 +72,7 @@ VIKAASA depends on [InfSOCSol][iss] for some functionality.
 Copyright and licence
 ---------------------
 
-Copyright 2015 Jacek B. Krawczyk and Alastair Pharo
+Copyright 2019 Jacek B. Krawczyk and Alastair Pharo
 
 Licensed under the Apache License, Version 2.0 (the "License"); you
 may not use this file except in compliance with the License.  You may
