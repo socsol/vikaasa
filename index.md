@@ -11,11 +11,11 @@ interface for MATLAB&reg;.  For more information, see the manual.
 Download
 --------
 
-Download version 2.1.1 of VIKAASA in [ZIP format][zip] or
+Download version 2.1.2 of VIKAASA in [ZIP format][zip] or
 [bzip2 format][bz2].
 
-[zip]: releases/vikaasa-2.1.1.zip
-[bz2]: releases/vikaasa-2.1.1.tar.bz2
+[zip]: releases/vikaasa-2.1.2.zip
+[bz2]: releases/vikaasa-2.1.2.tar.bz2
 
 
 Starting VIKAASA
@@ -71,7 +71,7 @@ VIKAASA depends on [InfSOCSol][iss] for some functionality.
 Copyright and licence
 ---------------------
 
-Copyright 2015 Jacek B. Krawczyk and Alastair Pharo
+Copyright 2019 Jacek B. Krawczyk and Alastair Pharo
 
 Licensed under the Apache License, Version 2.0 (the "License"); you
 may not use this file except in compliance with the License.  You may
